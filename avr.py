@@ -12,6 +12,7 @@ import re
 version=2.0
 
 DEFAULT_BIN="bin"
+DEFAULT_NAME="test"
 DEFAULT_OUT="output"
 DEFAULT_YOSYS="yosys"
 DEFAULT_CLK="clk"
@@ -26,15 +27,16 @@ def getopts(header):
 	p = argparse.ArgumentParser(description=str(header), formatter_class=argparse.RawDescriptionHelpFormatter)
 	p.add_argument('-f', '--file', required=True, help='top file name', type=str)
 	p.add_argument('-t', '--top',       help='top module name (default: autodetect)', type=str)
-	p.add_argument('-o', '--out',       help='output path (default: %s)' % DEFAULT_OUT, type=str, default=DEFAULT_OUT)
+	p.add_argument('-n', '--name',      help='<test-name> (default: %s)' % DEFAULT_NAME, type=str, default=DEFAULT_NAME)
+	p.add_argument('-o', '--out',       help='<output-path> (default: %s)' % DEFAULT_OUT, type=str, default=DEFAULT_OUT)
 	p.add_argument('-b', '--bin',       help='binary path (default: %s)' % DEFAULT_BIN, type=str, default=DEFAULT_BIN)
-	p.add_argument('--yosys',           help='path to yosys installation (default: %s)' % DEFAULT_YOSYS, type=str, default=DEFAULT_YOSYS)
+	p.add_argument('-y', '--yosys',           help='path to yosys installation (default: %s)' % DEFAULT_YOSYS, type=str, default=DEFAULT_YOSYS)
 	p.add_argument('--clock',           help='clock signal name (default: %s)' % DEFAULT_CLK, type=str, default=DEFAULT_CLK)
 	p.add_argument('--timeout',         help='timeout (CPU time) in seconds (default: %s)' % DEFAULT_TIMEOUT, type=int, default=DEFAULT_TIMEOUT)
 	p.add_argument('--memout',          help='memory limit in mega bytes (default: %s)' % DEFAULT_RANDOM, type=int, default=DEFAULT_MEMOUT)
-	p.add_argument('--split',           help='transform system by splitting variables at extract points (default: %r)' % DEFAULT_SPLIT, action="store_false", default=DEFAULT_SPLIT)
-	p.add_argument('--allowinp',        help='allow clauses to use input variables (default: %r)' % DEFAULT_ALLOWINP, action="store_true", default=DEFAULT_ALLOWINP)
-	p.add_argument('--random',          help='use random ordering and random seed (default: %r)' % DEFAULT_RANDOM, action="store_true", default=DEFAULT_RANDOM)
+	p.add_argument('-s', '--split',     help='toggles transforming system by splitting variables at extract points (default: %r)' % DEFAULT_SPLIT, action="count", default=0)
+	p.add_argument('-i', '--allowinp',  help='toggles allowing clauses to use input variables (default: %r)' % DEFAULT_ALLOWINP, action="count", default=0)
+	p.add_argument('-r', '--random',    help='toggles using random ordering and random seed (default: %r)' % DEFAULT_RANDOM, action="count", default=0)
 	p.add_argument('-v', '--verbosity', help='verbosity level (default: %r)' % DEFAULT_VERBOSITY, type=int, default=DEFAULT_VERBOSITY)
 	args, leftovers = p.parse_known_args()
 	return args, p.parse_args()
@@ -42,7 +44,7 @@ def getopts(header):
 header="""
 	Averroes (avr) -- Abstract VERification of Reachability Of Electronic Systems
 	Versions """ + str(version) + """
-	Reads a Verilog-2005 file and performs property checking.
+	Reads a Verilog-2005 file and performs property checking with data abstraction.
 		supports SystemVerilog concurrent assertions/assumptions
 
 	Copyright (C) 2018  Aman Goel <amangoel@umich.edu> and Karem A. Sakallah <karem@umich.edu>, University of Michigan
@@ -77,16 +79,18 @@ def split_path(name):
 
 def main():
 	known, opts = getopts(header)
-	if not os.path.isfile(opts.yosys + "/yosys"):
-		raise Exception("Please install Yosys using build.sh (or https://github.com/aman-goel/yosys)")
+	if not os.path.isfile(opts.bin + "/avr"):
+		raise Exception("avr: main shell script not found")
 	if not os.path.isfile(opts.bin + "/vwn"):
 		raise Exception("avr: vwn binary not found")
 	if not os.path.isfile(opts.bin + "/dpa"):
 		raise Exception("avr: dpa binary not found")
 	if not os.path.isfile(opts.bin + "/reach"):
 		raise Exception("avr: reach binary not found")
-	if not os.path.isfile(opts.bin + "/avr"):
-		raise Exception("avr: main shell script not found")
+	if not os.path.isfile(opts.yosys + "/yosys"):
+		raise Exception("Please install Yosys using build.sh (or from https://github.com/aman-goel/yosys)")
+	if not os.path.isfile(opts.file):
+		raise Exception("Unable to find top file: %s" % opts.file)
 	
 	print(short_header)
 	path, f = split_path(opts.file)
@@ -94,15 +98,29 @@ def main():
 	command = command + "./" + opts.bin + "/avr"
 	command = command + " " + f
 	command = command + " " + path
+	command = command + " " + opts.name
 	command = command + " " + opts.out
 	command = command + " " + opts.bin
 	command = command + " " + opts.yosys
 	command = command + " " + opts.clock
 	command = command + " " + str(opts.timeout)
 	command = command + " " + str(opts.memout)
-	command = command + " " + str(opts.split)
-	command = command + " " + str(opts.allowinp)
-	command = command + " " + str(opts.random)
+
+	split = DEFAULT_SPLIT
+	if (opts.split % 2 == 1):
+		split = not DEFAULT_SPLIT
+	command = command + " " + str(split)
+		
+	allowinp = DEFAULT_ALLOWINP
+	if (opts.allowinp % 2 == 1):
+		allowinp = not DEFAULT_ALLOWINP
+	command = command + " " + str(allowinp)
+	
+	random = DEFAULT_RANDOM
+	if (opts.random % 2 == 1):
+		random = not DEFAULT_RANDOM
+	command = command + " " + str(random)
+	
 	command = command + " " + str(opts.verbosity)
 	if known.top is not None:
 		command = command + " " + str(opts.top)

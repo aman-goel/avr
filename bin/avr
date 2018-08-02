@@ -2,16 +2,17 @@
 
 fname="$1"
 p_dir="$2"
-p_out="$3"
-p_bin="$4"
-p_yosys="$5"
-clk="$6"
-timeMax="$7"
-memMax="$8"
-split="$9"
-allowInp="${10}"
-random="${11}"
-verbosity="${12}"
+bm="$3"
+p_out="$4"
+p_bin="$5"
+p_yosys="$6"
+clk="$7"
+timeMax="$8"
+memMax="$9"
+split="${10}"
+allowInp="${11}"
+random="${12}"
+verbosity="${13}"
 
 BM_PATH="$p_dir"
 OUT_DIR="$p_out"
@@ -22,16 +23,13 @@ DEFAULT_CLK="clk"
 DEFAULT_PROP="prop"
 
 AUTOTOP=1
-if [ $# -ge 13 ]
+if [ $# -ge 14 ]
 then
-	top=${13}
+	top=${14}
 	AUTOTOP=0
 else
 	top=$DEFAULT_TOP
 fi
-
-bm=${fname%.*}
-bm=${bm##*/}
 
 # echo "bm: $bm" "fname: $fname" "top: $top"
 
@@ -117,7 +115,7 @@ $p_bin/dpa   $OUT_PATH $p_bin > $OUT_PATH/dpa.output 2>> $OUT_PATH/avr.err
 $p_bin/reach $OUT_PATH $p_bin > $OUT_PATH/reach.output 2>> >(tee -a $OUT_PATH/avr.err >&2)
 avr_exit=$?
 
-tail -n 3 $OUT_PATH/reach.output
-echo ""
+tail -n 3 $OUT_PATH/reach.output &> >(tee -a $OUT_PATH/avr.err >&2)
+echo "" &> >(tee -a $OUT_PATH/avr.err >&2)
 
 exit $avr_exit

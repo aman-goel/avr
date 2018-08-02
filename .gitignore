@@ -1,7 +1,7 @@
 gmon.out
-bin/dpa
-bin/reach
-bin/vwn
+# bin/dpa
+# bin/reach
+# bin/vwn
 
 *.a
 *.o
