@@ -45,7 +45,7 @@ header="""
 	Averroes (avr) -- Abstract VERification of Reachability Of Electronic Systems
 	Versions """ + str(version) + """
 	Reads a Verilog-2005 file and performs property checking with data abstraction.
-		supports SystemVerilog concurrent assertions/assumptions
+		supports SystemVerilog concurrent assertions
 
 	Copyright (C) 2018  Aman Goel <amangoel@umich.edu> and Karem A. Sakallah <karem@umich.edu>, University of Michigan
 	

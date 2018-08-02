@@ -1,61 +1,58 @@
-Averroes (Abstract VERification of Reachability Of Electronic Systems) version 2.0
-amangoel [at] umich [dot] edu (or) amangoel [dot] umich [at] gmail [dot] com
+Averroes (avr) -- Abstract VERification of Reachability Of Electronic Systems
+	Versions 2.0
+	Reads a Verilog-2005 file and performs property checking with data abstraction.
+		supports SystemVerilog concurrent assertions
 
-####    1. How to build
-	a) Build dependencies (use build.sh)
-		make sure you have yosys, yices2, z3, libgmp-dev installed
-	b) Build avr
-		# skipped
+	Copyright (C) 2018  Aman Goel <amangoel@umich.edu> and Karem A. Sakallah <karem@umich.edu>, University of Michigan
+	
+	------------
+	Dependencies
+	------------
+	1. Yosys   (Copyright (C) 2018 Clifford Wolf <clifford@clifford.at>)
+	2. Yices 2 (Copyright (C) 2017 SRI International)
+	3. Z3      (Copyright (c) 2015 Microsoft Corporation)
+	
+	---------------------------------
+	Limitiations (as of Aug 01, 2018)
+	---------------------------------
+	1. Can only handle safety properties that can be expressed without temporal operators.
+	2. Assumes single clock domain.
+	3. Cannot handle asynchronous flops.
+	4. Handles memory by simply expanding it using yosys.
+		(customize the bin/avr for special preprocessing using Yosys)
+		
+	Please report bugs via email (amangoel@umich.edu) or on github (https://github.com/aman-goel/avr)
 
-####    2. How to run
+--> How to build
+	avr requires yosys, yices2, z3, libgmp-dev
+	a) Use build.sh to install yosys
+	b) yices2, z3 and libgmp-dev are statically linked to binaries in bin/ folder
 
-cd examples
-./averroes <benchmark_name>
+--> How to run
+	python avr.py -f <path>/<top-module-file>
+		(use python avr.py -h for command-line options)
+		
+--> Examples
+	“examples” directory contains several different test cases
+		(use <test-name>/<test-name>.fconfig to identify top-module-file)
 
-e.g.
-cd examples
-./averroes client_server
+--> Output
+	avr creates a directory <output-path>/work_<test-name> which contains detailed files relating to the run
+		(<output-path> and <test-name> can be customized using command-line options in avr.py)
 
- 
-####    3. Benchmarks
-
-“examples” directory contains three different types of benchmarks:
-
-####    4. Directories
-
-/bin        : executables (Compiled on 64 bit Ubuntu 17.10)
-
-/examples                : simple benchmarks
-    /averroes            : C shell script that executes averroes
-
-/work_*                  : averroes creates this directory to keep the temporary files during execution
-    /wn_orig.dump        : binary file for the original word-level netlist
-    /wn.dump             : binary file for the adjusted word-level netlist
-
-####    5. Configurations
-
-Each benchmark in the "examples" directory has a configuration file, *.fconfig 
-(e.g. ./examples/eq_sdp_v1/eq_sdp_v1.fconfig).
-The fconfig file lists the following arguments.
-
-    design_file (required)     : Verilog file that contains a top module
-    top_module  (optional)     : Top module name
-    prop_sig    (required)     : Prop signal name (the name usually is "prop", and the signal should be defined in a top module)
-
-####    6. Averroes tool output
-Check out the following files:
-	work_{name}
+	work_<test-name> contains several files that provides details for the run:
+	work_<test-name>
 	├── inv.txt						// invariant file (with axioms)
 	├── reach.output				// detailed log of reachability analysis
-	├── {name}.results				// detailed statistics report
+	├── <test-name>.results			// detailed statistics report
 	├── avr.err						// stderr report
 	├── dot							// folder to visualize system
 	├── parse_original.results		// original system information
 	├── parse.results				// system information (on which property checking is performed)
 	├── design_original.txt			// original system given
 	├── design.txt					// processed system
-	├── {name}.ilang				// .ilang file generated from yosys
-	├── {name}_y.v					// verilog file (equivalent to .ilang)
+	├── <test-name>.ilang			// .ilang file generated from yosys
+	├── <test-name>_y.v				// verilog file (equivalent to .ilang)
 	├── fconfig						// configuration file
 	├── refs.txt					// detailed log of refinement axioms learnt
 	├── vwn.output					// output from stage 1 of frontend
@@ -64,7 +61,39 @@ Check out the following files:
 	├── wn_orig.dump				// internal system dump after stage 2 of frontend
 	└── yosys.log					// yosys log
 
-####    7. Reference
+	As a quick summary relating to the run, avr produces certain key information on stderr.
+	For example, running python avr.py -f examples/cav14_example/cav14_example.v produces the following on stderr.
 
-[1] S. Lee, K. Sakallah, Unbounded Scalable Verification Based on Approximate Property-Directed Reachability and 
-Datapath Abstraction, In CAV14, 2014. pp. 849-865
+	3	: 0	: 0 s: 0                  
+	3	: 1	: 0 1 s: 1                  
+	3	: 1	: 0 0 1 s: 1                  
+      Result        Time        Mem.       #Refs           
+                     sec          MB                       
+           h        0.01          13           3
+    ":" separated numbers indicate the following:
+		<# of refinements learnt> : <max frame> : <# of added clauses in each frame> s: <total # of clauses learnt>
+	Result can be mapped as follows:
+		h	-> Property holds							(inv.txt contains inductive invariant)
+		v	-> Property violated 						(reach.output contains a set of counterexamples)
+		f_*	-> Error / time or memory limit exceeded	(check reach.output for possible more information)
+
+--> Notes
+	a) avr is still in development phase and uses several parameters internally for efficient property checking.
+	   For example, currently # of refinment iterations are limited to 500 so as to identify cases where abstraction is too poor.
+	   Many such parameters can be tuned/corrected, including frontend support via Yosys.
+	b) "prop" and "prop_neg" are reserved keywords in top module. A signal named prop in the top module can be alternatively used
+		to describe the safety property.
+	c) Property description is expected to be present in the top module, and not in submodules.
+	d) Multiple properties are allowed.
+	e) There is also limited support for SystemVerilog concurrent assumptions using assume property ( .. ).
+	f) Use the dot folder to explore visualizations for the transition system
+	g) Initial state conditions collected by avr are listed in parse.results file.
+	h) Currently counterexample (for a violating property) is not presented in a standard format.
+	i) avr also has support for reducing the number of clauses in the inductive invariant produced (disabled by default).
+	j) After proving a property, avr performs a series of checks to ensure correctness of the result (for the interpreted system).
+	k) If Averroes produces an output saying poor abstraction, this can be (sometimes) handled using a new technique we are still working on.
+	l) avr performs best especially for control-centric properties and is almost independent of the bit-width of words in the system.
+	
+
+We would be glad to hear from you and help you in case you are having a difficulty in using Averroes.
+Please contact Aman Goel (amangoel@umich.edu) for help/suggestions/modifications or just to share your comments on Averroes!
