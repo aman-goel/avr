@@ -1,0 +1,12 @@
+design_file
+../examples/sw_ball2004_1/sw_ball2004_1.v
+top_module
+ball2004_1
+clock_sig
+clk
+prop_sig
+prop
+memory_limit
+0
+timeout
+0

@@ -1,0 +1,70 @@
+Averroes (Abstract VERification of Reachability Of Electronic Systems) version 2.0
+amangoel [at] umich [dot] edu (or) amangoel [dot] umich [at] gmail [dot] com
+
+####    1. How to build
+	a) Build dependencies (use build.sh)
+		make sure you have yosys, yices2, z3, libgmp-dev installed
+	b) Build avr
+		# skipped
+
+####    2. How to run
+
+cd examples
+./averroes <benchmark_name>
+
+e.g.
+cd examples
+./averroes client_server
+
+ 
+####    3. Benchmarks
+
+“examples” directory contains three different types of benchmarks:
+
+####    4. Directories
+
+/bin        : executables (Compiled on 64 bit Ubuntu 17.10)
+
+/examples                : simple benchmarks
+    /averroes            : C shell script that executes averroes
+
+/work_*                  : averroes creates this directory to keep the temporary files during execution
+    /wn_orig.dump        : binary file for the original word-level netlist
+    /wn.dump             : binary file for the adjusted word-level netlist
+
+####    5. Configurations
+
+Each benchmark in the "examples" directory has a configuration file, *.fconfig 
+(e.g. ./examples/eq_sdp_v1/eq_sdp_v1.fconfig).
+The fconfig file lists the following arguments.
+
+    design_file (required)     : Verilog file that contains a top module
+    top_module  (optional)     : Top module name
+    prop_sig    (required)     : Prop signal name (the name usually is "prop", and the signal should be defined in a top module)
+
+####    6. Averroes tool output
+Check out the following files:
+	work_{name}
+	├── inv.txt						// invariant file (with axioms)
+	├── reach.output				// detailed log of reachability analysis
+	├── {name}.results				// detailed statistics report
+	├── avr.err						// stderr report
+	├── dot							// folder to visualize system
+	├── parse_original.results		// original system information
+	├── parse.results				// system information (on which property checking is performed)
+	├── design_original.txt			// original system given
+	├── design.txt					// processed system
+	├── {name}.ilang				// .ilang file generated from yosys
+	├── {name}_y.v					// verilog file (equivalent to .ilang)
+	├── fconfig						// configuration file
+	├── refs.txt					// detailed log of refinement axioms learnt
+	├── vwn.output					// output from stage 1 of frontend
+	├── dpa.output					// output from stage 2 of frontend
+	├── wn.dump						// internal system dump after stage 1 of frontend
+	├── wn_orig.dump				// internal system dump after stage 2 of frontend
+	└── yosys.log					// yosys log
+
+####    7. Reference
+
+[1] S. Lee, K. Sakallah, Unbounded Scalable Verification Based on Approximate Property-Directed Reachability and 
+Datapath Abstraction, In CAV14, 2014. pp. 849-865

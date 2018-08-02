@@ -1,0 +1,12 @@
+design_file
+../examples/sw_sym_ex_v/sw_sym_ex_v.v
+top_module
+sym_ex
+clock_sig
+clk
+prop_sig
+prop
+memory_limit
+0
+timeout
+0

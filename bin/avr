@@ -1,0 +1,123 @@
+#!/bin/bash
+
+fname="$1"
+p_dir="$2"
+p_out="$3"
+p_bin="$4"
+p_yosys="$5"
+clk="$6"
+timeMax="$7"
+memMax="$8"
+split="$9"
+allowInp="${10}"
+random="${11}"
+verbosity="${12}"
+
+BM_PATH="$p_dir"
+OUT_DIR="$p_out"
+mkdir -p $OUT_DIR
+
+DEFAULT_TOP="main"
+DEFAULT_CLK="clk"
+DEFAULT_PROP="prop"
+
+AUTOTOP=1
+if [ $# -ge 13 ]
+then
+	top=${13}
+	AUTOTOP=0
+else
+	top=$DEFAULT_TOP
+fi
+
+bm=${fname%.*}
+bm=${bm##*/}
+
+# echo "bm: $bm" "fname: $fname" "top: $top"
+
+OUT_PATH="$OUT_DIR/work_$bm"
+
+rm -rf $OUT_PATH
+mkdir $OUT_PATH
+cp -R $BM_PATH/* $OUT_PATH
+
+echo "design_file" > $OUT_PATH/fconfig
+echo "$BM_PATH/$fname" >> $OUT_PATH/fconfig
+	
+echo "top_module" >> $OUT_PATH/fconfig
+echo $top >> $OUT_PATH/fconfig
+
+echo "clock_sig" >> $OUT_PATH/fconfig
+echo "$DEFAULT_CLK" >> $OUT_PATH/fconfig
+
+echo "prop_sig" >> $OUT_PATH/fconfig
+echo "$DEFAULT_PROP" >> $OUT_PATH/fconfig
+
+echo "timeout" >> $OUT_PATH/fconfig
+echo "$timeMax" >> $OUT_PATH/fconfig
+
+echo "memory_limit" >> $OUT_PATH/fconfig
+echo "$memMax" >> $OUT_PATH/fconfig
+
+echo "split_signals" >> $OUT_PATH/fconfig
+echo "$split" >> $OUT_PATH/fconfig
+
+echo "allow_inp" >> $OUT_PATH/fconfig
+echo "$allowInp" >> $OUT_PATH/fconfig
+
+echo "random" >> $OUT_PATH/fconfig
+echo "$random" >> $OUT_PATH/fconfig
+
+OUT_YOSYS="$bm".ilang
+OUT_VERILOG="$bm"_y.v
+
+if [ $AUTOTOP ]
+then
+$p_yosys/yosys -Q -T -q -q -l $OUT_PATH/yosys.log -p "\
+read_verilog -noopt -nolatches -sv $OUT_PATH/$fname
+hierarchy -auto-top;
+hierarchy -libdir $OUT_PATH;
+hierarchy -check;
+rename -top $top;
+delete -output $top;
+expose $top/"prop_neg";
+proc; clean;
+splitnets -driver; clean;
+pmuxtree; clean;
+memory; clean;
+flatten; clean -purge;
+setundef -undriven -expose; clean;
+check;
+write_ilang $OUT_PATH/$OUT_YOSYS;
+write_verilog -attr2comment $OUT_PATH/$OUT_VERILOG;
+"
+else
+$p_yosys/yosys -Q -T -q -q -l $OUT_PATH/yosys.log -p "\
+read_verilog -noopt -nolatches -sv $fname
+hierarchy -top $top;
+hierarchy -libdir $OUT_PATH;
+hierarchy -check;
+rename -top $top;
+delete -output $top;
+expose $top/"prop_neg";
+proc; clean;
+splitnets -driver; clean;
+pmuxtree; clean;
+memory; clean;
+flatten; clean -purge;
+setundef -undriven -expose; clean;
+check;
+write_ilang $OUT_YOSYS;
+write_verilog -attr2comment $OUT_VERILOG;
+"
+fi
+
+$p_bin/vwn   $OUT_PATH $p_bin > $OUT_PATH/vwn.output 2>> $OUT_PATH/avr.err
+$p_bin/dpa   $OUT_PATH $p_bin > $OUT_PATH/dpa.output 2>> $OUT_PATH/avr.err
+$p_bin/reach $OUT_PATH $p_bin > $OUT_PATH/reach.output 2>> >(tee -a $OUT_PATH/avr.err >&2)
+avr_exit=$?
+
+tail -n 3 $OUT_PATH/reach.output
+echo ""
+
+exit $avr_exit

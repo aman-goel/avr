@@ -1,0 +1,12 @@
+design_file
+../examples/counter_v/counter_v.v
+top_module
+counter
+clock_sig
+clk
+prop_sig
+prop
+memory_limit
+0
+timeout
+0

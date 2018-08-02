@@ -1,0 +1,14 @@
+design_file
+../examples/sw_loop_v/sw_loop_v.v
+top_module
+sw_loop
+clock_sig
+clk
+prop_sig
+prop
+memory_limit
+0
+timeout
+0
+vlevel
+141141414160046

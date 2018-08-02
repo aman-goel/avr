@@ -1,0 +1,12 @@
+design_file
+../examples/eq_sdp_v7/eq_sdp_v7.v
+top_module
+eq_sdp_v7
+clock_sig
+clk
+prop_sig
+prop
+memory_limit
+0
+timeout
+0
