@@ -11,6 +11,7 @@ Averroes (avr) -- Abstract VERification of Reachability Of Electronic Systems
 	1. Yosys   (Copyright (C) 2018 Clifford Wolf <clifford@clifford.at>)
 	2. Yices 2 (Copyright (C) 2017 SRI International)
 	3. Z3      (Copyright (c) 2015 Microsoft Corporation)
+	4. Linux x86_64 based OS with gcc, g++ (for Python API)
 	
 	---------------------------------
 	Limitiations (as of Aug 01, 2018)
