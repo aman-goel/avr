@@ -18,11 +18,13 @@ src/*
 */smt_queries/*
 smt_queries/*
 output/*
+examples/averroes*
+examples/*.sh
 
 # But not these files
 !.gitignore
 !.travis/*
 !.travis.yml
-!examples/averroes*
+# !examples/averroes*
 !examples/bm/*
 !examples/scripts/*
