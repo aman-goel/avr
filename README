@@ -1,5 +1,5 @@
 Averroes (avr) -- Abstract VERification of Reachability Of Electronic Systems
-	Versions 2.0
+ 	version 2.0
 	Reads a Verilog-2005 file and performs property checking with data abstraction.
 		supports SystemVerilog concurrent assertions
 
@@ -42,24 +42,24 @@ Averroes (avr) -- Abstract VERification of Reachability Of Electronic Systems
 
 	work_<test-name> contains several files that provides details for the run:
 	work_<test-name>
-	├── inv.txt						// invariant file (with axioms)
-	├── reach.output				// detailed log of reachability analysis
-	├── <test-name>.results			// detailed statistics report
-	├── avr.err						// stderr report
-	├── dot							// folder to visualize system
-	├── parse_original.results		// original system information
-	├── parse.results				// system information (on which property checking is performed)
-	├── design_original.txt			// original system given
-	├── design.txt					// processed system
-	├── <test-name>.ilang			// .ilang file generated from yosys
-	├── <test-name>_y.v				// verilog file (equivalent to .ilang)
-	├── fconfig						// configuration file
-	├── refs.txt					// detailed log of refinement axioms learnt
-	├── vwn.output					// output from stage 1 of frontend
-	├── dpa.output					// output from stage 2 of frontend
-	├── wn.dump						// internal system dump after stage 1 of frontend
-	├── wn_orig.dump				// internal system dump after stage 2 of frontend
-	└── yosys.log					// yosys log
+	├── inv.txt			// invariant file (with axioms)
+	├── reach.output		// detailed log of reachability analysis
+	├── <test-name>.results		// detailed statistics report
+	├── avr.err			// stderr report
+	├── dot				// folder to visualize system
+	├── parse_original.results	// original system information
+	├── parse.results		// system information (on which property checking is performed)
+	├── design_original.txt		// original system given
+	├── design.txt			// processed system
+	├── <test-name>.ilang		// .ilang file generated from yosys
+	├── <test-name>_y.v		// verilog file (equivalent to .ilang)
+	├── fconfig			// configuration file
+	├── refs.txt			// detailed log of refinement axioms learnt
+	├── vwn.output			// output from stage 1 of frontend
+	├── dpa.output			// output from stage 2 of frontend
+	├── wn.dump			// internal system dump after stage 1 of frontend
+	├── wn_orig.dump		// internal system dump after stage 2 of frontend
+	└── yosys.log			// yosys log
 
 	As a quick summary relating to the run, avr produces certain key information on stderr.
 	For example, running python avr.py -f examples/cav14_example/cav14_example.v produces the following on stderr.
@@ -73,8 +73,8 @@ Averroes (avr) -- Abstract VERification of Reachability Of Electronic Systems
     ":" separated numbers indicate the following:
 		<# of refinements learnt> : <max frame> : <# of added clauses in each frame> s: <total # of clauses learnt>
 	Result can be mapped as follows:
-		h	-> Property holds							(inv.txt contains inductive invariant)
-		v	-> Property violated 						(reach.output contains a set of counterexamples)
+		h	-> Property holds				(inv.txt contains inductive invariant)
+		v	-> Property violated 				(reach.output contains a set of counterexamples)
 		f_*	-> Error / time or memory limit exceeded	(check reach.output for possible more information)
 
 --> Notes
