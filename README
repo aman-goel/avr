@@ -1,6 +1,6 @@
 Averroes (avr) -- Abstract VERification of Reachability Of Electronic Systems
  	version 2.0
-	Reads a Verilog-2005 file and performs property checking with data abstraction.
+	Reads a Verilog file and performs property checking with data abstraction.
 		supports SystemVerilog concurrent assertions
 
 	Copyright (C) 2018  Aman Goel <amangoel@umich.edu> and Karem A. Sakallah <karem@umich.edu>, University of Michigan
@@ -20,6 +20,7 @@ Averroes (avr) -- Abstract VERification of Reachability Of Electronic Systems
 	2. Cannot handle asynchronous flops.
 	3. Handles memory by simply expanding it using yosys.
 		(customize the bin/avr for special preprocessing using Yosys)
+	4. avr uses yosys as its frontend and can handle most designs/formats that are supported by yosys.
 		
 	Please report bugs via email (amangoel@umich.edu) or on github (https://github.com/aman-goel/avr)
 
