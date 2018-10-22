@@ -19,7 +19,6 @@ DEFAULT_CLK="clk"
 DEFAULT_TIMEOUT=3600
 DEFAULT_MEMOUT=4096
 DEFAULT_SPLIT=True
-DEFAULT_ALLOWINP=False
 DEFAULT_RANDOM=False
 DEFAULT_VERBOSITY=0
 	
@@ -30,12 +29,11 @@ def getopts(header):
 	p.add_argument('-n', '--name',      help='<test-name> (default: %s)' % DEFAULT_NAME, type=str, default=DEFAULT_NAME)
 	p.add_argument('-o', '--out',       help='<output-path> (default: %s)' % DEFAULT_OUT, type=str, default=DEFAULT_OUT)
 	p.add_argument('-b', '--bin',       help='binary path (default: %s)' % DEFAULT_BIN, type=str, default=DEFAULT_BIN)
-	p.add_argument('-y', '--yosys',     help='path to yosys installation (default: %s)' % DEFAULT_YOSYS, type=str, default=DEFAULT_YOSYS)
+	p.add_argument('-y', '--yosys',           help='path to yosys installation (default: %s)' % DEFAULT_YOSYS, type=str, default=DEFAULT_YOSYS)
 	p.add_argument('--clock',           help='clock signal name (default: %s)' % DEFAULT_CLK, type=str, default=DEFAULT_CLK)
 	p.add_argument('--timeout',         help='timeout (CPU time) in seconds (default: %s)' % DEFAULT_TIMEOUT, type=int, default=DEFAULT_TIMEOUT)
-	p.add_argument('--memout',          help='memory limit in mega bytes (default: %s)' % DEFAULT_MEMOUT, type=int, default=DEFAULT_MEMOUT)
+	p.add_argument('--memout',          help='memory limit in mega bytes (default: %s)' % DEFAULT_RANDOM, type=int, default=DEFAULT_MEMOUT)
 	p.add_argument('-s', '--split',     help='toggles transforming system by splitting variables at extract points (default: %r)' % DEFAULT_SPLIT, action="count", default=0)
-	p.add_argument('-i', '--allowinp',  help='toggles allowing clauses to use input variables (default: %r)' % DEFAULT_ALLOWINP, action="count", default=0)
 	p.add_argument('-r', '--random',    help='toggles using random ordering and random seed (default: %r)' % DEFAULT_RANDOM, action="count", default=0)
 	p.add_argument('-v', '--verbosity', help='verbosity level (default: %r)' % DEFAULT_VERBOSITY, type=int, default=DEFAULT_VERBOSITY)
 	args, leftovers = p.parse_known_args()
@@ -111,11 +109,6 @@ def main():
 		split = not DEFAULT_SPLIT
 	command = command + " " + str(split)
 		
-	allowinp = DEFAULT_ALLOWINP
-	if (opts.allowinp % 2 == 1):
-		allowinp = not DEFAULT_ALLOWINP
-	command = command + " " + str(allowinp)
-	
 	random = DEFAULT_RANDOM
 	if (opts.random % 2 == 1):
 		random = not DEFAULT_RANDOM

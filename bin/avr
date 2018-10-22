@@ -10,9 +10,8 @@ clk="$7"
 timeMax="$8"
 memMax="$9"
 split="${10}"
-allowInp="${11}"
-random="${12}"
-verbosity="${13}"
+random="${11}"
+verbosity="${12}"
 
 BM_PATH="$p_dir"
 OUT_DIR="$p_out"
@@ -38,6 +37,7 @@ OUT_PATH="$OUT_DIR/work_$bm"
 rm -rf $OUT_PATH
 mkdir $OUT_PATH
 cp -R $BM_PATH/* $OUT_PATH
+mkdir $OUT_PATH/data
 mkdir $OUT_PATH/dot
 mkdir $OUT_PATH/dot/ref
 
@@ -62,62 +62,51 @@ echo "$memMax" >> $OUT_PATH/fconfig
 echo "split_signals" >> $OUT_PATH/fconfig
 echo "$split" >> $OUT_PATH/fconfig
 
-echo "allow_inp" >> $OUT_PATH/fconfig
-echo "$allowInp" >> $OUT_PATH/fconfig
-
 echo "random" >> $OUT_PATH/fconfig
 echo "$random" >> $OUT_PATH/fconfig
 
 OUT_YOSYS="$bm".ilang
 OUT_VERILOG="$bm"_y.v
 
+YOSYS_CMD=$OUT_PATH/yosys.tcl
+rm -f $YOSYS_CMD
+
+echo "yosys read_verilog -noopt -nolatches -sv $OUT_PATH/$fname;" >> $YOSYS_CMD
 if [ $AUTOTOP ]
 then
-$p_yosys/yosys -Q -T -q -q -l $OUT_PATH/yosys.log -p "\
-read_verilog -noopt -nolatches -sv $OUT_PATH/$fname
-hierarchy -auto-top;
-hierarchy -libdir $OUT_PATH;
-hierarchy -check;
-rename -top $top;
-delete -output $top;
-expose $top/"prop_neg";
-proc; clean;
-splitnets -driver; clean;
-pmuxtree; clean;
-memory; clean;
-flatten; clean -purge;
-setundef -undriven -expose; clean;
-check;
-write_ilang $OUT_PATH/$OUT_YOSYS;
-write_verilog -attr2comment $OUT_PATH/$OUT_VERILOG;
-"
+	echo "yosys hierarchy -auto-top;" >> $YOSYS_CMD
 else
-$p_yosys/yosys -Q -T -q -q -l $OUT_PATH/yosys.log -p "\
-read_verilog -noopt -nolatches -sv $fname
-hierarchy -top $top;
-hierarchy -libdir $OUT_PATH;
-hierarchy -check;
-rename -top $top;
-delete -output $top;
-expose $top/"prop_neg";
-proc; clean;
-splitnets -driver; clean;
-pmuxtree; clean;
-memory; clean;
-flatten; clean -purge;
-setundef -undriven -expose; clean;
-check;
-write_ilang $OUT_YOSYS;
-write_verilog -attr2comment $OUT_VERILOG;
-"
+	echo "yosys hierarchy -top $top;" >> $YOSYS_CMD
 fi
+echo "yosys hierarchy -libdir $OUT_PATH;" >> $YOSYS_CMD
+echo "yosys hierarchy -check;" >> $YOSYS_CMD
+echo "yosys rename -top $top;" >> $YOSYS_CMD
+echo "yosys delete -output $top;" >> $YOSYS_CMD
+echo "yosys expose $top/"prop_neg";" >> $YOSYS_CMD
+echo "yosys proc;" >> $YOSYS_CMD
+echo "yosys clean;" >> $YOSYS_CMD
+echo "yosys splitnets -driver;" >> $YOSYS_CMD
+echo "yosys clean;" >> $YOSYS_CMD
+echo "yosys pmuxtree;" >> $YOSYS_CMD
+echo "yosys clean;" >> $YOSYS_CMD
+echo "yosys memory;" >> $YOSYS_CMD
+echo "yosys clean;" >> $YOSYS_CMD
+echo "yosys flatten;" >> $YOSYS_CMD
+echo "yosys clean -purge;" >> $YOSYS_CMD
+echo "yosys setundef -undriven -expose -undef;" >> $YOSYS_CMD
+echo "yosys clean;" >> $YOSYS_CMD
+echo "yosys check;" >> $YOSYS_CMD
+echo "yosys write_ilang $OUT_PATH/$OUT_YOSYS;" >> $YOSYS_CMD
+echo "yosys write_verilog -attr2comment $OUT_PATH/$OUT_VERILOG;" >> $YOSYS_CMD
+$p_yosys/yosys -c $YOSYS_CMD -Q -T -q -q -l $OUT_PATH/yosys.log
 
-$p_bin/vwn   $OUT_PATH $p_bin > $OUT_PATH/vwn.output 2>> $OUT_PATH/avr.err
-$p_bin/dpa   $OUT_PATH $p_bin > $OUT_PATH/dpa.output 2>> $OUT_PATH/avr.err
-$p_bin/reach $OUT_PATH $p_bin > $OUT_PATH/reach.output 2>> >(tee -a $OUT_PATH/avr.err >&2)
+
+$p_bin/vwn   $OUT_PATH $p_bin > $OUT_PATH/data/vwn.output 2>> $OUT_PATH/avr.err
+$p_bin/dpa   $OUT_PATH $p_bin > $OUT_PATH/data/dpa.output 2>> $OUT_PATH/avr.err
+$p_bin/reach $OUT_PATH $p_bin > $OUT_PATH/data/reach.output 2>> >(tee -a $OUT_PATH/avr.err >&2)
 avr_exit=$?
 
-tail -n 3 $OUT_PATH/reach.output &> >(tee -a $OUT_PATH/avr.err >&2)
+tail -n 3 $OUT_PATH/data/reach.output &> >(tee -a $OUT_PATH/avr.err >&2)
 echo "" &> >(tee -a $OUT_PATH/avr.err >&2)
 
 exit $avr_exit

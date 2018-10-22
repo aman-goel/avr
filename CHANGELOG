@@ -1,0 +1,26 @@
+List of major changes and improvements between releases
+=======================================================
+
+
+Averroes 2.0.1
+--------------------------
+
+ * API
+    - Removed option --allowinp
+    - Updates to yosys commands
+    - Uses .tcl for interacting with yosys
+    - Adds intermediate data files in folder data
+    
+ * Various
+    - Improvements to extraction, concatenation operation interpretation
+    - Adds abstract commutativity to operations like +, *, bitwise
+    - Automatically trigerring allow_inp lazily
+    - Counterexample printing in file cex.txt
+    - Limits frame summary printing
+    - Many bugfixes and small improvements
+
+ * Experimental
+    - Support for multi-clock domains
+    - Support for .vmt format (requires MathSAT and latest yosys)
+    - Support for .smv format using .smv to .vmt (requires nuXmv)
+ 
