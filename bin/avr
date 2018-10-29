@@ -10,8 +10,9 @@ clk="$7"
 timeMax="$8"
 memMax="$9"
 split="${10}"
-random="${11}"
-verbosity="${12}"
+abGranularity="${11}"
+random="${12}"
+verbosity="${13}"
 
 BM_PATH="$p_dir"
 OUT_DIR="$p_out"
@@ -62,6 +63,9 @@ echo "$memMax" >> $OUT_PATH/fconfig
 echo "split_signals" >> $OUT_PATH/fconfig
 echo "$split" >> $OUT_PATH/fconfig
 
+echo "ab_granularity" >> $OUT_PATH/fconfig
+echo "$abGranularity" >> $OUT_PATH/fconfig
+
 echo "random" >> $OUT_PATH/fconfig
 echo "$random" >> $OUT_PATH/fconfig
 
@@ -102,11 +106,30 @@ $p_yosys/yosys -c $YOSYS_CMD -Q -T -q -q -l $OUT_PATH/yosys.log
 
 
 $p_bin/vwn   $OUT_PATH $p_bin > $OUT_PATH/data/vwn.output 2>> $OUT_PATH/avr.err
+avr_exit=$?
+if [ "$avr_exit" != 0 ]
+then
+	echo "avr parser error (check file data/vwn.output for details), error code: $avr_exit"
+	exit $avr_exit
+fi
+
 $p_bin/dpa   $OUT_PATH $p_bin > $OUT_PATH/data/dpa.output 2>> $OUT_PATH/avr.err
+avr_exit=$?
+if [ "$avr_exit" != 0 ]
+then
+	echo "avr internal error before reachability analysis, error code: $avr_exit"
+	exit $avr_exit
+fi
+
 $p_bin/reach $OUT_PATH $p_bin > $OUT_PATH/data/reach.output 2>> >(tee -a $OUT_PATH/avr.err >&2)
 avr_exit=$?
 
 tail -n 3 $OUT_PATH/data/reach.output &> >(tee -a $OUT_PATH/avr.err >&2)
 echo "" &> >(tee -a $OUT_PATH/avr.err >&2)
+
+if [ "$avr_exit" != 0 ]
+then
+	echo "avr reachability analysis error (check file data/reach.output for details), error code: $avr_exit"
+fi
 
 exit $avr_exit

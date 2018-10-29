@@ -14,7 +14,7 @@ Averroes (avr) -- Abstract VERification of Reachability Of Electronic Systems
 	4. Linux x86_64 based OS with gcc, g++ (for Python API)
 	
 	---------------------------------
-	Limitiations (as of Oct 22, 2018)
+	Limitiations (as of Oct 25, 2018)
 	---------------------------------
 	1. Can only handle safety properties that can be expressed without temporal operators.
 	2. Cannot handle asynchronous flops.
@@ -64,7 +64,7 @@ Averroes (avr) -- Abstract VERification of Reachability Of Electronic Systems
 	└── yosys.log						// yosys log
 
 	As a quick summary relating to the run, avr produces certain key information on stderr.
-	For example, running python avr.py -f examples/cav14_example/cav14_example.v produces the following on stderr.
+	For example, running python avr.py examples/cav14_example/cav14_example.v produces the following on stderr.
 
 	3	: 0	: 0 s: 0                  
 	3	: 1	: 0 1 s: 1                  

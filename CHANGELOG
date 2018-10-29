@@ -2,6 +2,17 @@ List of major changes and improvements between releases
 =======================================================
 
 
+ * API
+    - Changes option --file to positional argument
+    - Adds option --granularity
+    - Auto detect yosys path
+    
+ * Experimental
+    - Support for async flops (as sync flops)
+    - Corrects --split optimization
+    - Corrects assume support
+
+    
 Averroes 2.0.1
 --------------------------
 
