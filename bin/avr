@@ -9,10 +9,13 @@ p_yosys="$6"
 clk="$7"
 timeMax="$8"
 memMax="$9"
-split="${10}"
-abGranularity="${11}"
-random="${12}"
-verbosity="${13}"
+allowMem="${10}"
+split="${11}"
+abGranularity="${12}"
+random="${13}"
+verbosity="${14}"
+propSelect="${15}"
+minInvEffort="${16}"
 
 BM_PATH="$p_dir"
 OUT_DIR="$p_out"
@@ -20,12 +23,11 @@ mkdir -p $OUT_DIR
 
 DEFAULT_TOP="main"
 DEFAULT_CLK="clk"
-DEFAULT_PROP="prop"
 
 AUTOTOP=1
-if [ $# -ge 14 ]
+if [ $# -ge 17 ]
 then
-	top=${14}
+	top=${17}
 	AUTOTOP=0
 else
 	top=$DEFAULT_TOP
@@ -51,9 +53,6 @@ echo $top >> $OUT_PATH/fconfig
 echo "clock_sig" >> $OUT_PATH/fconfig
 echo "$DEFAULT_CLK" >> $OUT_PATH/fconfig
 
-echo "prop_sig" >> $OUT_PATH/fconfig
-echo "$DEFAULT_PROP" >> $OUT_PATH/fconfig
-
 echo "timeout" >> $OUT_PATH/fconfig
 echo "$timeMax" >> $OUT_PATH/fconfig
 
@@ -69,6 +68,15 @@ echo "$abGranularity" >> $OUT_PATH/fconfig
 echo "random" >> $OUT_PATH/fconfig
 echo "$random" >> $OUT_PATH/fconfig
 
+if [ "$propSelect" != "" ]
+then
+	echo "property_select" >> $OUT_PATH/fconfig
+	echo "$propSelect" >> $OUT_PATH/fconfig
+fi
+
+echo "minimize_inv_effort" >> $OUT_PATH/fconfig
+echo "$minInvEffort" >> $OUT_PATH/fconfig
+
 OUT_YOSYS="$bm".ilang
 OUT_VERILOG="$bm"_y.v
 
@@ -76,7 +84,7 @@ YOSYS_CMD=$OUT_PATH/yosys.tcl
 rm -f $YOSYS_CMD
 
 echo "yosys read_verilog -noopt -nolatches -sv $OUT_PATH/$fname;" >> $YOSYS_CMD
-if [ $AUTOTOP ]
+if [ $AUTOTOP -eq 1 ]
 then
 	echo "yosys hierarchy -auto-top;" >> $YOSYS_CMD
 else
@@ -93,9 +101,20 @@ echo "yosys splitnets -driver;" >> $YOSYS_CMD
 echo "yosys clean;" >> $YOSYS_CMD
 echo "yosys pmuxtree;" >> $YOSYS_CMD
 echo "yosys clean;" >> $YOSYS_CMD
-echo "yosys memory;" >> $YOSYS_CMD
+if [ "$allowMem" = "True" ]
+then
+	echo "yosys memory_dff -wr_only;" >> $YOSYS_CMD
+	echo "yosys memory_collect;" >> $YOSYS_CMD
+else
+	echo "yosys memory;" >> $YOSYS_CMD
+fi
 echo "yosys clean;" >> $YOSYS_CMD
 echo "yosys flatten;" >> $YOSYS_CMD
+if [ "$allowMem" = "True" ]
+then
+	echo "yosys clean;" >> $YOSYS_CMD
+	echo "yosys memory_unpack;" >> $YOSYS_CMD
+fi
 echo "yosys clean -purge;" >> $YOSYS_CMD
 echo "yosys setundef -undriven -expose -undef;" >> $YOSYS_CMD
 echo "yosys clean;" >> $YOSYS_CMD

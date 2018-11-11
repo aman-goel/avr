@@ -14,13 +14,13 @@ Averroes (avr) -- Abstract VERification of Reachability Of Electronic Systems
 	4. Linux x86_64 based OS with gcc, g++ (for Python API)
 	
 	---------------------------------
-	Limitiations (as of Oct 25, 2018)
+	Limitiations (as of Oct 31, 2018)
 	---------------------------------
 	1. Can only handle safety properties that can be expressed without temporal operators.
-	2. Cannot handle asynchronous flops.
-	3. Handles memory by simply expanding it using yosys.
-		(customize the bin/avr for special preprocessing using Yosys)
+	2. Handles asynchronous flops as synchronous.
+	3. Handles memory using memory abstraction (experimental).
 	4. avr uses yosys as its frontend and can handle most designs/formats that are supported by yosys.
+		(customize the bin/avr for special preprocessing using Yosys)
 		
 	Please report bugs via email (amangoel@umich.edu) or on github (https://github.com/aman-goel/avr)
 
@@ -80,22 +80,25 @@ Averroes (avr) -- Abstract VERification of Reachability Of Electronic Systems
 		f_*	-> Error / time or memory limit exceeded	(check reach.output for possible more information)
 
 --> Notes
-	a) avr is still in development phase and uses several parameters internally for efficient property checking.
-	   For example, currently # of refinment iterations are limited to 500 so as to identify cases where abstraction is too poor.
-	   Many such parameters can be tuned/corrected, including frontend support via Yosys.
-	b) "prop" and "prop_neg" are reserved keywords in top module. A signal named prop in the top module can be alternatively used
-		to describe the safety property.
-	c) Property description is expected to be present in the top module, and not in submodules.
-	d) Multiple properties are allowed.
-	e) There is also limited support for SystemVerilog concurrent assumptions using assume property ( .. ).
-	f) Use the dot folder to explore visualizations for the transition system
-	g) Initial state conditions collected by avr are listed in parse.results file.
-	h) Currently counterexample (for a violating property) is not presented in a standard format.
-	i) avr also has support for reducing the number of clauses in the inductive invariant produced (disabled by default).
-	j) After proving a property, avr performs a series of checks to ensure correctness of the result (for the interpreted system).
-	k) If Averroes produces an output saying poor abstraction, this can be (sometimes) handled using a new technique we are still working on.
-	l) avr performs best especially for control-centric properties and is almost independent of the bit-width of words in the system.
-	
+    a) avr is still in development phase and uses several parameters internally for efficient property checking.
+       For example, currently # of refinment iterations are limited to 500 so as to identify cases where abstraction is too poor.
+       Many such parameters can be tuned/corrected, including frontend support via Yosys.
+    b) "property" is a reserved keyword.
+    c) Property description is expected to be present in the top module, and not in submodules.
+    d) Multiple properties are allowed. One can select a single property by using option --property <prop-name> in the API.
+       The option tries finding a signal named *<prop-name> in the design as property and discards all other assertions (if a match is found).
+    e) There is also limited support for SystemVerilog concurrent assumptions using assume property ( .. ).
+    f) Use the dot folder to explore visualizations for the transition system
+    g) Initial state conditions collected by avr are listed in parse.results file.
+    h) Currently counterexample (for a violating property) is not presented in a standard format.
+    i) avr also has support for reducing the number of clauses in the inductive invariant produced (disabled by default).
+    j) After proving a property, avr performs a series of checks to ensure correctness of the result (for the interpreted system).
+    k) If Averroes produces an output saying poor abstraction, this can be (sometimes) handled using a new technique we are still working on.
+    l) avr performs best especially for control-centric properties and is almost independent of the bit-width of words in the system.
+    m) Memory abstraction technique is still in development phase.
+    n) Use option --effort_mininv to minimize inductive invariant (in the case property is true).
+       0 (no minimization), 1 (abstract fast), 2 (abstract slow), 3 (concrete fast), 4 (concrete slow).
+
 
 We would be glad to hear from you and help you in case you are having a difficulty in using Averroes.
 Please contact Aman Goel (amangoel@umich.edu) for help/suggestions/modifications or just to share your comments on Averroes!

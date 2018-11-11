@@ -26,6 +26,7 @@ module cav14_example(clk);
 	wire prop = !(Y > X);
 	wire prop_neg = !prop;
 	assert property ( prop );
+	assert property ( Y == X );
 endmodule
 
 

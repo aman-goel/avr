@@ -6,11 +6,18 @@ List of major changes and improvements between releases
     - Changes option --file to positional argument
     - Adds option --granularity
     - Auto detect yosys path
+    - Adds option --memory (in progress)
+    - Adds option --property
+    - Adds option --effort_mininv
     
  * Experimental
     - Support for async flops (as sync flops)
     - Corrects --split optimization
     - Corrects assume support
+    - Adds memory abstraction
+    - Adds option to select a single property
+    - Adds option to minimize inductive invariant
+    - Shifted to Z3 backend for concrete queries
 
     
 Averroes 2.0.1

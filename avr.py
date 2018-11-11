@@ -13,20 +13,24 @@ version=2.0
 
 DEFAULT_BIN="bin"
 DEFAULT_NAME="test"
+DEFAULT_PROP_SELECT="-"
 DEFAULT_OUT="output"
 DEFAULT_YOSYS="yosys"
 DEFAULT_CLK="clk"
 DEFAULT_TIMEOUT=3600
 DEFAULT_MEMOUT=4096
+DEFAULT_MEMORY=False
 DEFAULT_SPLIT=True
 DEFAULT_GRANULARITY=0
 DEFAULT_RANDOM=False
+DEFAULT_EFFORT_MININV=0
 DEFAULT_VERBOSITY=0
 	
 def getopts(header):
 	p = argparse.ArgumentParser(description=str(header), formatter_class=argparse.RawDescriptionHelpFormatter)
 	p.add_argument('file', help='top file name', type=str)
 	p.add_argument('-t', '--top',       help='top module name (default: autodetect)', type=str)
+	p.add_argument('-p', '--property',  help='select single property based on name (default: all asserts)', type=str, default=DEFAULT_PROP_SELECT)
 	p.add_argument('-n', '--name',      help='<test-name> (default: %s)' % DEFAULT_NAME, type=str, default=DEFAULT_NAME)
 	p.add_argument('-o', '--out',       help='<output-path> (default: %s)' % DEFAULT_OUT, type=str, default=DEFAULT_OUT)
 	p.add_argument('-b', '--bin',       help='binary path (default: %s)' % DEFAULT_BIN, type=str, default=DEFAULT_BIN)
@@ -34,9 +38,11 @@ def getopts(header):
 	p.add_argument('--clock',           help='clock signal name (default: %s)' % DEFAULT_CLK, type=str, default=DEFAULT_CLK)
 	p.add_argument('--timeout',         help='timeout (CPU time) in seconds (default: %s)' % DEFAULT_TIMEOUT, type=int, default=DEFAULT_TIMEOUT)
 	p.add_argument('--memout',          help='memory limit in mega bytes (default: %s)' % DEFAULT_MEMOUT, type=int, default=DEFAULT_MEMOUT)
+	p.add_argument('-m', '--memory',     help='toggles using memory abstraction instead of simple expansion (default: %r)' % DEFAULT_MEMORY, action="count", default=0)
 	p.add_argument('-s', '--split',     help='toggles transforming system by splitting variables at extract points (default: %r)' % DEFAULT_SPLIT, action="count", default=0)
 	p.add_argument('-g', '--granularity',help='abstract granularity level (between 0-2) (default: %r)' % DEFAULT_GRANULARITY, type=int, default=DEFAULT_GRANULARITY)
 	p.add_argument('-r', '--random',    help='toggles using random ordering and random seed (default: %r)' % DEFAULT_RANDOM, action="count", default=0)
+	p.add_argument('-e', '--effort_mininv',help='inductive invariant minimization effort when property is proved true (between 0-4) (default: %r)' % DEFAULT_EFFORT_MININV, type=int, default=DEFAULT_EFFORT_MININV)
 	p.add_argument('-v', '--verbosity', help='verbosity level (default: %r)' % DEFAULT_VERBOSITY, type=int, default=DEFAULT_VERBOSITY)
 	args, leftovers = p.parse_known_args()
 	return args, p.parse_args()
@@ -57,11 +63,12 @@ header="""
 	3. Z3      (Copyright (c) 2015 Microsoft Corporation)
 	
 	---------------------------------
-	Limitiations (as of Oct 25, 2018)
+	Limitiations (as of Oct 31, 2018)
 	---------------------------------
 	1. Can only handle safety properties that can be expressed without temporal operators.
-	2. Cannot handle asynchronous flops.
-	3. Handles memory by simply expanding it using Yosys.
+	2. Handles asynchronous flops as synchronous.
+	3. Handles memory using memory abstraction (experimental).
+	4. avr uses yosys as its frontend and can handle most designs/formats that are supported by yosys.
 		(customize the bin/avr for special preprocessing using Yosys)
 		
 	Please report bugs via email (amangoel@umich.edu) or on github (https://github.com/aman-goel/avr)
@@ -109,14 +116,16 @@ def main():
 	command = command + " " + str(opts.timeout)
 	command = command + " " + str(opts.memout)
 
+	memory = DEFAULT_MEMORY
+	if (opts.memory % 2 == 1):
+		memory = not DEFAULT_MEMORY
+	command = command + " " + str(memory)
+	
 	split = DEFAULT_SPLIT
 	if (opts.split % 2 == 1):
 		split = not DEFAULT_SPLIT
 	command = command + " " + str(split)
-		
 	command = command + " " + str(opts.granularity)
-	if known.top is not None:
-		command = command + " " + str(opts.top)
 	
 	random = DEFAULT_RANDOM
 	if (opts.random % 2 == 1):
@@ -124,6 +133,8 @@ def main():
 	command = command + " " + str(random)
 	
 	command = command + " " + str(opts.verbosity)
+	command = command + " " + opts.property
+	command = command + " " + str(opts.effort_mininv)
 	if known.top is not None:
 		command = command + " " + str(opts.top)
 		
