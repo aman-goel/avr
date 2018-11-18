@@ -10,14 +10,18 @@ List of major changes and improvements between releases
     - Adds option --property
     - Adds option --effort_mininv
     
- * Experimental
+ * Various
     - Support for async flops (as sync flops)
-    - Corrects --split optimization
-    - Corrects assume support
-    - Adds memory abstraction
     - Adds option to select a single property
     - Adds option to minimize inductive invariant
+    - Corrects --split optimization
+    - Corrects assume support
     - Shifted to Z3 backend for concrete queries
+    - Changes to abstract queries
+    - Changes to symbolic learning
+    
+ * Experimental
+    - Adds memory abstraction
 
     
 Averroes 2.0.1
