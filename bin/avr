@@ -24,6 +24,12 @@ mkdir -p $OUT_DIR
 DEFAULT_TOP="main"
 DEFAULT_CLK="clk"
 
+AUTOOPT=1
+if [ "$propSelect" != "-" ]
+then
+	AUTOOPT=0
+fi
+
 AUTOTOP=1
 if [ $# -ge 17 ]
 then
@@ -68,7 +74,7 @@ echo "$abGranularity" >> $OUT_PATH/fconfig
 echo "random" >> $OUT_PATH/fconfig
 echo "$random" >> $OUT_PATH/fconfig
 
-if [ "$propSelect" != "" ]
+if [ "$propSelect" != "-" ]
 then
 	echo "property_select" >> $OUT_PATH/fconfig
 	echo "$propSelect" >> $OUT_PATH/fconfig
@@ -96,11 +102,20 @@ echo "yosys rename -top $top;" >> $YOSYS_CMD
 echo "yosys delete -output $top;" >> $YOSYS_CMD
 echo "yosys expose $top/"prop_neg";" >> $YOSYS_CMD
 echo "yosys proc;" >> $YOSYS_CMD
-echo "yosys clean;" >> $YOSYS_CMD
+if [ $AUTOOPT -eq 1 ]
+then
+	echo "yosys clean;" >> $YOSYS_CMD
+fi
 echo "yosys splitnets -driver;" >> $YOSYS_CMD
-echo "yosys clean;" >> $YOSYS_CMD
+if [ $AUTOOPT -eq 1 ]
+then
+	echo "yosys clean;" >> $YOSYS_CMD
+fi
 echo "yosys pmuxtree;" >> $YOSYS_CMD
-echo "yosys clean;" >> $YOSYS_CMD
+if [ $AUTOOPT -eq 1 ]
+then
+	echo "yosys clean;" >> $YOSYS_CMD
+fi
 if [ "$allowMem" = "True" ]
 then
 	echo "yosys memory_dff -wr_only;" >> $YOSYS_CMD
@@ -108,16 +123,28 @@ then
 else
 	echo "yosys memory;" >> $YOSYS_CMD
 fi
-echo "yosys clean;" >> $YOSYS_CMD
+if [ $AUTOOPT -eq 1 ]
+then
+	echo "yosys clean;" >> $YOSYS_CMD
+fi
 echo "yosys flatten;" >> $YOSYS_CMD
 if [ "$allowMem" = "True" ]
 then
-	echo "yosys clean;" >> $YOSYS_CMD
+	if [ $AUTOOPT -eq 1 ]
+	then
+		echo "yosys clean;" >> $YOSYS_CMD
+	fi
 	echo "yosys memory_unpack;" >> $YOSYS_CMD
 fi
-echo "yosys clean -purge;" >> $YOSYS_CMD
+if [ $AUTOOPT -eq 1 ]
+then
+	echo "yosys clean -purge;" >> $YOSYS_CMD
+fi
 echo "yosys setundef -undriven -expose -undef;" >> $YOSYS_CMD
-echo "yosys clean;" >> $YOSYS_CMD
+if [ $AUTOOPT -eq 1 ]
+then
+	echo "yosys clean;" >> $YOSYS_CMD
+fi
 echo "yosys check;" >> $YOSYS_CMD
 echo "yosys write_ilang $OUT_PATH/$OUT_YOSYS;" >> $YOSYS_CMD
 echo "yosys write_verilog -attr2comment $OUT_PATH/$OUT_VERILOG;" >> $YOSYS_CMD
