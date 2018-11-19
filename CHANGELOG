@@ -9,6 +9,7 @@ List of major changes and improvements between releases
     - Adds option --memory (in progress)
     - Adds option --property
     - Adds option --effort_mininv
+    - Adds printing property info to cerr
     
  * Various
     - Support for async flops (as sync flops)

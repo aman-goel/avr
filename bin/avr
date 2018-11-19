@@ -151,7 +151,7 @@ echo "yosys write_verilog -attr2comment $OUT_PATH/$OUT_VERILOG;" >> $YOSYS_CMD
 $p_yosys/yosys -c $YOSYS_CMD -Q -T -q -q -l $OUT_PATH/yosys.log
 
 
-$p_bin/vwn   $OUT_PATH $p_bin > $OUT_PATH/data/vwn.output 2>> $OUT_PATH/avr.err
+$p_bin/vwn   $OUT_PATH $p_bin > $OUT_PATH/data/vwn.output 2>> >(tee -a $OUT_PATH/avr.err >&2)
 avr_exit=$?
 if [ "$avr_exit" != 0 ]
 then
@@ -159,7 +159,7 @@ then
 	exit $avr_exit
 fi
 
-$p_bin/dpa   $OUT_PATH $p_bin > $OUT_PATH/data/dpa.output 2>> $OUT_PATH/avr.err
+$p_bin/dpa   $OUT_PATH $p_bin > $OUT_PATH/data/dpa.output 2>> >(tee -a $OUT_PATH/avr.err >&2)
 avr_exit=$?
 if [ "$avr_exit" != 0 ]
 then
