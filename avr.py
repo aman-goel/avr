@@ -14,6 +14,7 @@ version=2.0
 DEFAULT_BIN="bin"
 DEFAULT_NAME="test"
 DEFAULT_PROP_SELECT="-"
+DEFAULT_INIT_FILE="-"
 DEFAULT_OUT="output"
 DEFAULT_YOSYS="yosys"
 DEFAULT_CLK="clk"
@@ -31,6 +32,7 @@ def getopts(header):
 	p.add_argument('file', help='top file name', type=str)
 	p.add_argument('-t', '--top',       help='top module name (default: autodetect)', type=str)
 	p.add_argument('-p', '--property',  help='select single property based on name (default: all asserts)', type=str, default=DEFAULT_PROP_SELECT)
+	p.add_argument('-i', '--init',  help='init file for initial state (default: initial block)', type=str, default=DEFAULT_INIT_FILE)
 	p.add_argument('-n', '--name',      help='<test-name> (default: %s)' % DEFAULT_NAME, type=str, default=DEFAULT_NAME)
 	p.add_argument('-o', '--out',       help='<output-path> (default: %s)' % DEFAULT_OUT, type=str, default=DEFAULT_OUT)
 	p.add_argument('-b', '--bin',       help='binary path (default: %s)' % DEFAULT_BIN, type=str, default=DEFAULT_BIN)
@@ -135,6 +137,7 @@ def main():
 	command = command + " " + str(opts.verbosity)
 	command = command + " " + opts.property
 	command = command + " " + str(opts.effort_mininv)
+	command = command + " " + opts.init
 	if known.top is not None:
 		command = command + " " + str(opts.top)
 		

@@ -10,6 +10,7 @@ List of major changes and improvements between releases
     - Adds option --property
     - Adds option --effort_mininv
     - Adds printing property info to cerr
+    - Adds option --init to read init state from a file
     
  * Various
     - Support for async flops (as sync flops)
@@ -24,8 +25,12 @@ List of major changes and improvements between releases
  * Experimental
     - Adds memory abstraction
     - Adds support for global connect (as buffer) for .ilang
+    - Adds unique clock identification procedure for .ilang
 
-    
+ * Notes
+    - Option --init uses pattern matching (hence can go wrong)
+    - Option --init cannot handle partial register assignment
+
 Averroes 2.0.1
 --------------------------
 

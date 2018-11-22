@@ -16,6 +16,7 @@ random="${13}"
 verbosity="${14}"
 propSelect="${15}"
 minInvEffort="${16}"
+initFile="${17}"
 
 BM_PATH="$p_dir"
 OUT_DIR="$p_out"
@@ -29,11 +30,15 @@ if [ "$propSelect" != "-" ]
 then
 	AUTOOPT=0
 fi
+if [ "$initFile" != "-" ]
+then
+	AUTOOPT=0
+fi
 
 AUTOTOP=1
-if [ $# -ge 17 ]
+if [ $# -ge 18 ]
 then
-	top=${17}
+	top=${18}
 	AUTOTOP=0
 else
 	top=$DEFAULT_TOP
@@ -82,6 +87,12 @@ fi
 
 echo "minimize_inv_effort" >> $OUT_PATH/fconfig
 echo "$minInvEffort" >> $OUT_PATH/fconfig
+
+if [ "$initFile" != "-" ]
+then
+	echo "init_file" >> $OUT_PATH/fconfig
+	echo "$initFile" >> $OUT_PATH/fconfig
+fi
 
 OUT_YOSYS="$bm".ilang
 OUT_VERILOG="$bm"_y.v
