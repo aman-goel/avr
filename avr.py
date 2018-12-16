@@ -11,6 +11,7 @@ import re
 
 version=2.0
 
+DEFAULT_TOP="-"
 DEFAULT_BIN="bin"
 DEFAULT_NAME="test"
 DEFAULT_PROP_SELECT="-"
@@ -26,20 +27,24 @@ DEFAULT_GRANULARITY=0
 DEFAULT_RANDOM=False
 DEFAULT_EFFORT_MININV=0
 DEFAULT_VERBOSITY=0
-	
+DEFAULT_EN_VMT=False
+DEFAULT_ABTYPE="sa+uf"
+
 def getopts(header):
 	p = argparse.ArgumentParser(description=str(header), formatter_class=argparse.RawDescriptionHelpFormatter)
 	p.add_argument('file', help='top file name', type=str)
-	p.add_argument('-t', '--top',       help='top module name (default: autodetect)', type=str)
+	p.add_argument('-t', '--top',       help='top module name (default: autodetect)', type=str, default=DEFAULT_TOP)
 	p.add_argument('-p', '--property',  help='select single property based on name (default: all asserts)', type=str, default=DEFAULT_PROP_SELECT)
 	p.add_argument('-i', '--init',  help='init file for initial state (default: initial block)', type=str, default=DEFAULT_INIT_FILE)
 	p.add_argument('-n', '--name',      help='<test-name> (default: %s)' % DEFAULT_NAME, type=str, default=DEFAULT_NAME)
 	p.add_argument('-o', '--out',       help='<output-path> (default: %s)' % DEFAULT_OUT, type=str, default=DEFAULT_OUT)
 	p.add_argument('-b', '--bin',       help='binary path (default: %s)' % DEFAULT_BIN, type=str, default=DEFAULT_BIN)
 	p.add_argument('-y', '--yosys',     help='path to yosys installation (default: %s)' % DEFAULT_YOSYS, type=str, default=DEFAULT_YOSYS)
+	p.add_argument('--vmt',             help='toggles using vmt frontend (default: %s)' % DEFAULT_EN_VMT, action="count", default=0)
 	p.add_argument('--clock',           help='clock signal name (default: %s)' % DEFAULT_CLK, type=str, default=DEFAULT_CLK)
 	p.add_argument('--timeout',         help='timeout (CPU time) in seconds (default: %s)' % DEFAULT_TIMEOUT, type=int, default=DEFAULT_TIMEOUT)
 	p.add_argument('--memout',          help='memory limit in mega bytes (default: %s)' % DEFAULT_MEMOUT, type=int, default=DEFAULT_MEMOUT)
+	p.add_argument('-a', '--abstract',  help='abstraction type (options: sa, sa+uf) (default: %s)' % DEFAULT_ABTYPE, type=str, default=DEFAULT_ABTYPE)
 	p.add_argument('-m', '--memory',     help='toggles using memory abstraction instead of simple expansion (default: %r)' % DEFAULT_MEMORY, action="count", default=0)
 	p.add_argument('-s', '--split',     help='toggles transforming system by splitting variables at extract points (default: %r)' % DEFAULT_SPLIT, action="count", default=0)
 	p.add_argument('-g', '--granularity',help='abstract granularity level (between 0-2) (default: %r)' % DEFAULT_GRANULARITY, type=int, default=DEFAULT_GRANULARITY)
@@ -60,19 +65,21 @@ header="""
 	------------
 	Dependencies
 	------------
-	1. Yosys   (Copyright (C) 2018 Clifford Wolf <clifford@clifford.at>)
-	2. Yices 2 (Copyright (C) 2017 SRI International)
-	3. Z3      (Copyright (c) 2015 Microsoft Corporation)
+	1. Yosys    (Copyright (C) 2018 Clifford Wolf <clifford@clifford.at>)
+	2. Yices 2  (Copyright (C) 2017 SRI International)
+	3. Z3       (Copyright (c) 2015 Microsoft Corporation)
+	4. MathSAT5 (Copyright (c) 2018 Fondazione Bruno Kessler, Italy)
 	
 	---------------------------------
-	Limitiations (as of Oct 31, 2018)
+	Limitiations (as of Dec 11, 2018)
 	---------------------------------
 	1. Can only handle safety properties that can be expressed without temporal operators.
 	2. Handles asynchronous flops as synchronous.
 	3. Handles memory using memory abstraction (experimental).
 	4. avr uses yosys as its frontend and can handle most designs/formats that are supported by yosys.
 		(customize the bin/avr for special preprocessing using Yosys)
-		
+	5. Limited support for .vmt frontend (limited to QF_BV with simple transition relation).
+
 	Please report bugs via email (amangoel@umich.edu) or on github (https://github.com/aman-goel/avr)
 	
 """
@@ -98,10 +105,10 @@ def main():
 		raise Exception("avr: reach binary not found")
 	if not os.path.isfile(opts.yosys + "/yosys"):
 		if not os.path.isfile("/usr/local/bin/yosys"):
-			raise Exception("Please install Yosys using build.sh (or from https://github.com/aman-goel/yosys)")
+			raise Exception("Please install yosys using build.sh")
 		else:
 			opts.yosys = "/usr/local/bin"
-			print("\tfound Yosys in /usr/local/bin")
+			print("\tfound yosys in /usr/local/bin")
 	if not os.path.isfile(opts.file):
 		raise Exception("Unable to find top file: %s" % opts.file)
 	
@@ -109,6 +116,7 @@ def main():
 	command = ""
 	command = command + "./" + opts.bin + "/avr"
 	command = command + " " + f
+	command = command + " " + str(opts.top)
 	command = command + " " + path
 	command = command + " " + opts.name
 	command = command + " " + opts.out
@@ -138,8 +146,12 @@ def main():
 	command = command + " " + opts.property
 	command = command + " " + str(opts.effort_mininv)
 	command = command + " " + opts.init
-	if known.top is not None:
-		command = command + " " + str(opts.top)
+	
+	en_vmt = DEFAULT_EN_VMT
+	if (opts.vmt % 2 == 1):
+		en_vmt = not DEFAULT_EN_VMT
+	command = command + " " + str(en_vmt)
+	command = command + " " + str(opts.abstract)
 		
 	s = subprocess.call( command, shell=True)
 	if (s != 0):

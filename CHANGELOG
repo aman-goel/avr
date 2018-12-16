@@ -11,6 +11,8 @@ List of major changes and improvements between releases
     - Adds option --effort_mininv
     - Adds printing property info to cerr
     - Adds option --init to read init state from a file
+    - Adds option --vmt to read .vmt file (limited)
+    - Adds option --abstract to configure abstraction
     
  * Various
     - Support for async flops (as sync flops)
@@ -26,6 +28,8 @@ List of major changes and improvements between releases
     - Adds memory abstraction
     - Adds support for global connect (as buffer) for .ilang
     - Adds unique clock identification procedure for .ilang
+    - Adds .vmt frontend (limited to QF_BV and simple transition systems)
+    - Option --abstract is experimental
 
  * Notes
     - Option --init uses pattern matching (hence can go wrong)

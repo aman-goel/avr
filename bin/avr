@@ -1,22 +1,25 @@
 #!/bin/bash
 
 fname="$1"
-p_dir="$2"
-bm="$3"
-p_out="$4"
-p_bin="$5"
-p_yosys="$6"
-clk="$7"
-timeMax="$8"
-memMax="$9"
-allowMem="${10}"
-split="${11}"
-abGranularity="${12}"
-random="${13}"
-verbosity="${14}"
-propSelect="${15}"
-minInvEffort="${16}"
-initFile="${17}"
+top="$2"
+p_dir="$3"
+bm="$4"
+p_out="$5"
+p_bin="$6"
+p_yosys="$7"
+clk="$8"
+timeMax="$9"
+memMax="${10}"
+allowMem="${11}"
+split="${12}"
+abGranularity="${13}"
+random="${14}"
+verbosity="${15}"
+propSelect="${16}"
+minInvEffort="${17}"
+initFile="${18}"
+enVmt="${19}"
+abType="${20}"
 
 BM_PATH="$p_dir"
 OUT_DIR="$p_out"
@@ -24,8 +27,10 @@ mkdir -p $OUT_DIR
 
 DEFAULT_TOP="main"
 DEFAULT_CLK="clk"
-
+run_yosys="true"
 AUTOOPT=1
+AUTOTOP=1
+
 if [ "$propSelect" != "-" ]
 then
 	AUTOOPT=0
@@ -34,12 +39,9 @@ if [ "$initFile" != "-" ]
 then
 	AUTOOPT=0
 fi
-
-AUTOTOP=1
-if [ $# -ge 18 ]
+if [ "$top" != "-" ]
 then
-	top=${18}
-	AUTOTOP=0
+	AUTOOPT=0
 else
 	top=$DEFAULT_TOP
 fi
@@ -70,6 +72,9 @@ echo "$timeMax" >> $OUT_PATH/fconfig
 echo "memory_limit" >> $OUT_PATH/fconfig
 echo "$memMax" >> $OUT_PATH/fconfig
 
+echo "abstraction_type" >> $OUT_PATH/fconfig
+echo "$abType" >> $OUT_PATH/fconfig
+
 echo "split_signals" >> $OUT_PATH/fconfig
 echo "$split" >> $OUT_PATH/fconfig
 
@@ -93,6 +98,20 @@ then
 	echo "init_file" >> $OUT_PATH/fconfig
 	echo "$initFile" >> $OUT_PATH/fconfig
 fi
+
+if [ "$enVmt" == "True" ]
+then
+	echo "frontend" >> $OUT_PATH/fconfig
+	echo "vmt" >> $OUT_PATH/fconfig
+	
+	OUT_VMT="$bm".vmt
+	mv $OUT_PATH/$fname $OUT_PATH/$OUT_VMT
+	run_yosys="false"
+fi
+
+
+if [ "$run_yosys" = "true" ]
+then
 
 OUT_YOSYS="$bm".ilang
 OUT_VERILOG="$bm"_y.v
@@ -161,6 +180,7 @@ echo "yosys write_ilang $OUT_PATH/$OUT_YOSYS;" >> $YOSYS_CMD
 echo "yosys write_verilog -attr2comment $OUT_PATH/$OUT_VERILOG;" >> $YOSYS_CMD
 $p_yosys/yosys -c $YOSYS_CMD -Q -T -q -q -l $OUT_PATH/yosys.log
 
+fi
 
 $p_bin/vwn   $OUT_PATH $p_bin > $OUT_PATH/data/vwn.output 2>> >(tee -a $OUT_PATH/avr.err >&2)
 avr_exit=$?
