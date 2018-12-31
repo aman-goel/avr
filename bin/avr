@@ -107,6 +107,9 @@ then
 	OUT_VMT="$bm".vmt
 	mv $OUT_PATH/$fname $OUT_PATH/$OUT_VMT
 	run_yosys="false"
+else
+	echo "frontend" >> $OUT_PATH/fconfig
+	echo "yosys" >> $OUT_PATH/fconfig
 fi
 
 

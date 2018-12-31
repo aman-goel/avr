@@ -2,6 +2,9 @@ List of major changes and improvements between releases
 =======================================================
 
 
+Averroes 2.0.2
+--------------------------
+
  * API
     - Changes option --file to positional argument
     - Adds option --granularity
@@ -23,12 +26,13 @@ List of major changes and improvements between releases
     - Shifted to Z3 backend for concrete queries
     - Changes to abstract queries
     - Changes to symbolic learning
+    - Improved generalization and refinement
     
  * Experimental
     - Adds memory abstraction
     - Adds support for global connect (as buffer) for .ilang
     - Adds unique clock identification procedure for .ilang
-    - Adds .vmt frontend (limited to QF_BV and simple transition systems)
+    - Adds .vmt frontend (limited to QF_BV)
     - Option --abstract is experimental
 
  * Notes

@@ -71,14 +71,14 @@ header="""
 	4. MathSAT5 (Copyright (c) 2018 Fondazione Bruno Kessler, Italy)
 	
 	---------------------------------
-	Limitiations (as of Dec 11, 2018)
+	Limitiations (as of Dec 31, 2018)
 	---------------------------------
 	1. Can only handle safety properties that can be expressed without temporal operators.
 	2. Handles asynchronous flops as synchronous.
 	3. Handles memory using memory abstraction (experimental).
 	4. avr uses yosys as its frontend and can handle most designs/formats that are supported by yosys.
 		(customize the bin/avr for special preprocessing using Yosys)
-	5. Limited support for .vmt frontend (limited to QF_BV with simple transition relation).
+	5. Limited support for .vmt frontend (limited to QF_BV).
 
 	Please report bugs via email (amangoel@umich.edu) or on github (https://github.com/aman-goel/avr)
 	
@@ -108,7 +108,7 @@ def main():
 			raise Exception("Please install yosys using build.sh")
 		else:
 			opts.yosys = "/usr/local/bin"
-			print("\tfound yosys in /usr/local/bin")
+			print("\t(found yosys in /usr/local/bin)")
 	if not os.path.isfile(opts.file):
 		raise Exception("Unable to find top file: %s" % opts.file)
 	
