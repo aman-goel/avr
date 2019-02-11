@@ -60,31 +60,31 @@ header="""
 	Reads a Verilog file and performs property checking using syntactic data abstraction.
 		supports SystemVerilog concurrent assertions
 
-	Copyright (C) 2018  Aman Goel <amangoel@umich.edu> and Karem A. Sakallah <karem@umich.edu>, University of Michigan
+	Copyright (C) 2019  Aman Goel <amangoel@umich.edu> and Karem A. Sakallah <karem@umich.edu>, University of Michigan
 	
 	------------
 	Dependencies
 	------------
-	1. Yosys    (Copyright (C) 2018 Clifford Wolf <clifford@clifford.at>)
-	2. Yices 2  (Copyright (C) 2017 SRI International)
-	3. Z3       (Copyright (c) 2015 Microsoft Corporation)
-	4. MathSAT5 (Copyright (c) 2018 Fondazione Bruno Kessler, Italy)
+	1. Yosys    (Copyright (C) 2019 Clifford Wolf <clifford@clifford.at>)
+	2. Yices 2  (Copyright (C) 2019 SRI International)
+	3. Z3       (Copyright (c) 2019 Microsoft Corporation)
+	4. MathSAT5 (Copyright (c) 2019 Fondazione Bruno Kessler, Italy)
 	
 	---------------------------------
-	Limitiations (as of Dec 31, 2018)
+	Limitiations (as of Feb 11, 2019)
 	---------------------------------
 	1. Can only handle safety properties that can be expressed without temporal operators.
 	2. Handles asynchronous flops as synchronous.
 	3. Handles memory using memory abstraction (experimental).
 	4. avr uses yosys as its frontend and can handle most designs/formats that are supported by yosys.
 		(customize the bin/avr for special preprocessing using Yosys)
-	5. Limited support for .vmt frontend (limited to QF_BV).
+	5. Support for .vmt frontend is limited.
 
 	Please report bugs via email (amangoel@umich.edu) or on github (https://github.com/aman-goel/avr)
 	
 """
 
-short_header="""Averroes v""" + str(version) + """\tCopyright (c) 2018  Aman Goel and Karem A. Sakallah, University of Michigan"""
+short_header="""Averroes v""" + str(version) + """\tCopyright (C) 2019  Aman Goel and Karem A. Sakallah, University of Michigan"""
 
 def split_path(name):
 	head, tail = ntpath.split(name)

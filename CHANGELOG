@@ -2,6 +2,14 @@ List of major changes and improvements between releases
 =======================================================
 
 
+Averroes 2.0.3
+--------------------------
+
+ * Various
+    - Shifted to yices2 backend for all queries
+    - Corrections and improvements to refinement
+    - Extended support for vmt frontend (QF bitvectors + linear integer arithmetic + arrays)
+    
 Averroes 2.0.2
 --------------------------
 
