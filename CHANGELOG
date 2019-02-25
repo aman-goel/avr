@@ -2,6 +2,26 @@ List of major changes and improvements between releases
 =======================================================
 
 
+Averroes 2.0.4
+--------------------------
+(25 Feb 2019)
+ 
+ * API
+    - Changes default for option --abstract to sa (instead of sa+uf)
+    
+ * Backend
+    - Corrections to Yices 2 backend
+    - Updates MathSAT to v5.5.4
+    - Upgrades to MathSAT backend
+    - Shifted to MathSAT backend for all queries
+    
+ * Various
+    - Adds learning from intitial state formula
+    - Improved cube formation for integers/arrays
+    
+ * Notes
+    - sa+uf (using option -a) is experimental only with MathSAT backend
+
 Averroes 2.0.3
 --------------------------
 

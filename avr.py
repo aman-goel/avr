@@ -28,7 +28,7 @@ DEFAULT_RANDOM=False
 DEFAULT_EFFORT_MININV=0
 DEFAULT_VERBOSITY=0
 DEFAULT_EN_VMT=False
-DEFAULT_ABTYPE="sa+uf"
+DEFAULT_ABTYPE="sa"
 
 def getopts(header):
 	p = argparse.ArgumentParser(description=str(header), formatter_class=argparse.RawDescriptionHelpFormatter)
