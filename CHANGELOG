@@ -2,6 +2,18 @@ List of major changes and improvements between releases
 =======================================================
 
 
+Averroes 2.0.5
+--------------------------
+(08 Mar 2019)
+ 
+ * Backend
+    - Corrections to all backends
+    - Shifted to Yices backend for all queries
+    
+ * Various
+    - Improves vmt parsing
+    - Changes to stats printing
+
 Averroes 2.0.4
 --------------------------
 (25 Feb 2019)
