@@ -2,6 +2,17 @@ List of major changes and improvements between releases
 =======================================================
 
 
+Averroes 2.0.6
+--------------------------
+(11 Mar 2019)
+ 
+ * Core
+    - Changes to data structures for improved performance
+    - Improved learning from initial formula
+    
+ * Various
+    - Improves subsumption checking
+
 Averroes 2.0.5
 --------------------------
 (08 Mar 2019)
