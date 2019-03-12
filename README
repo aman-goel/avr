@@ -101,6 +101,8 @@ Averroes (avr) -- Abstract VERification of Reachability Of Electronic Systems
        supported theories: quantifier-free bit-vectors, linear integer arithmetic and arrays.
     o) Use --abstract to enable/disable data abstraction.
 	   sa (no data abstraction, QF_BV), sa+uf (data abstraction, QF_UF)
+    p) Use --granularity to configure abstract granularity level
+       0 (lowest), 1 (also allow BV equaltity), 2 (also allow INT equaltity), 3 (also allow mixed), 4 (also allow input).
 
 
 We would be glad to hear from you and help you in case you are having a difficulty in using Averroes.
