@@ -2,6 +2,17 @@ List of major changes and improvements between releases
 =======================================================
 
 
+Averroes 2.0.8
+--------------------------
+(03 Apr 2019)
+ 
+ * Various
+    - Minor modifications to vmt frontend
+    
+ * Experimental
+    - Config changes for I4
+    - Printing of inductive invariant in smt2 format
+
 Averroes 2.0.7
 --------------------------
 (12 Mar 2019)
