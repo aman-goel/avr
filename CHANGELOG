@@ -2,6 +2,13 @@ List of major changes and improvements between releases
 =======================================================
 
 
+Averroes 2.0.9
+--------------------------
+(08 Apr 2019)
+ 
+ * Various
+    - Changes to printing of inductive invariant in smt2 format
+
 Averroes 2.0.8
 --------------------------
 (03 Apr 2019)
