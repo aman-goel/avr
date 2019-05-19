@@ -23,11 +23,12 @@ DEFAULT_TIMEOUT=3600
 DEFAULT_MEMOUT=4096
 DEFAULT_MEMORY=False
 DEFAULT_SPLIT=True
-DEFAULT_GRANULARITY=0
+DEFAULT_GRANULARITY=1
 DEFAULT_RANDOM=False
 DEFAULT_EFFORT_MININV=0
 DEFAULT_VERBOSITY=0
 DEFAULT_EN_VMT=False
+DEFAULT_EN_JG=False
 DEFAULT_ABTYPE="sa+uf"
 
 def getopts(header):
@@ -41,13 +42,14 @@ def getopts(header):
 	p.add_argument('-b', '--bin',       help='binary path (default: %s)' % DEFAULT_BIN, type=str, default=DEFAULT_BIN)
 	p.add_argument('-y', '--yosys',     help='path to yosys installation (default: %s)' % DEFAULT_YOSYS, type=str, default=DEFAULT_YOSYS)
 	p.add_argument('--vmt',             help='toggles using vmt frontend (default: %s)' % DEFAULT_EN_VMT, action="count", default=0)
+	p.add_argument('-j', '--jg',        help='toggles using jg frontend (default: %s)' % DEFAULT_EN_JG, action="count", default=0)
 	p.add_argument('--clock',           help='clock signal name (default: %s)' % DEFAULT_CLK, type=str, default=DEFAULT_CLK)
 	p.add_argument('--timeout',         help='timeout (CPU time) in seconds (default: %s)' % DEFAULT_TIMEOUT, type=int, default=DEFAULT_TIMEOUT)
 	p.add_argument('--memout',          help='memory limit in mega bytes (default: %s)' % DEFAULT_MEMOUT, type=int, default=DEFAULT_MEMOUT)
 	p.add_argument('-a', '--abstract',  help='abstraction type (options: sa, sa+uf) (default: %s)' % DEFAULT_ABTYPE, type=str, default=DEFAULT_ABTYPE)
 	p.add_argument('-m', '--memory',     help='toggles using memory abstraction instead of simple expansion (default: %r)' % DEFAULT_MEMORY, action="count", default=0)
 	p.add_argument('-s', '--split',     help='toggles transforming system by splitting variables at extract points (default: %r)' % DEFAULT_SPLIT, action="count", default=0)
-	p.add_argument('-g', '--granularity',help='abstract granularity level (between 0-2) (default: %r)' % DEFAULT_GRANULARITY, type=int, default=DEFAULT_GRANULARITY)
+	p.add_argument('-g', '--granularity',help='abstract granularity level (between 0-4) (default: %r)' % DEFAULT_GRANULARITY, type=int, default=DEFAULT_GRANULARITY)
 	p.add_argument('-r', '--random',    help='toggles using random ordering and random seed (default: %r)' % DEFAULT_RANDOM, action="count", default=0)
 	p.add_argument('-e', '--effort_mininv',help='inductive invariant minimization effort when property is proved true (between 0-4) (default: %r)' % DEFAULT_EFFORT_MININV, type=int, default=DEFAULT_EFFORT_MININV)
 	p.add_argument('-v', '--verbosity', help='verbosity level (default: %r)' % DEFAULT_VERBOSITY, type=int, default=DEFAULT_VERBOSITY)
@@ -60,31 +62,37 @@ header="""
 	Reads a Verilog file and performs property checking using syntactic data abstraction.
 		supports SystemVerilog concurrent assertions
 
-	Copyright (C) 2018  Aman Goel <amangoel@umich.edu> and Karem A. Sakallah <karem@umich.edu>, University of Michigan
+	Copyright (C) 2019  Aman Goel <amangoel@umich.edu> and Karem A. Sakallah <karem@umich.edu>, University of Michigan
 	
+	---------------------------------
+	NEW (May 19, 2019)
+	---------------------------------
+	1. New frontend for direct interface with JasperGold (Copyright (C) 2007-Present Cadence Design Systems, Inc.).
+
 	------------
 	Dependencies
 	------------
-	1. Yosys    (Copyright (C) 2018 Clifford Wolf <clifford@clifford.at>)
-	2. Yices 2  (Copyright (C) 2017 SRI International)
-	3. Z3       (Copyright (c) 2015 Microsoft Corporation)
-	4. MathSAT5 (Copyright (c) 2018 Fondazione Bruno Kessler, Italy)
+	1. Yosys    (Copyright (C) 2019 Clifford Wolf <clifford@clifford.at>)
+	2. Yices 2  (Copyright (C) 2019 SRI International)
+	3. Z3       (Copyright (c) 2019 Microsoft Corporation)
+	4. MathSAT5 (Copyright (c) 2019 Fondazione Bruno Kessler, Italy)
 	
 	---------------------------------
-	Limitiations (as of Dec 11, 2018)
+	Limitiations (as of May 15, 2019)
 	---------------------------------
 	1. Can only handle safety properties that can be expressed without temporal operators.
 	2. Handles asynchronous flops as synchronous.
 	3. Handles memory using memory abstraction (experimental).
 	4. avr uses yosys as its frontend and can handle most designs/formats that are supported by yosys.
 		(customize the bin/avr for special preprocessing using Yosys)
-	5. Limited support for .vmt frontend (limited to QF_BV with simple transition relation).
+	5. Support for vmt frontend is limited.
+	6. Support for jg frontend is limited.
 
-	Please report bugs via email (amangoel@umich.edu) or on github (https://github.com/aman-goel/avr)
+	Please report bugs and share your usage experience via email (amangoel@umich.edu) or on github (https://github.com/aman-goel/avr)
 	
 """
 
-short_header="""Averroes v""" + str(version) + """\tCopyright (c) 2018  Aman Goel and Karem A. Sakallah, University of Michigan"""
+short_header="""Averroes v""" + str(version) + """\tCopyright (C) 2019  Aman Goel and Karem A. Sakallah, University of Michigan"""
 
 def split_path(name):
 	head, tail = ntpath.split(name)
@@ -103,14 +111,29 @@ def main():
 		raise Exception("avr: dpa binary not found")
 	if not os.path.isfile(opts.bin + "/reach"):
 		raise Exception("avr: reach binary not found")
-	if not os.path.isfile(opts.yosys + "/yosys"):
-		if not os.path.isfile("/usr/local/bin/yosys"):
-			raise Exception("Please install yosys using build.sh")
-		else:
-			opts.yosys = "/usr/local/bin"
-			print("\tfound yosys in /usr/local/bin")
 	if not os.path.isfile(opts.file):
 		raise Exception("Unable to find top file: %s" % opts.file)
+
+	en_vmt = DEFAULT_EN_VMT
+	if (opts.vmt % 2 == 1):
+		en_vmt = not DEFAULT_EN_VMT
+	en_jg  = DEFAULT_EN_JG
+	if (opts.jg % 2 == 1):
+		en_jg = not DEFAULT_EN_JG
+
+	if (en_jg):
+		print("\t(frontend: jg)")
+		en_vmt = False
+	elif en_vmt:
+		print("\t(frontend: vmt)")
+	else:
+		print("\t(frontend: yosys)")
+		if not os.path.isfile(opts.yosys + "/yosys"):
+			if not os.path.isfile("/usr/local/bin/yosys"):
+				raise Exception("Please install yosys using build.sh")
+			else:
+				opts.yosys = "/usr/local/bin"
+				print("\t(found yosys in /usr/local/bin)")
 	
 	path, f = split_path(opts.file)
 	command = ""
@@ -147,12 +170,10 @@ def main():
 	command = command + " " + str(opts.effort_mininv)
 	command = command + " " + opts.init
 	
-	en_vmt = DEFAULT_EN_VMT
-	if (opts.vmt % 2 == 1):
-		en_vmt = not DEFAULT_EN_VMT
 	command = command + " " + str(en_vmt)
 	command = command + " " + str(opts.abstract)
-		
+	command = command + " " + str(en_jg)
+	
 	s = subprocess.call( command, shell=True)
 	if (s != 0):
 		raise Exception("avr ERROR: return code %d" % s)

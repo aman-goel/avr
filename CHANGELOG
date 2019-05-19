@@ -2,6 +2,91 @@ List of major changes and improvements between releases
 =======================================================
 
 
+Averroes 2.0.9
+--------------------------
+(15 May 2019)
+ 
+ * Various
+    - Minor bug fix
+    
+ * Experimental
+    - JG frontend support in WIF (Word-level Interface Format)
+
+Averroes 2.0.8
+--------------------------
+(03 Apr 2019)
+ 
+ * Various
+    - Minor modifications to vmt frontend
+    
+ * Experimental
+    - Config changes for I4
+    - Printing of inductive invariant in smt2 format
+
+Averroes 2.0.7
+--------------------------
+(12 Mar 2019)
+ 
+ * API
+    - Changes option --granularity. Granularity levels now upto 4 (default 1)
+    
+ * Various
+    - Minor corrections
+
+Averroes 2.0.6
+--------------------------
+(11 Mar 2019)
+ 
+ * Core
+    - Changes to data structures for improved performance
+    - Improved learning from initial formula
+    
+ * Various
+    - Improves subsumption checking
+
+Averroes 2.0.5
+--------------------------
+(08 Mar 2019)
+ 
+ * Backend
+    - Corrections to all backends
+    - Shifted to Yices backend for all queries
+    
+ * Various
+    - Improves vmt parsing
+    - Changes to stats printing
+
+Averroes 2.0.4
+--------------------------
+(25 Feb 2019)
+ 
+ * API
+    - Changes default for option --abstract to sa (instead of sa+uf)
+    
+ * Backend
+    - Corrections to Yices 2 backend
+    - Updates MathSAT to v5.5.4
+    - Upgrades to MathSAT backend
+    - Shifted to MathSAT backend for all queries
+    
+ * Various
+    - Adds learning from intitial state formula
+    - Improved cube formation for integers/arrays
+    
+ * Notes
+    - sa+uf (using option -a) is experimental only with MathSAT backend
+
+Averroes 2.0.3
+--------------------------
+
+ * Various
+    - Shifted to yices2 backend for all queries
+    - Corrections and improvements to refinement
+    - Extended support for vmt frontend (QF bitvectors + linear integer arithmetic + arrays)
+    
+Averroes 2.0.2
+--------------------------
+
  * API
     - Changes option --file to positional argument
     - Adds option --granularity
@@ -23,12 +108,13 @@ List of major changes and improvements between releases
     - Shifted to Z3 backend for concrete queries
     - Changes to abstract queries
     - Changes to symbolic learning
+    - Improved generalization and refinement
     
  * Experimental
     - Adds memory abstraction
     - Adds support for global connect (as buffer) for .ilang
     - Adds unique clock identification procedure for .ilang
-    - Adds .vmt frontend (limited to QF_BV and simple transition systems)
+    - Adds .vmt frontend (limited to QF_BV)
     - Option --abstract is experimental
 
  * Notes

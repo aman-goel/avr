@@ -20,6 +20,7 @@ minInvEffort="${17}"
 initFile="${18}"
 enVmt="${19}"
 abType="${20}"
+enJg="${21}"
 
 BM_PATH="$p_dir"
 OUT_DIR="$p_out"
@@ -52,7 +53,6 @@ OUT_PATH="$OUT_DIR/work_$bm"
 
 rm -rf $OUT_PATH
 mkdir $OUT_PATH
-cp -R $BM_PATH/* $OUT_PATH
 mkdir $OUT_PATH/data
 mkdir $OUT_PATH/dot
 mkdir $OUT_PATH/dot/ref
@@ -99,14 +99,26 @@ then
 	echo "$initFile" >> $OUT_PATH/fconfig
 fi
 
-if [ "$enVmt" == "True" ]
+if [ "$enJg" == "True" ]
+then
+	echo "frontend" >> $OUT_PATH/fconfig
+	echo "jg" >> $OUT_PATH/fconfig
+	
+	OUT_JG="$bm".wif
+	cp $BM_PATH/$fname $OUT_PATH/$OUT_JG
+	run_yosys="false"
+elif [ "$enVmt" == "True" ]
 then
 	echo "frontend" >> $OUT_PATH/fconfig
 	echo "vmt" >> $OUT_PATH/fconfig
 	
 	OUT_VMT="$bm".vmt
-	mv $OUT_PATH/$fname $OUT_PATH/$OUT_VMT
+	cp $BM_PATH/$fname $OUT_PATH/$OUT_VMT
 	run_yosys="false"
+else
+	echo "frontend" >> $OUT_PATH/fconfig
+	cp -R $BM_PATH/* $OUT_PATH
+	echo "yosys" >> $OUT_PATH/fconfig
 fi
 
 

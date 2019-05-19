@@ -4,8 +4,8 @@ set -e
 
 # Build and install yosys
 pushd .
-git clone https://github.com/YosysHQ/yosys.git
-# git clone https://github.com/aman-goel/yosys.git
+# git clone https://github.com/YosysHQ/yosys.git
+git clone https://github.com/aman-goel/yosys.git
 cd yosys
 make PREFIX="$PWD"
 # sudo make install
