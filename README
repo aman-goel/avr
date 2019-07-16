@@ -100,10 +100,13 @@ Averroes (avr) -- Abstract VERification of Reachability Of Electronic Systems
     n) Use --vmt to read in a .vmt file (instead of yosys frontend).
        supported theories: quantifier-free bit-vectors, linear integer arithmetic and arrays.
     o) Use --abstract to enable/disable data abstraction.
-	   sa (no data abstraction, QF_BV), sa+uf (data abstraction, QF_UF)
+	   sa (no data abstraction, QF_BV), sa+uf (data abstraction, QF_UF), saN+ecM (no data abstraction upto bit-width of N, extract/concat interpretation level is M [0: none, 1: some (default), 2: full])
     p) Use --granularity to configure abstract granularity level
-       0 (lowest), 1 (also allow BV equaltity), 2 (also allow INT equaltity), 3 (also allow mixed), 4 (also allow input).
-
+       0 (lowest), 1 (also allow sv-inp mixed constraints), 2 (also allow inp constraints).
+    q) Use --level to configure abstraction fineness level
+       0 (lowest), 1 (also allow local equality), 2 (also allow variable equality), 3 (also allow variable equality with extract/concat), 4 (also allow other predicates), 5 (also allow function equality).
+    r) Use --lazy_assume to configure laziness of assumptions
+       0 (eager- add all assumptions), 1 (lazy- add assumptions but don't introduce new cones), 2 (lazy- don't add assumptions).
 
 We would be glad to hear from you and help you in case you are having a difficulty in using Averroes.
 Please contact Aman Goel (amangoel@umich.edu) for help/suggestions/modifications or just to share your comments on Averroes!

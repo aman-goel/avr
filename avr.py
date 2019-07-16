@@ -19,17 +19,22 @@ DEFAULT_INIT_FILE="-"
 DEFAULT_OUT="output"
 DEFAULT_YOSYS="yosys"
 DEFAULT_CLK="clk"
-DEFAULT_TIMEOUT=3600
-DEFAULT_MEMOUT=4096
+DEFAULT_TIMEOUT=1000
+DEFAULT_MEMOUT=15000
 DEFAULT_MEMORY=False
 DEFAULT_SPLIT=True
-DEFAULT_GRANULARITY=1
+DEFAULT_GRANULARITY=0
 DEFAULT_RANDOM=False
 DEFAULT_EFFORT_MININV=0
 DEFAULT_VERBOSITY=0
 DEFAULT_EN_VMT=False
 DEFAULT_EN_JG=False
 DEFAULT_ABTYPE="sa+uf"
+DEFAULT_INTERPOLATION=0
+DEFAULT_FORWARD_CHECK=0
+DEFAULT_AB_LEVEL=2
+DEFAULT_LAZY_ASSUME=0
+DEFAULT_JG_PREPROCESS="-"
 
 def getopts(header):
 	p = argparse.ArgumentParser(description=str(header), formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -49,9 +54,14 @@ def getopts(header):
 	p.add_argument('-a', '--abstract',  help='abstraction type (options: sa, sa+uf) (default: %s)' % DEFAULT_ABTYPE, type=str, default=DEFAULT_ABTYPE)
 	p.add_argument('-m', '--memory',     help='toggles using memory abstraction instead of simple expansion (default: %r)' % DEFAULT_MEMORY, action="count", default=0)
 	p.add_argument('-s', '--split',     help='toggles transforming system by splitting variables at extract points (default: %r)' % DEFAULT_SPLIT, action="count", default=0)
-	p.add_argument('-g', '--granularity',help='abstract granularity level (between 0-4) (default: %r)' % DEFAULT_GRANULARITY, type=int, default=DEFAULT_GRANULARITY)
+	p.add_argument('-g', '--granularity',help='abstract granularity level (between 0-2) (default: %r)' % DEFAULT_GRANULARITY, type=int, default=DEFAULT_GRANULARITY)
 	p.add_argument('-r', '--random',    help='toggles using random ordering and random seed (default: %r)' % DEFAULT_RANDOM, action="count", default=0)
 	p.add_argument('-e', '--effort_mininv',help='inductive invariant minimization effort when property is proved true (between 0-4) (default: %r)' % DEFAULT_EFFORT_MININV, type=int, default=DEFAULT_EFFORT_MININV)
+	p.add_argument('--interpol',		help='interpolation level (between 0-1) (default: %r)' % DEFAULT_INTERPOLATION, type=int, default=DEFAULT_INTERPOLATION)
+	p.add_argument('-f', '--forward',	help='forward check level (between 0-2) (default: %r)' % DEFAULT_FORWARD_CHECK, type=int, default=DEFAULT_FORWARD_CHECK)
+	p.add_argument('-l', '--level',		help='abstraction level (between 0-5) (default: %r)' % DEFAULT_AB_LEVEL, type=int, default=DEFAULT_AB_LEVEL)
+	p.add_argument('-la', '--lazy_assume',	help='lazy assumptions level (between 0-2) (default: %r)' % DEFAULT_LAZY_ASSUME, type=int, default=DEFAULT_LAZY_ASSUME)
+	p.add_argument('--jgpre',  			help='preprocessing options for jg (default: %s)' % DEFAULT_JG_PREPROCESS, type=str, default=DEFAULT_JG_PREPROCESS)
 	p.add_argument('-v', '--verbosity', help='verbosity level (default: %r)' % DEFAULT_VERBOSITY, type=int, default=DEFAULT_VERBOSITY)
 	args, leftovers = p.parse_known_args()
 	return args, p.parse_args()
@@ -111,8 +121,8 @@ def main():
 		raise Exception("avr: dpa binary not found")
 	if not os.path.isfile(opts.bin + "/reach"):
 		raise Exception("avr: reach binary not found")
-	if not os.path.isfile(opts.file):
-		raise Exception("Unable to find top file: %s" % opts.file)
+
+	path, f = split_path(opts.file)
 
 	en_vmt = DEFAULT_EN_VMT
 	if (opts.vmt % 2 == 1):
@@ -135,7 +145,6 @@ def main():
 				opts.yosys = "/usr/local/bin"
 				print("\t(found yosys in /usr/local/bin)")
 	
-	path, f = split_path(opts.file)
 	command = ""
 	command = command + "./" + opts.bin + "/avr"
 	command = command + " " + f
@@ -166,14 +175,24 @@ def main():
 	command = command + " " + str(random)
 	
 	command = command + " " + str(opts.verbosity)
-	command = command + " " + opts.property
+	
+	p = opts.property.replace(" ", "%")
+	p = p.replace("\\", "\\\\")
+	command = command + " " + "\"" + str(p) + "\"";
+#	print(str(p))
+	
 	command = command + " " + str(opts.effort_mininv)
 	command = command + " " + opts.init
 	
 	command = command + " " + str(en_vmt)
 	command = command + " " + str(opts.abstract)
 	command = command + " " + str(en_jg)
-	
+	command = command + " " + str(opts.interpol)
+	command = command + " " + str(opts.forward)
+	command = command + " " + str(opts.level)
+	command = command + " " + str(opts.lazy_assume)
+	command = command + " " + str(opts.jgpre)
+
 	s = subprocess.call( command, shell=True)
 	if (s != 0):
 		raise Exception("avr ERROR: return code %d" % s)

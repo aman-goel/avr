@@ -2,6 +2,83 @@ List of major changes and improvements between releases
 =======================================================
 
 
+Averroes 2.0.13
+--------------------------
+(16 July 2019)
+ 
+ * API
+    - Adds option --jgpre to pass wif preprocessing options
+    - Modifies option --abstract to configure extract/concat interpretation using "ec" level
+    
+ * Frontend
+    - WIF: Several corrections
+    - WIF: Disables incorrect clock simplifications
+    
+ * Core
+    - Improvements to solver queries
+    - Improvements to model retrieval from solver
+    - Improvements to unsat core computation
+    
+ * Backend
+    - Y2: Support for detailed stats printing
+    
+ * Various
+    - Minor bug fixes
+
+Averroes 2.0.12
+--------------------------
+(27 June 2019)
+ 
+ * API
+    - Adds option --lazy_assume to configure laziness of assumptions
+    - Adds another level of finess in option --level
+    
+ * Frontend
+    - WIF: Changes to clock simplification
+    - WIF: Selection of property at an early stage
+    - WIF: Procedure to pipe other WIF engines with AVR
+    - WIF: Support for identifying boolean equalities
+    - Minor corrections
+    - Removes redundant preprocessings
+    
+ * Core
+    - Changes to cube formation
+    - Changes to solver reset config
+    - Adds single solver mode as default
+    - Handling of trivially proved properties
+    - Corrections to refinement for handling assumptions
+    - Adds structural preprocessing to remove irrelevant system portions
+    - Reduces refinement queries
+    - Support for adding input relations (in latches)
+    
+ * Backend
+    - Y2: Support for caching hard constraints
+    
+ * Various
+    - Minor bug fixes
+
+Averroes 2.0.11
+--------------------------
+(05 June 2019)
+ 
+ * API
+    - Adds option --level to configure abstraction fineness
+    - Changes option --granularity. Granularity levels now upto 2 (default 0)
+    
+ * Various
+    - Minor bug fixes
+    - More stats collection
+    
+ * Experimental
+    - Changes to cube formation when --random enabled
+
+Averroes 2.0.10
+--------------------------
+(23 May 2019)
+ 
+ * Experimental
+    - Adds interpolation option for refinement
+
 Averroes 2.0.9
 --------------------------
 (15 May 2019)

@@ -21,6 +21,11 @@ initFile="${18}"
 enVmt="${19}"
 abType="${20}"
 enJg="${21}"
+interpolLevel="${22}"
+forwardCheck="${23}"
+abLevel="${24}"
+lazyAssume="${25}"
+jgPreprocess="${26}"
 
 BM_PATH="$p_dir"
 OUT_DIR="$p_out"
@@ -92,6 +97,21 @@ fi
 
 echo "minimize_inv_effort" >> $OUT_PATH/fconfig
 echo "$minInvEffort" >> $OUT_PATH/fconfig
+
+echo "interpolation" >> $OUT_PATH/fconfig
+echo "$interpolLevel" >> $OUT_PATH/fconfig
+
+echo "forward_check" >> $OUT_PATH/fconfig
+echo "$forwardCheck" >> $OUT_PATH/fconfig
+
+echo "fineness" >> $OUT_PATH/fconfig
+echo "$abLevel" >> $OUT_PATH/fconfig
+
+echo "lazy_assume" >> $OUT_PATH/fconfig
+echo "$lazyAssume" >> $OUT_PATH/fconfig
+
+echo "jg_preprocess" >> $OUT_PATH/fconfig
+echo "$jgPreprocess" >> $OUT_PATH/fconfig
 
 if [ "$initFile" != "-" ]
 then
