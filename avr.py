@@ -127,6 +127,11 @@ def main():
 		raise Exception("avr: reach binary not found")
 
 	path, f = split_path(opts.file)
+	if (path == ""):
+		opts.file = "/local/amangoel/ws/tools/jg/bm/SEC_perf/" + f + "/" + f + ".wif"
+		if not os.path.isfile(opts.file):
+			opts.file = "/local/amangoel/ws/tools/jg/bm/FPV/" + f + "/" + f + ".wif"
+		path, f = split_path(opts.file)
 	if not os.path.isfile(opts.file):
 		raise Exception("Unable to find top file: %s" % opts.file)
 
