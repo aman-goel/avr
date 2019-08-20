@@ -2,6 +2,27 @@ List of major changes and improvements between releases
 =======================================================
 
 
+Averroes 2.0.14
+--------------------------
+(20 August 2019)
+ 
+ * API
+    - Adds option --smt2 to enable printing in SMT-LIB v2 format
+    - Adds option --dot to enable dot graphical visualization
+    - Several other changes
+    
+ * Frontend
+    - WIF: Several corrections
+    
+ * Core
+    - Several improvements
+    
+ * Backend
+    - Several improvements
+    
+ * Various
+    - Several bug fixes
+
 Averroes 2.0.13
 --------------------------
 (16 July 2019)

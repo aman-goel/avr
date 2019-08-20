@@ -1,0 +1,104 @@
+----------------
+Averroes 2 (AVR)
+----------------
+Copyright (c) 2019  Aman Goel and Karem A. Sakallah, University of Michigan. All rights reserved.
+AVR is provided as is, without any warranty.
+
+Averroes 2 / AVR is available for research and evaluation purposes only. 
+Any usage of AVR needs to comply with the usage terms of the dependencies of AVR detailed as follows. 
+----------------
+
+
+------------
+Dependencies
+------------
+
+-------
+Yices 2
+-------
+/*
+ * This file is part of the Yices SMT Solver.
+ * Copyright (C) 2017 SRI International.
+ *
+ * Yices is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Yices is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Yices.  If not, see <http://www.gnu.org/licenses/>.
+ */
+---------
+
+
+--
+Z3
+--
+Z3
+Copyright (c) Microsoft Corporation
+All rights reserved. 
+MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+---------
+
+
+--------
+MathSAT5
+--------
+MathSAT5 is copyrighted 2009-2018 by Fondazione Bruno Kessler, Trento, Italy, University of Trento, Italy, and others. All rights reserved.
+
+MathSAT5 is available for research and evaluation purposes only. It can not be used in a commercial environment, particularly as part of a commercial product, without written permission. MathSAT5 is provided as is, without any warranty.
+---------
+
+
+---------
+Boolector
+---------
+Boolector is a Satisfiability Modulo Theories (SMT) Solver for bit-vectors,
+arrays and uninterpreted functions.
+
+Copyright (c) 2007-2018 Armin Biere.
+Copyright (c) 2007-2009 Robert Brummayer.
+Copyright (c) 2012-2018 Aina Niemetz.
+Copyright (c) 2012-2018 Mathias Preiner.
+
+MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+---------
+
+
+----------
+JasperGold
+----------
+//***************************************************************************
+//  2007-Present Cadence Design Systems, Inc.  All rights reserved.         *
+//***************************************************************************
+---------
+

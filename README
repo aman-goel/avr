@@ -1,20 +1,32 @@
 Averroes (avr) -- Abstract VERification of Reachability Of Electronic Systems
  	version 2.0
-	Reads a Verilog file and performs property checking with data abstraction.
+	Reads a Verilog file and performs property checking using syntactic data abstraction.
 		supports SystemVerilog concurrent assertions
 
-	Copyright (C) 2019  Aman Goel <amangoel@umich.edu> and Karem A. Sakallah <karem@umich.edu>, University of Michigan
+	Copyright (c) 2019  Aman Goel <amangoel@umich.edu> and Karem A. Sakallah <karem@umich.edu>, University of Michigan
 	
 	------------
 	Dependencies
 	------------
-	1. Yosys    (Copyright (C) 2019 Clifford Wolf <clifford@clifford.at>)
-	2. Yices 2  (Copyright (C) 2019 SRI International)
-	3. Z3       (Copyright (c) 2019 Microsoft Corporation)
-	4. MathSAT5 (Copyright (c) 2019 Fondazione Bruno Kessler, Italy)
+	1. Yosys     (Copyright (c) 2019 Clifford Wolf <clifford@clifford.at>)
+	2. Yices 2   (Copyright (c) 2019 SRI International)
+	3. Z3        (Copyright (c) 2019 Microsoft Corporation)
+	4. MathSAT5  (Copyright (c) 2019 Fondazione Bruno Kessler, Italy)
+	5. Boolector (Copyright (c) 2007-2018 Armin Biere, 2007-2009 Robert Brummayer, 2012-2018 Aina Niemetz, 2012-2018 Mathias Preiner)
+	6. JG	     (Copyright (c) 2007-Present Cadence Design Systems, Inc.)
+	
+	--------------
+	Terms of usage
+	--------------
+	* Any usage of JG frontend requires prior written permission from Cadence Design Systems, Inc.
 
 	---------------------------------
-	Limitiations (as of Feb 11, 2019)
+	NEW (Aug 20, 2019)
+	---------------------------------
+	1. New frontend for direct interface with JasperGold (Copyright (c) 2007-Present Cadence Design Systems, Inc.).
+
+	---------------------------------
+	Limitiations (as of Aug 20, 2019)
 	---------------------------------
 	1. Can only handle safety properties that can be expressed without temporal operators.
 	2. Handles asynchronous flops as synchronous.
@@ -23,12 +35,12 @@ Averroes (avr) -- Abstract VERification of Reachability Of Electronic Systems
 		(customize the bin/avr for special preprocessing using Yosys)
 	5. Support for .vmt frontend is limited.
 
-	Please report bugs via email (amangoel@umich.edu) or on github (https://github.com/aman-goel/avr)
+	Please report bugs and share your usage experience via email (amangoel@umich.edu) or on github (https://github.com/aman-goel/avr)
 
 --> How to build
-	avr requires yosys, yices2, z3, libgmp-dev
+	avr uses yosys, yices2, z3, libgmp-dev, boolector, mathsat5, jg-lib
 	a) Use build.sh to install yosys
-	b) yices2, z3, MathSAT5 and libgmp-dev are statically linked to binaries in bin/ folder
+	b) yices2, z3, MathSAT5, libgmp-dev and jg-lib are statically linked to binaries in bin/ folder
 
 --> How to run
 	python avr.py <path>/<top-module-file>

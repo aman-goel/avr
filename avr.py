@@ -76,37 +76,43 @@ header="""
 	Reads a Verilog file and performs property checking using syntactic data abstraction.
 		supports SystemVerilog concurrent assertions
 
-	Copyright (C) 2019  Aman Goel <amangoel@umich.edu> and Karem A. Sakallah <karem@umich.edu>, University of Michigan
+	Copyright (c) 2019  Aman Goel <amangoel@umich.edu> and Karem A. Sakallah <karem@umich.edu>, University of Michigan
 	
-	---------------------------------
-	NEW (May 19, 2019)
-	---------------------------------
-	1. New frontend for direct interface with JasperGold (Copyright (C) 2007-Present Cadence Design Systems, Inc.).
-
 	------------
 	Dependencies
 	------------
-	1. Yosys    (Copyright (C) 2019 Clifford Wolf <clifford@clifford.at>)
-	2. Yices 2  (Copyright (C) 2019 SRI International)
-	3. Z3       (Copyright (c) 2019 Microsoft Corporation)
-	4. MathSAT5 (Copyright (c) 2019 Fondazione Bruno Kessler, Italy)
+	1. Yosys     (Copyright (c) 2019 Clifford Wolf <clifford@clifford.at>)
+	2. Yices 2   (Copyright (c) 2019 SRI International)
+	3. Z3        (Copyright (c) 2019 Microsoft Corporation)
+	4. MathSAT5  (Copyright (c) 2019 Fondazione Bruno Kessler, Italy)
+	5. Boolector (Copyright (c) 2007-2018 Armin Biere, 2007-2009 Robert Brummayer, 2012-2018 Aina Niemetz, 2012-2018 Mathias Preiner)
+	6. JG	     (Copyright (c) 2007-Present Cadence Design Systems, Inc.)
 	
+	--------------
+	Terms of usage
+	--------------
+	* Any usage of JG frontend requires prior written permission from Cadence Design Systems, Inc.
+
 	---------------------------------
-	Limitiations (as of May 15, 2019)
+	NEW (Aug 20, 2019)
+	---------------------------------
+	1. New frontend for direct interface with JasperGold (Copyright (c) 2007-Present Cadence Design Systems, Inc.).
+
+	---------------------------------
+	Limitiations (as of Aug 20, 2019)
 	---------------------------------
 	1. Can only handle safety properties that can be expressed without temporal operators.
 	2. Handles asynchronous flops as synchronous.
 	3. Handles memory using memory abstraction (experimental).
 	4. avr uses yosys as its frontend and can handle most designs/formats that are supported by yosys.
 		(customize the bin/avr for special preprocessing using Yosys)
-	5. Support for vmt frontend is limited.
-	6. Support for jg frontend is limited.
+	5. Support for .vmt frontend is limited.
 
 	Please report bugs and share your usage experience via email (amangoel@umich.edu) or on github (https://github.com/aman-goel/avr)
 	
 """
 
-short_header="""Averroes v""" + str(version) + """\tCopyright (C) 2019  Aman Goel and Karem A. Sakallah, University of Michigan"""
+short_header="""Averroes v""" + str(version) + """\tCopyright (c) 2019  Aman Goel and Karem A. Sakallah, University of Michigan"""
 
 def split_path(name):
 	head, tail = ntpath.split(name)
@@ -127,11 +133,6 @@ def main():
 		raise Exception("avr: reach binary not found")
 
 	path, f = split_path(opts.file)
-	if (path == ""):
-		opts.file = "/local/amangoel/ws/tools/jg/bm/SEC_perf/" + f + "/" + f + ".wif"
-		if not os.path.isfile(opts.file):
-			opts.file = "/local/amangoel/ws/tools/jg/bm/FPV/" + f + "/" + f + ".wif"
-		path, f = split_path(opts.file)
 	if not os.path.isfile(opts.file):
 		raise Exception("Unable to find top file: %s" % opts.file)
 
