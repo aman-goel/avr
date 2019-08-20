@@ -22,19 +22,21 @@ DEFAULT_CLK="clk"
 DEFAULT_TIMEOUT=1000
 DEFAULT_MEMOUT=15000
 DEFAULT_MEMORY=False
-DEFAULT_SPLIT=True
-DEFAULT_GRANULARITY=0
+DEFAULT_SPLIT=False
+DEFAULT_GRANULARITY=2
 DEFAULT_RANDOM=False
 DEFAULT_EFFORT_MININV=0
 DEFAULT_VERBOSITY=0
 DEFAULT_EN_VMT=False
-DEFAULT_EN_JG=False
+DEFAULT_EN_JG=True
 DEFAULT_ABTYPE="sa+uf"
 DEFAULT_INTERPOLATION=0
 DEFAULT_FORWARD_CHECK=0
 DEFAULT_AB_LEVEL=2
 DEFAULT_LAZY_ASSUME=0
 DEFAULT_JG_PREPROCESS="-"
+DEFAULT_PRINT_SMT2=False
+DEFAULT_DOT="0000000"
 
 def getopts(header):
 	p = argparse.ArgumentParser(description=str(header), formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -62,6 +64,8 @@ def getopts(header):
 	p.add_argument('-l', '--level',		help='abstraction level (between 0-5) (default: %r)' % DEFAULT_AB_LEVEL, type=int, default=DEFAULT_AB_LEVEL)
 	p.add_argument('-la', '--lazy_assume',	help='lazy assumptions level (between 0-2) (default: %r)' % DEFAULT_LAZY_ASSUME, type=int, default=DEFAULT_LAZY_ASSUME)
 	p.add_argument('--jgpre',  			help='preprocessing options for jg (default: %s)' % DEFAULT_JG_PREPROCESS, type=str, default=DEFAULT_JG_PREPROCESS)
+	p.add_argument('--smt2',     		help='toggles printing system in smt2 format (default: %r)' % DEFAULT_PRINT_SMT2, action="count", default=0)
+	p.add_argument('--dot', 			help='option to configure dot files generation (default: %s)' % DEFAULT_DOT, type=str, default=DEFAULT_DOT)
 	p.add_argument('-v', '--verbosity', help='verbosity level (default: %r)' % DEFAULT_VERBOSITY, type=int, default=DEFAULT_VERBOSITY)
 	args, leftovers = p.parse_known_args()
 	return args, p.parse_args()
@@ -123,6 +127,8 @@ def main():
 		raise Exception("avr: reach binary not found")
 
 	path, f = split_path(opts.file)
+	if not os.path.isfile(opts.file):
+		raise Exception("Unable to find top file: %s" % opts.file)
 
 	en_vmt = DEFAULT_EN_VMT
 	if (opts.vmt % 2 == 1):
@@ -193,6 +199,12 @@ def main():
 	command = command + " " + str(opts.lazy_assume)
 	command = command + " " + str(opts.jgpre)
 
+	print_smt2 = DEFAULT_PRINT_SMT2
+	if (opts.smt2 % 2 == 1):
+		print_smt2 = not DEFAULT_PRINT_SMT2
+	command = command + " " + str(print_smt2)
+	command = command + " " + str(opts.dot)
+	
 	s = subprocess.call( command, shell=True)
 	if (s != 0):
 		raise Exception("avr ERROR: return code %d" % s)

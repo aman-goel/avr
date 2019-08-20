@@ -26,6 +26,8 @@ forwardCheck="${23}"
 abLevel="${24}"
 lazyAssume="${25}"
 jgPreprocess="${26}"
+printSmt2="${27}"
+printDot="${28}"
 
 BM_PATH="$p_dir"
 OUT_DIR="$p_out"
@@ -61,6 +63,9 @@ mkdir $OUT_PATH
 mkdir $OUT_PATH/data
 mkdir $OUT_PATH/dot
 mkdir $OUT_PATH/dot/ref
+mkdir $OUT_PATH/dot/ab
+mkdir $OUT_PATH/dot/excc
+
 
 echo "design_file" > $OUT_PATH/fconfig
 echo "$BM_PATH/$fname" >> $OUT_PATH/fconfig
@@ -112,6 +117,19 @@ echo "$lazyAssume" >> $OUT_PATH/fconfig
 
 echo "jg_preprocess" >> $OUT_PATH/fconfig
 echo "$jgPreprocess" >> $OUT_PATH/fconfig
+
+echo "print_smt2_design" >> $OUT_PATH/fconfig
+echo "$printSmt2" >> $OUT_PATH/fconfig
+
+echo "print_smt2_inv" >> $OUT_PATH/fconfig
+echo "$printSmt2" >> $OUT_PATH/fconfig
+
+echo "print_dot" >> $OUT_PATH/fconfig
+echo "$printDot" >> $OUT_PATH/fconfig
+
+echo "verbosity" >> $OUT_PATH/fconfig
+echo "$verbosity" >> $OUT_PATH/fconfig
+
 
 if [ "$initFile" != "-" ]
 then
