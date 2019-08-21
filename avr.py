@@ -143,6 +143,7 @@ def main():
 	if (opts.jg % 2 == 1):
 		en_jg = not DEFAULT_EN_JG
 
+	print("\t(output dir: %s/work_%s)" % (opts.out, opts.name))
 	if (en_jg):
 		print("\t(frontend: jg)")
 		en_vmt = False
