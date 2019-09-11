@@ -28,6 +28,7 @@ lazyAssume="${25}"
 jgPreprocess="${26}"
 printSmt2="${27}"
 printDot="${28}"
+enBt="${29}"
 
 BM_PATH="$p_dir"
 OUT_DIR="$p_out"
@@ -153,6 +154,14 @@ then
 	OUT_VMT="$bm".vmt
 	cp $BM_PATH/$fname $OUT_PATH/$OUT_VMT
 	run_yosys="false"
+elif [ "$enBt" == "True" ]
+then
+	echo "frontend" >> $OUT_PATH/fconfig
+	echo "btor2" >> $OUT_PATH/fconfig
+	
+	OUT_BTOR2="$bm".btor2
+	cp $BM_PATH/$fname $OUT_PATH/$OUT_BTOR2
+	run_yosys="false"
 else
 	echo "frontend" >> $OUT_PATH/fconfig
 	cp -R $BM_PATH/* $OUT_PATH
@@ -227,6 +236,7 @@ then
 fi
 echo "yosys check;" >> $YOSYS_CMD
 echo "yosys write_ilang $OUT_PATH/$OUT_YOSYS;" >> $YOSYS_CMD
+echo "yosys write_btor $OUT_PATH/"$bm".btor2;" >> $YOSYS_CMD
 echo "yosys write_verilog -attr2comment $OUT_PATH/$OUT_VERILOG;" >> $YOSYS_CMD
 $p_yosys/yosys -c $YOSYS_CMD -Q -T -q -q -l $OUT_PATH/yosys.log
 

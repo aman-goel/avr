@@ -2,6 +2,23 @@ List of major changes and improvements between releases
 =======================================================
 
 
+Averroes 2.0.15
+--------------------------
+(11 September 2019)
+ 
+ * API
+    - Adds new frontend btor2
+    - Minor other changes
+    
+ * Frontend
+    - BTOR2: Limited support (without arrays)
+    
+ * Core
+    - Minor changes
+    
+ * Various
+    - JG frontend not linked hereonwards
+
 Averroes 2.0.14
 --------------------------
 (20 August 2019)

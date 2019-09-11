@@ -28,7 +28,8 @@ DEFAULT_RANDOM=False
 DEFAULT_EFFORT_MININV=0
 DEFAULT_VERBOSITY=0
 DEFAULT_EN_VMT=False
-DEFAULT_EN_JG=True
+DEFAULT_EN_JG=False
+DEFAULT_EN_BTOR2=False
 DEFAULT_ABTYPE="sa+uf"
 DEFAULT_INTERPOLATION=0
 DEFAULT_FORWARD_CHECK=0
@@ -50,13 +51,14 @@ def getopts(header):
 	p.add_argument('-y', '--yosys',     help='path to yosys installation (default: %s)' % DEFAULT_YOSYS, type=str, default=DEFAULT_YOSYS)
 	p.add_argument('--vmt',             help='toggles using vmt frontend (default: %s)' % DEFAULT_EN_VMT, action="count", default=0)
 	p.add_argument('-j', '--jg',        help='toggles using jg frontend (default: %s)' % DEFAULT_EN_JG, action="count", default=0)
+	p.add_argument('--bt',              help='toggles using btor2 frontend (default: %s)' % DEFAULT_EN_BTOR2, action="count", default=0)
 	p.add_argument('--clock',           help='clock signal name (default: %s)' % DEFAULT_CLK, type=str, default=DEFAULT_CLK)
 	p.add_argument('--timeout',         help='timeout (CPU time) in seconds (default: %s)' % DEFAULT_TIMEOUT, type=int, default=DEFAULT_TIMEOUT)
 	p.add_argument('--memout',          help='memory limit in mega bytes (default: %s)' % DEFAULT_MEMOUT, type=int, default=DEFAULT_MEMOUT)
 	p.add_argument('-a', '--abstract',  help='abstraction type (options: sa, sa+uf) (default: %s)' % DEFAULT_ABTYPE, type=str, default=DEFAULT_ABTYPE)
 	p.add_argument('-m', '--memory',     help='toggles using memory abstraction instead of simple expansion (default: %r)' % DEFAULT_MEMORY, action="count", default=0)
 	p.add_argument('-s', '--split',     help='toggles transforming system by splitting variables at extract points (default: %r)' % DEFAULT_SPLIT, action="count", default=0)
-	p.add_argument('-g', '--granularity',help='abstract granularity level (between 0-4) (default: %r)' % DEFAULT_GRANULARITY, type=int, default=DEFAULT_GRANULARITY)
+	p.add_argument('-g', '--granularity',help='abstract granularity level (between 0-2) (default: %r)' % DEFAULT_GRANULARITY, type=int, default=DEFAULT_GRANULARITY)
 	p.add_argument('-r', '--random',    help='toggles using random ordering and random seed (default: %r)' % DEFAULT_RANDOM, action="count", default=0)
 	p.add_argument('-e', '--effort_mininv',help='inductive invariant minimization effort when property is proved true (between 0-4) (default: %r)' % DEFAULT_EFFORT_MININV, type=int, default=DEFAULT_EFFORT_MININV)
 	p.add_argument('--interpol',		help='interpolation level (between 0-1) (default: %r)' % DEFAULT_INTERPOLATION, type=int, default=DEFAULT_INTERPOLATION)
@@ -142,6 +144,9 @@ def main():
 	en_jg  = DEFAULT_EN_JG
 	if (opts.jg % 2 == 1):
 		en_jg = not DEFAULT_EN_JG
+	en_bt = DEFAULT_EN_BTOR2
+	if (opts.bt % 2 == 1):
+		en_bt = not DEFAULT_EN_BTOR2
 
 	print("\t(output dir: %s/work_%s)" % (opts.out, opts.name))
 	if (en_jg):
@@ -149,6 +154,8 @@ def main():
 		en_vmt = False
 	elif en_vmt:
 		print("\t(frontend: vmt)")
+	elif en_bt:
+		print("\t(frontend: btor2)")
 	else:
 		print("\t(frontend: yosys)")
 		if not os.path.isfile(opts.yosys + "/yosys"):
@@ -211,6 +218,7 @@ def main():
 		print_smt2 = not DEFAULT_PRINT_SMT2
 	command = command + " " + str(print_smt2)
 	command = command + " " + str(opts.dot)
+	command = command + " " + str(en_bt)
 	
 	s = subprocess.call( command, shell=True)
 	if (s != 0):
