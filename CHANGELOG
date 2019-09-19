@@ -2,6 +2,24 @@ List of major changes and improvements between releases
 =======================================================
 
 
+Averroes 2.0.16
+--------------------------
+(19 September 2019)
+ 
+ * API
+    - New proof race (pr)
+    - pr allows running multiple configs
+
+ * Frontend
+    - BTOR2: Corrections
+    
+ * Core
+    - Minor changes
+    - Auto config. abstraction fineness
+    
+ * Various
+    - Adds printing cex with split opt.
+
 Averroes 2.0.15
 --------------------------
 (11 September 2019)

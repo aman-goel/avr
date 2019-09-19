@@ -133,6 +133,8 @@ def main():
 		raise Exception("avr: dpa binary not found")
 	if not os.path.isfile(opts.bin + "/reach"):
 		raise Exception("avr: reach binary not found")
+	if not os.path.exists(opts.out):
+		os.makedirs(opts.out)
 
 	path, f = split_path(opts.file)
 	if not os.path.isfile(opts.file):
