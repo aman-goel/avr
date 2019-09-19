@@ -38,14 +38,19 @@ Averroes (AVR) -- Abstract VERification of Reachability Of Electronic Systems
 	Please report bugs and share your usage experience via email (amangoel@umich.edu) or on github (https://github.com/aman-goel/avr)
 
 --> How to build
-	avr uses yosys, yices2, z3, libgmp-dev, boolector, mathsat5, jg-lib
+	avr uses yosys, yices2, z3, libgmp-dev, boolector, btor2tools, mathsat5, jg-lib
 	a) Use build.sh to install yosys
-	b) yices2, z3, MathSAT5, libgmp-dev and jg-lib are statically linked to binaries in bin/ folder
+	b) yices2, z3, MathSAT5, Boolector, btor2tools, libgmp-dev and jg-lib are statically linked to binaries in bin/ folder
 
 --> How to run
-	python avr.py <path>/<top-module-file>
-		(use python avr.py -h for command-line options)
+	python3 avr.py <path>/<top-module-file>
+		(use python3 avr.py -h for command-line options)
 		
+--> Proof Race
+	Use AVR's proof race to automatically run multiple configurations on parallel
+	Run python3 avr_pr.py <path>/<top-module-file>
+		(use python3 avr_pr.py -h for command-line options)
+
 --> Examples
 	“examples” directory contains several different test cases
 		(use <test-name>/<test-name>.fconfig to identify top-module-file)
