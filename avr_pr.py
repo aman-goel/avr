@@ -5,7 +5,7 @@ from enum import Enum
 version=2.0
 start_time = time.time()
 
-cmdSuffix = " --bt"
+cmdSuffix = ""
 maxWorkers = 10
 
 optSuffix = " "
@@ -20,8 +20,8 @@ DEFAULT_OUT="output"
 DEFAULT_NAME="test"
 DEFAULT_WORKERS="workers.txt"
 DEFAULT_BIN="bin"
-DEFAULT_TIMEOUT=1000
-DEFAULT_MEMOUT=15000
+DEFAULT_TIMEOUT=3600
+DEFAULT_MEMOUT=116000
 DEFAULT_PRINT_SMT2=False
 
 maxTimeSec = DEFAULT_TIMEOUT
@@ -30,7 +30,24 @@ maxInitW = 3
 resultW = 0
 out_path = DEFAULT_OUT + "/" + DEFAULT_NAME
 
-short_header="""Averroes v""" + str(version) + """\tCopyright (c) 2019  Aman Goel and Karem A. Sakallah, University of Michigan"""
+header="""
+---------------------------------
+Averroes v""" + str(version) + """ (AVR) -- Proof Race
+---------------------------------
+  Abstract VERification of Reachability Of Electronic Systems
+  
+  Reads a state transition system and performs property checking 
+  using syntax-guided data abstraction
+  
+  Copyright (c) 2019  Aman Goel <amangoel@umich.edu> and 
+  Karem A. Sakallah <karem@umich.edu>, University of Michigan
+  
+  Please report bugs and share your usage experience via email 
+  (amangoel@umich.edu) or on github (https://github.com/aman-goel/avr)	
+---------------------------------
+"""
+
+short_header="""AVR -- Proof Race (copyright (c) 2019  Aman Goel and Karem A. Sakallah, University of Michigan)"""
 
 def getopts(header):
 	p = argparse.ArgumentParser(description=str(header), formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -51,8 +68,8 @@ def setup():
 	global maxTimeSec
 	global maxMemMB
 	global out_path
+	known, opts = getopts(header)
 	print(short_header)
-	known, opts = getopts(short_header)
 	if not os.path.isfile(opts.bin + "/avr"):
 		raise Exception("avr: main shell script not found")
 	if not os.path.isfile(opts.bin + "/vwn"):
@@ -63,7 +80,7 @@ def setup():
 		raise Exception("avr: reach binary not found")
 	if not os.path.exists(opts.out):
 		os.makedirs(opts.out)
-	out_path = opts.out + "/" + opts.name
+	out_path = opts.out + "/pr_" + opts.name
 	if os.path.exists(out_path):
 		shutil.rmtree(out_path)
 	os.makedirs(out_path)
