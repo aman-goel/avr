@@ -12,7 +12,8 @@ gmon.out
 .d/*
 work_*
 work_*/*
-#examples/*
+
+!examples/
 
 src/*
 */smt_queries/*
@@ -29,6 +30,6 @@ examples/*
 # !examples/averroes*
 !examples/bm/*
 !examples/scripts/*
-!examples/verilog/*
-!examples/vmt/*
-!examples/btor2/*
+!examples/verilog/
+!examples/vmt/
+!examples/btor2/
