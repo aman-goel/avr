@@ -3,7 +3,8 @@
 **A**bstract **VER**ification of **R**eachability **O**f **E**lectronic **S**ystems
 
 > Copyright (c) 2019  Aman Goel [(amangoel@umich.edu)](amangoel@umich.edu)  and  Karem A. Sakallah [(karem@umich.edu)](karem@umich.edu) , University of Michigan
-> Reads a state transition system and performs property checking  using syntax-guided data abstraction
+
+Reads a state transition system and performs property checking  using syntax-guided data abstraction
 
 #### Installation
 Simply download or clone the repository and you are good to go
