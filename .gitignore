@@ -20,7 +20,7 @@ smt_queries/*
 output/*
 examples/averroes*
 examples/*.sh
-examples/
+examples/*
 
 # But not these files
 !.gitignore
