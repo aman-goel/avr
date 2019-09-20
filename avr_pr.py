@@ -89,7 +89,7 @@ def setup():
 		raise Exception("Unable to find top file: %s" % opts.file)
 
 	print(time_str(), "(starting avr proof race)")
-	print(time_str(), "(output dir: %s)" % opts.out)
+	print(time_str(), "(output dir: %s)" % out_path)
 	
 	optSuffix = ""
 	optSuffix = optSuffix + " " + opts.file
@@ -314,7 +314,7 @@ def post_compile(retval):
 			shutil.copy(res_path + filename, out_path + "/" + opts.name + ".btor2")
 		elif filename.endswith('result.pr') or filename.endswith('design.smt2') or filename.startswith('inv.') or filename.startswith('cex.witness'):
 			shutil.copy(res_path + filename, out_path)
-	print(time_str(), "(copied results from worker %d in %s/)" % (resultW, out_path))
+	print(time_str(), "(copied results from worker %d in %s)" % (resultW, out_path))
 
 def worker_desc(idx):
 	return commands[idx]

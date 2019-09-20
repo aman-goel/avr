@@ -1,137 +1,132 @@
-Averroes (AVR) -- Abstract VERification of Reachability Of Electronic Systems
- 	version 2.0
-	Reads a Verilog file and performs property checking using syntactic data abstraction.
-		supports SystemVerilog concurrent assertions
+#Averroes v2.0 (AVR) 
 
-	Copyright (c) 2019  Aman Goel <amangoel@umich.edu> and Karem A. Sakallah <karem@umich.edu>, University of Michigan
-	
-	------------
-	Dependencies
-	------------
-	1. Yosys     (Copyright (c) 2019 Clifford Wolf <clifford@clifford.at>)
-	2. Yices 2   (Copyright (c) 2019 SRI International)
-	3. Z3        (Copyright (c) 2019 Microsoft Corporation)
-	4. MathSAT5  (Copyright (c) 2019 Fondazione Bruno Kessler, Italy)
-	5. Boolector (Copyright (c) 2007-2018 Armin Biere, 2007-2009 Robert Brummayer, 2012-2018 Aina Niemetz, 2012-2018 Mathias Preiner)
-	6. JG	     (Copyright (c) 2007-Present Cadence Design Systems, Inc.)
-	
-	--------------
-	Terms of usage
-	--------------
-	* Any usage of JG frontend requires prior written permission from Cadence Design Systems, Inc.
+**A**bstract **VER**ification of **R**eachability **O**f **E**lectronic **S**ystems
 
-	---------------------------------
-	NEW (Aug 20, 2019)
-	---------------------------------
-	1. New frontend for direct interface with JasperGold (Copyright (c) 2007-Present Cadence Design Systems, Inc.).
+>Copyright (c) 2019  Aman Goel [(amangoel@umich.edu)](amangoel@umich.edu)  and  Karem A. Sakallah [(karem@umich.edu)](karem@umich.edu) , University of Michigan
 
-	---------------------------------
-	Limitiations (as of Aug 20, 2019)
-	---------------------------------
-	1. Can only handle safety properties that can be expressed without temporal operators.
-	2. Handles asynchronous flops as synchronous.
-	3. Handles memory using memory abstraction (experimental).
-	4. avr uses yosys as its frontend and can handle most designs/formats that are supported by yosys.
-		(customize bin/avr for special preprocessing using Yosys)
-	5. Support for .vmt frontend is limited.
+>Reads a state transition system and performs property checking  using syntax-guided data abstraction
 
-	Please report bugs and share your usage experience via email (amangoel@umich.edu) or on github (https://github.com/aman-goel/avr)
+####Installation
+Simply download or clone the repository and you are good to go
+- All dependencies are statically linked
+- If needed, install [Yosys](https://github.com/YosysHQ/yosys) to pass input as Verilog, VHDL
 
---> How to build
-	avr uses yosys, yices2, z3, libgmp-dev, boolector, btor2tools, mathsat5, jg-lib
-	a) Use build.sh to install yosys
-	b) yices2, z3, MathSAT5, Boolector, btor2tools, libgmp-dev and jg-lib are statically linked to binaries in bin/ folder
+####AVR Proof Race
+Use AVR *Proof Race* to automatically run multiple configurations in parallel
+- Allows process-level parallelism to solve the problem within a given time and memory budget
 
---> How to run
-	python3 avr.py <path>/<top-module-file>
-		(use python3 avr.py -h for command-line options)
-		
---> Proof Race
-	Use AVR's proof race to automatically run multiple configurations on parallel
-	Run python3 avr_pr.py <path>/<top-module-file>
-		(use python3 avr_pr.py -h for command-line options)
+####Usage
+	python3 avr_pr.py -o <output-path> -n <test-name> <path>/<file>.btor2
+	(check the output in <output-path>/pr_<test-name>)
+	 
+	Example:	python3 avr_pr.py -o foo -n bar examples/btor2/counter.btor2
+				(check the output in foo/pr_bar)
 
---> Examples
-	“examples” directory contains several different test cases
-		(use <test-name>/<test-name>.fconfig to identify top-module-file)
+####Output
+AVR creates a directory ```<output-path>```/pr_```<test-name>``` which contains results, statistics and logs relating to the run
 
---> Output
-	avr creates a directory <output-path>/work_<test-name> which contains detailed files relating to the run
-		(<output-path> and <test-name> can be customized using command-line options in avr.py)
-
-	work_<test-name> contains several files that provides details for the run:
-	work_<test-name>
-	├── <test-name>.results			// detailed statistics report
-	├── inv.txt				// invariant file with axioms (when property is true)
-	├── cex.txt				// counterexample file (when property is false)
-	├── data/reach.output			// detailed log of reachability analysis
-	├── data/parse.results			// system information (on which property checking is performed)
-	├── data/parse_original.results		// original system information
-	├── data/design.txt			// processed system
-	├── data/design_original.txt		// original system given
-	├── data/refs.txt			// detailed log of refinement axioms learnt
-	├── data/vwn.output			// output from stage 1 of frontend
-	├── data/dpa.output			// output from stage 2 of frontend
-	├── data/wn.dump			// internal system dump after stage 1 of frontend
-	├── data/wn_orig.dump			// internal system dump after stage 2 of frontend
-	├── fconfig				// configuration file
-	├── avr.err				// stderr report
-	├── dot					// folder to visualize system
-	├── <test-name>.ilang			// .ilang file generated from yosys
-	├── <test-name>_y.v			// verilog file (equivalent to .ilang)
-	└── yosys.log				// yosys log
-
-	As a quick summary relating to the run, avr produces certain key information on stderr.
-	For example, running python avr.py examples/cav14_example/cav14_example.v produces the following on stderr.
-
-	3	: 0	: 0 s: 0                  
-	3	: 1	: 0 1 s: 1                  
-	3	: 1	: 0 0 1 s: 1                  
+````
+<output-path>
+└── pr_<test-name>
+    ├── <test-name>.btor2		[BTOR2 input file]
+    ├── result.pr				[result: h for safe, v for unsafe, f_* for timeout / memout / error]
+    ├── cex.witness				[witness in BTOR2 format (if property is proved unsafe)]
+    ├── inv.txt					[inductive invariant proof (if property is proved safe)]
+    ├── <test-name>.results		[statistics file]
+    ├── design.smt2				[input design in VMT format]
+    ├── inv.smt2				[inductive invariant proof in VMT format (if property is proved safe)]
+    └── work_w<i>/				[worker <i> log directory]
+````
+As a quick summary relating to the run, AVR produces certain key information as output.
+	For example, running ```python3 avr_pr.py examples/btor2/counter.btor2``` produces the following output:
+````
+@     0s  (starting avr proof race)
+@     0s  (output dir: output/pr_test)
+@     0s  (max 5 workers)
+@     0s  (started worker 0 with pid 13366)
+@     0s  (started worker 1 with pid 13368)
+@     0s  (started worker 2 with pid 13370)
+@     0s  (spawned 3 workers)
+@     0s  (total 3 workers using 37 MB)
+@     0s  (worker 0 finished with result safe) python3 avr.py
+@     0s  (worker 0 output)
+	(output dir: output/pr_test/work_w0)
+	(frontend: btor2)
+	(property: all (1 assertions))
+	(4 / 4 flops initialized)
+	(abstraction: sa+uf)
+   1	: 0	: 0 s: 0    0s                  
+   2	: 1	: 0 0 s: 0    0s                  
+   2	: 1	: 0 0 s: 0    0s                  
       Result        Time        Mem.       #Refs           
                      sec          MB                       
-           h        0.01          13           3
-      ":" separated numbers indicate the following:
-	<# of refinements learnt> : <max frame> : <# of added clauses in each frame> s: <total # of clauses learnt>
-	Result can be mapped as follows:
-		h	-> Property holds				(inv.txt contains inductive invariant)
-		v	-> Property violated 				(reach.output contains a set of counterexamples)
-		f_*	-> Error / time or memory limit exceeded	(check reach.output for possible more information)
+           h        0.01          15           2
+@     0s  (stopping all workers)
+@     0s  (proof race finished with answer safe in 0.19 seconds)
+@     0s  (copied results from worker 0 in output/pr_test)
+````
+":" separated numbers indicate the following:
 
---> Notes
-    a) avr is still in development phase and uses several parameters internally for efficient property checking.
-       Many such parameters can be tuned/corrected, including frontend support via Yosys.
-    b) "property" is a reserved keyword.
-    c) Property description is expected to be present in the top module, and not in submodules.
-    d) Multiple properties are allowed. One can select a single property by using option --property <prop-name> in the API. The option 
-       tries finding a signal named *<prop-name> in the design as property and discards all other assertions (if a match is found).
-    e) There is also limited support for SystemVerilog concurrent assumptions using assume property ( .. ).
-    f) Use the dot folder to explore visualizations for the transition system.
-    g) Initial state conditions collected by avr are listed in parse.results file.
-    h) Currently counterexample (for a violating property) is not presented in a standard format.
-    i) After proving a property, avr performs a series of checks to ensure correctness of the result (for the interpreted system).
-    j) If Averroes produces an output saying poor abstraction, this can be (sometimes) handled using a new technique 
-       (use option --abstract sa).
-    k) avr performs best especially for control-centric properties and is almost independent of the bit-width of words in the system.
-    l) Memory abstraction technique is still in development phase.
-    m) Use option --effort_mininv to minimize inductive invariant (in the case property is true).
-       0 (no minimization), 1 (abstract fast), 2 (abstract slow), 3 (concrete fast), 4 (concrete slow).
-    n) Use --vmt to read in a .vmt file (instead of yosys frontend).
-       supported theories: quantifier-free bit-vectors, linear integer arithmetic and arrays.
-    o) Use --abstract to enable/disable data abstraction.
-	   sa (no data abstraction, QF_BV), sa+uf (data abstraction, QF_UF), 
-	   saN+ecM (no data abstraction upto bit-width of N, 
-	            extract/concat interpretation level is M [0: none, 1: some (default), 2: full])
-    p) Use --granularity to configure abstract granularity level
+```<# of refinements learnt> : <max frame> : <# of added clauses in each frame> s: <total # of clauses learnt>```
+
+Result can be mapped as follows:
+````
+h	-> Property holds (safe)					[inv.txt contains the inductive invariant proof]
+v	-> Property violated (unsafe)				[cex.witness contains the counterexample]
+f_*	-> Time or memory limit exceeded / error 
+````
+
+####Dependencies
+- [Yosys](https://github.com/YosysHQ/yosys) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [copyright (c) 2019 Clifford Wolf] 
+--------------- for Verilog / VHDL frontend
+- [Yices 2](https://github.com/SRI-CSL/yices2)  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [copyright (c) 2019 SRI International] 
+--------------- SMT solver backend
+- [Z3](https://github.com/Z3Prover/z3)  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [copyright (c) 2019 Microsoft Corporation] 
+--------------- SMT solver backend
+- [MathSAT5](http://mathsat.fbk.eu/)  &nbsp; [copyright (c) 2019 Fondazione Bruno Kessler, Italy] 
+--------------- VMT frontend, SMT solver backend
+- [Boolector](https://github.com/Boolector/boolector)  &nbsp;&nbsp; [copyright (c) 2007-2019 Armin Biere, 2007-2009 Robert Brummayer, 2012-2019 Aina Niemetz, 2012-2019 Mathias Preiner] 
+--------------- BTOR2 frontend, SMT solver backend
+- [JG](https://www.cadence.com/content/cadence-www/global/en_US/home/tools/system-design-and-verification/formal-and-static-verification/jasper-gold-verification-platform.html)  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [copyright (c) 2007-Present Cadence Design Systems, Inc.] 
+--------------- JG frontend
+
+####License
+Copyright (c) 2019  Aman Goel and Karem A. Sakallah, University of Michigan. All rights reserved.
+
+AVR is available for research and evaluation purposes only. 
+AVR is provided as is, without any warranty.
+Any usage of AVR needs to comply with the usage terms of the dependencies of AVR as detailed in the file [COPYING](https://github.com/aman-goel/avr/blob/hwmcc19/COPYING). 
+
+####Notes for Pro Users
+- ```<output-path>``` (default: output) and ```<test-name>``` (default: test) can be customized using command-line options ```-o``` and ```-n``` in ```avr_pr.py```).
+- AVR is still in development phase and uses several parameters internally for efficient property checking. Many such parameters can be tuned / corrected, including frontend support via Yosys.
+- After proving a property, AVR performs a series of checks to ensure correctness of the result (for the interpreted system).
+- AVR performs best especially for control-centric properties and is almost independent of the bit-width of words in the system.
+- Memory abstraction technique is still in development phase.
+- Use --vmt to read in a .vmt file.
+	[supported theories: quantifier-free bit-vectors, linear integer arithmetic and arrays]
+- [Verilog / VHDL] Property description is expected to be present in the top module, and not in submodules.
+- ```property``` is a reserved keyword.
+- Initial state conditions collected by AVR are listed in parse.results file.
+- Multiple properties are allowed. One can select a single property by using option --property ```<prop-name>``` in the ```avr.py```. The option tries finding a signal named ```*<prop-name>``` in the design as property and discards all other assertions (if a match is found).
+- There is also limited support for SystemVerilog concurrent assumptions using assume property ( .. ).
+- Use option --effort_mininv to minimize inductive invariant (in the case property is true).
+        0 (no minimization), 1 (abstract fast), 2 (abstract slow), 3 (concrete fast), 4 (concrete slow)
+- Use --abstract to enable/disable data abstraction.
+ 	   sa (no data abstraction, QF_BV), sa+uf (data abstraction, QF_UF), 
+ 	   saN+ecM (no data abstraction upto bit-width of N, 
+ 	            extract/concat interpretation level is M [0: none, 1: some (default), 2: full])
+- Use --granularity to configure abstract granularity level
        0 (lowest), 1 (also allow sv-inp mixed constraints), 2 (also allow inp constraints).
-    q) Use --level to configure abstraction fineness level
+- Use --level to configure abstraction fineness level
        0 (lowest), 1 (also allow local equality), 2 (also allow variable equality), 3 (also allow variable equality with extract/concat),
-       4 (also allow other predicates), 5 (also allow function equality).
-    r) Use --lazy_assume to configure laziness of assumptions
+      4 (also allow other predicates), 5 (also allow function equality).
+- Use --lazy_assume to configure laziness of assumptions
        0 (eager- add all assumptions), 1 (lazy- add assumptions but don't introduce new cones), 2 (lazy- don't add assumptions).
-    s) Use --smt2 to print the design in SMT-LIB v2 format, including the inductive proof (when AVR proves the property)
-    t) Use --dot <7-digit binary> to visualize the design and AVR learning using .dot files. Example- --dot 1000011
-       position: 0 (property), 1 (transition relation), 2 (assumptions), 3 (xcat handler), 4 (xcat handler detailed), 
-                 5 (refinement axioms), 6 (IC3 query solutions).
+- Use --smt2 to print the design in SMT-LIB v2 format, including the inductive proof (when AVR proves the property)
+- Use --dot <7-digit binary> to visualize the design and AVR learning using .dot files. Example- --dot 1000011
+      position: 0 (property), 1 (transition relation), 2 (assumptions), 3 (xcat handler), 4 (xcat handler detailed), 
+                5 (refinement axioms), 6 (IC3 query solutions).
 
-We would be glad to hear from you and help you in case you are having a difficulty in using Averroes.
-Please contact Aman Goel (amangoel@umich.edu) for help/suggestions/modifications or just to share your comments on Averroes!
+We would be glad to hear from you and help you in the case you are having a difficulty in using AVR
+Please report bugs and share your usage experience via email  [(amangoel@umich.edu)](amangoel@umich.edu) or on github [(https://github.com/aman-goel/avr)](https://github.com/aman-goel/avr)
