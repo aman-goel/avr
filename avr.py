@@ -167,8 +167,12 @@ def main():
 				opts.yosys = "/usr/local/bin"
 				print("\t(found yosys in /usr/local/bin)")
 	
+	bin_path = opts.bin + "/avr"
+	if not opts.bin.startswith("/"):
+		bin_path = "./" + bin_path
+		
 	command = ""
-	command = command + "./" + opts.bin + "/avr"
+	command = command + bin_path
 	command = command + " " + f
 	command = command + " " + str(opts.top)
 	command = command + " " + path
