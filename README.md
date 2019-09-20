@@ -1,41 +1,40 @@
-#Averroes v2.0 (AVR) 
+# Averroes v2.0 (AVR) 
 
 **A**bstract **VER**ification of **R**eachability **O**f **E**lectronic **S**ystems
 
->Copyright (c) 2019  Aman Goel [(amangoel@umich.edu)](amangoel@umich.edu)  and  Karem A. Sakallah [(karem@umich.edu)](karem@umich.edu) , University of Michigan
+> Copyright (c) 2019  Aman Goel [(amangoel@umich.edu)](amangoel@umich.edu)  and  Karem A. Sakallah [(karem@umich.edu)](karem@umich.edu) , University of Michigan
+> Reads a state transition system and performs property checking  using syntax-guided data abstraction
 
->Reads a state transition system and performs property checking  using syntax-guided data abstraction
-
-####Installation
+#### Installation
 Simply download or clone the repository and you are good to go
 - All dependencies are statically linked
 - If needed, install [Yosys](https://github.com/YosysHQ/yosys) to pass input as Verilog, VHDL
 
-####AVR Proof Race
+#### AVR Proof Race
 Use AVR *Proof Race* to automatically run multiple configurations in parallel
 - Allows process-level parallelism to solve the problem within a given time and memory budget
 
-####Usage
+#### Usage
 	python3 avr_pr.py -o <output-path> -n <test-name> <path>/<file>.btor2
 	(check the output in <output-path>/pr_<test-name>)
 	 
 	Example:	python3 avr_pr.py -o foo -n bar examples/btor2/counter.btor2
 				(check the output in foo/pr_bar)
 
-####Output
+#### Output
 AVR creates a directory ```<output-path>```/pr_```<test-name>``` which contains results, statistics and logs relating to the run
 
 ````
 <output-path>
 └── pr_<test-name>
     ├── <test-name>.btor2		[BTOR2 input file]
-    ├── result.pr				[result: h for safe, v for unsafe, f_* for timeout / memout / error]
-    ├── cex.witness				[witness in BTOR2 format (if property is proved unsafe)]
-    ├── inv.txt					[inductive invariant proof (if property is proved safe)]
+    ├── result.pr			[result: h for safe, v for unsafe, f_* for timeout / memout / error]
+    ├── cex.witness			[witness in BTOR2 format (if property is proved unsafe)]
+    ├── inv.txt				[inductive invariant proof (if property is proved safe)]
     ├── <test-name>.results		[statistics file]
-    ├── design.smt2				[input design in VMT format]
-    ├── inv.smt2				[inductive invariant proof in VMT format (if property is proved safe)]
-    └── work_w<i>/				[worker <i> log directory]
+    ├── design.smt2			[input design in VMT format]
+    ├── inv.smt2			[inductive invariant proof in VMT format (if property is proved safe)]
+    └── work_w<i>/			[worker <i> log directory]
 ````
 As a quick summary relating to the run, AVR produces certain key information as output.
 	For example, running ```python3 avr_pr.py examples/btor2/counter.btor2``` produces the following output:
@@ -71,33 +70,33 @@ As a quick summary relating to the run, AVR produces certain key information as 
 
 Result can be mapped as follows:
 ````
-h	-> Property holds (safe)					[inv.txt contains the inductive invariant proof]
-v	-> Property violated (unsafe)				[cex.witness contains the counterexample]
+h	-> Property holds (safe)			[inv.txt contains the inductive invariant proof]
+v	-> Property violated (unsafe)			[cex.witness contains the counterexample]
 f_*	-> Time or memory limit exceeded / error 
 ````
 
-####Dependencies
+#### Dependencies
 - [Yosys](https://github.com/YosysHQ/yosys) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [copyright (c) 2019 Clifford Wolf] 
---------------- for Verilog / VHDL frontend
+--------------------------------------------- Verilog / VHDL frontend
 - [Yices 2](https://github.com/SRI-CSL/yices2)  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [copyright (c) 2019 SRI International] 
---------------- SMT solver backend
+--------------------------------------- SMT solver backend
 - [Z3](https://github.com/Z3Prover/z3)  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [copyright (c) 2019 Microsoft Corporation] 
---------------- SMT solver backend
+--------------------------------- SMT solver backend
 - [MathSAT5](http://mathsat.fbk.eu/)  &nbsp; [copyright (c) 2019 Fondazione Bruno Kessler, Italy] 
---------------- VMT frontend, SMT solver backend
+------------------- VMT frontend, SMT solver backend
 - [Boolector](https://github.com/Boolector/boolector)  &nbsp;&nbsp; [copyright (c) 2007-2019 Armin Biere, 2007-2009 Robert Brummayer, 2012-2019 Aina Niemetz, 2012-2019 Mathias Preiner] 
---------------- BTOR2 frontend, SMT solver backend
+--------------------------------------------------------------------------- BTOR2 frontend, SMT solver backend
 - [JG](https://www.cadence.com/content/cadence-www/global/en_US/home/tools/system-design-and-verification/formal-and-static-verification/jasper-gold-verification-platform.html)  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [copyright (c) 2007-Present Cadence Design Systems, Inc.] 
---------------- JG frontend
+-------- JG frontend
 
-####License
+#### License
 Copyright (c) 2019  Aman Goel and Karem A. Sakallah, University of Michigan. All rights reserved.
 
 AVR is available for research and evaluation purposes only. 
 AVR is provided as is, without any warranty.
 Any usage of AVR needs to comply with the usage terms of the dependencies of AVR as detailed in the file [COPYING](https://github.com/aman-goel/avr/blob/hwmcc19/COPYING). 
 
-####Notes for Pro Users
+#### Notes for Pro Users
 - ```<output-path>``` (default: output) and ```<test-name>``` (default: test) can be customized using command-line options ```-o``` and ```-n``` in ```avr_pr.py```).
 - AVR is still in development phase and uses several parameters internally for efficient property checking. Many such parameters can be tuned / corrected, including frontend support via Yosys.
 - After proving a property, AVR performs a series of checks to ensure correctness of the result (for the interpreted system).
