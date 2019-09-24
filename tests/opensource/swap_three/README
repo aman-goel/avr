@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	vce16
+name:	swap_three
+top_file:	swap_three/swap2.v

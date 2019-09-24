@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2c21
+name:	v_DAIO
+top_file:	v_DAIO/main.v

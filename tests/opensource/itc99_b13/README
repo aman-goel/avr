@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	vce8
+name:	itc99_b13
+top_file:	itc99_b13/b13_1.v

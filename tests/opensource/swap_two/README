@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	vce15
+name:	swap_two
+top_file:	swap_two/swap1.v

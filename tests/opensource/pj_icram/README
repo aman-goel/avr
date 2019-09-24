@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	vce24
+name:	pj_icram
+top_file:	pj_icram/icram_2.v

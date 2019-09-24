@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2s85
+name:	vcegar_QF_BV_usb_phy_1
+top_file:	vcegar_QF_BV_usb_phy_1/usb_phy_1.v

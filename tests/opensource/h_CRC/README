@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2c9
+name:	h_CRC
+top_file:	h_CRC/main.sv

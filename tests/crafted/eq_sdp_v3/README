@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	sim7
+name:	eq_sdp_v3
+top_file:	eq_sdp_v3/eq_sdp_v3.v

@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2c15
+name:	h_traffic_light_example
+top_file:	h_traffic_light_example/main.sv

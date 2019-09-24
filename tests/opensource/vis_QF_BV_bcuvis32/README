@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2s43
+name:	vis_QF_BV_bcuvis32
+top_file:	vis_QF_BV_bcuvis32/bcuvis32.v

@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2c19
+name:	h_b05
+top_file:	h_b05/main.sv

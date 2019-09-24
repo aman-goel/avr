@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	cra2
+name:	diagonal
+top_file:	diagonal/diagonal.v

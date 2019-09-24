@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	sim1
+name:	paper_v3
+top_file:	paper_v3/paper_v3.v

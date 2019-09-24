@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	sof1
+name:	sw_state_machine
+top_file:	sw_state_machine/sw_state_machine.v

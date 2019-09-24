@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	vce3
+name:	bug-1
+top_file:	bug-1/1.v

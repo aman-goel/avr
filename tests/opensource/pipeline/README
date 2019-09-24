@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	vce11
+name:	pipeline
+top_file:	pipeline/pipeline.v

@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2s6
+name:	vis_arrays_am2910_p4
+top_file:	vis_arrays_am2910_p4/am2910_p4.v

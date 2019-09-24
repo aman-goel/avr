@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2c12
+name:	h_segments
+top_file:	h_segments/main.v

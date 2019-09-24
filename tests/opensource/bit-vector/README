@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	vce2
+name:	bit-vector
+top_file:	bit-vector/bit-vector.v

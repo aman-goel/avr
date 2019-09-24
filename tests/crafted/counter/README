@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	cra3
+name:	counter
+top_file:	counter/counter.v

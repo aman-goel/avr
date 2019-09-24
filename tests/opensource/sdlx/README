@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	vce13
+name:	sdlx
+top_file:	sdlx/control1.v

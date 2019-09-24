@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	vce4
+name:	cache_coherence_two
+top_file:	cache_coherence_two/two_processor_bin_2.v

@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2c37
+name:	Huffman_enc
+top_file:	Huffman_enc/main.v

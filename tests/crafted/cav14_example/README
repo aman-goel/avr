@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	cra1
+name:	cav14_example
+top_file:	cav14_example/cav14_example.v

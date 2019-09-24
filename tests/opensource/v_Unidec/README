@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2c23
+name:	v_Unidec
+top_file:	v_Unidec/main.sv

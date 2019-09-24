@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	vce14
+name:	seq
+top_file:	seq/example.v

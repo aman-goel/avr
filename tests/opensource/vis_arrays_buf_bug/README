@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2s11
+name:	vis_arrays_buf_bug
+top_file:	vis_arrays_buf_bug/buf_bug.v

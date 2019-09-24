@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	vce23
+name:	pi_bus
+top_file:	pi_bus/main_1_2.v

@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	vce5
+name:	cache_coherence_three
+top_file:	cache_coherence_three/three_processor_bin_2.v

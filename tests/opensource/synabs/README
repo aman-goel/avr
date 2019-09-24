@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	vce18
+name:	synabs
+top_file:	synabs/synabs.v

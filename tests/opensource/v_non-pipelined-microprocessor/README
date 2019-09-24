@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2c32
+name:	v_non-pipelined-microprocessor
+top_file:	v_non-pipelined-microprocessor/main_2.v

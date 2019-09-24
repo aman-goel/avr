@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2s47
+name:	vis_QF_BV_ibuf
+top_file:	vis_QF_BV_ibuf/ibuf_mod.v

@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2s86
+name:	vcegar_QF_BV_ar
+top_file:	vcegar_QF_BV_ar/ar.v

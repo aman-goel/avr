@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2c17
+name:	h_Vending
+top_file:	h_Vending/main.sv

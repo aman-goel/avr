@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2s22
+name:	vis_arrays_vsa16a_p6
+top_file:	vis_arrays_vsa16a_p6/vsa16a_p6_mod.v

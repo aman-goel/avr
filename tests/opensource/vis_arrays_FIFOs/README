@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2s1
+name:	vis_arrays_FIFOs
+top_file:	vis_arrays_FIFOs/FIFOs.v

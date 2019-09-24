@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2s54
+name:	vis_QF_BV_spinner32
+top_file:	vis_QF_BV_spinner32/spinner32.v

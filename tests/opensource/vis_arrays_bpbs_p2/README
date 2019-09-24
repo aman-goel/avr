@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2s8
+name:	vis_arrays_bpbs_p2
+top_file:	vis_arrays_bpbs_p2/bpbs_p2.v

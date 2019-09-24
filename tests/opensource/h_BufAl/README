@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2c8
+name:	h_BufAl
+top_file:	h_BufAl/main.sv

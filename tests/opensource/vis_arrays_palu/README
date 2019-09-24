@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2s14
+name:	vis_arrays_palu
+top_file:	vis_arrays_palu/palu.v

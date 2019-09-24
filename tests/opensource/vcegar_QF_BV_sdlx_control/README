@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2s84
+name:	vcegar_QF_BV_sdlx_control
+top_file:	vcegar_QF_BV_sdlx_control/sdlx_control.v

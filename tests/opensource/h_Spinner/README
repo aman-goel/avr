@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2c13
+name:	h_Spinner
+top_file:	h_Spinner/main.sv

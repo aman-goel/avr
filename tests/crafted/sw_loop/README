@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	sof5
+name:	sw_loop
+top_file:	sw_loop/sw_loop.v

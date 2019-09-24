@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2c7
+name:	h_Barrel
+top_file:	h_Barrel/main.sv

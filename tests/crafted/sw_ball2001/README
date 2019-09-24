@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	sof2
+name:	sw_ball2001
+top_file:	sw_ball2001/sw_ball2001.v

@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	vce1
+name:	AR
+top_file:	AR/example.v

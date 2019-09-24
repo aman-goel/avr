@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2s48
+name:	vis_QF_BV_rotate32
+top_file:	vis_QF_BV_rotate32/rotate32.v

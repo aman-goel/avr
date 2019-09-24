@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	sof6
+name:	sw_sym_ex
+top_file:	sw_sym_ex/sw_sym_ex.v

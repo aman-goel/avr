@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	vce21
+name:	ethernet
+top_file:	ethernet/ethernet2.v

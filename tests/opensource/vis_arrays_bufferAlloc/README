@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2s12
+name:	vis_arrays_bufferAlloc
+top_file:	vis_arrays_bufferAlloc/bufferAlloc.v

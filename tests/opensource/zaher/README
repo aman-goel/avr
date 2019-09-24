@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	vce26
+name:	zaher
+top_file:	zaher/zdlx_impl.v_for_pred.v

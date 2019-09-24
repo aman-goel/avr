@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2s46
+name:	vis_QF_BV_fru32_p3
+top_file:	vis_QF_BV_fru32_p3/fru32_p3.v

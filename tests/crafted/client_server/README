@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	dis1
+name:	client_server
+top_file:	client_server/client_server.v

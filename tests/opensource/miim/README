@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	vce9
+name:	miim
+top_file:	miim/vMiim.v

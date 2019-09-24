@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	dis3
+name:	toy_lock_4
+top_file:	toy_lock_4/toy_lock.v

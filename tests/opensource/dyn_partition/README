@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	vce6
+name:	dyn_partition
+top_file:	dyn_partition/dp.v

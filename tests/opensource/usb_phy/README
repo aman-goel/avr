@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	vce17
+name:	usb_phy
+top_file:	usb_phy/usb_phy_1.v

@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2s2
+name:	vis_arrays_am2901
+top_file:	vis_arrays_am2901/am2901.v

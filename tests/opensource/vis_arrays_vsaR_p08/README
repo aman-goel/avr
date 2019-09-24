@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2s32
+name:	vis_arrays_vsaR_p08
+top_file:	vis_arrays_vsaR_p08/vsaR_p08.v

@@ -1,0 +1,4 @@
+; printed by Yosys
+id:	v2s16
+name:	vis_arrays_two_p2
+top_file:	vis_arrays_two_p2/two_p2.v
