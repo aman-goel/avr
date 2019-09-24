@@ -115,16 +115,26 @@ def main():
 	if not os.path.isfile(opts.file):
 		raise Exception("Unable to find top file: %s" % opts.file)
 
-	en_vmt = DEFAULT_EN_VMT
-	if (opts.vmt % 2 == 1):
-		en_vmt = not DEFAULT_EN_VMT
-	en_jg  = DEFAULT_EN_JG
-	if (opts.jg % 2 == 1):
-		en_jg = not DEFAULT_EN_JG
-	en_bt = DEFAULT_EN_BTOR2
-	if (opts.bt % 2 == 1):
-		en_bt = not DEFAULT_EN_BTOR2
-
+	en_vmt = False
+	en_jg = False
+	en_bt = False
+	if opts.file.endswith('.btor2') or opts.file.endswith('.btor'):
+		en_bt = True
+	elif opts.file.endswith('.vmt') or opts.file.endswith('.smt2'):
+		en_vmt = True
+	elif opts.file.endswith('.wif'):
+		en_jg = True
+	elif not (opts.file.endswith('.v') or opts.file.endswith('.sv')):
+		en_vmt = DEFAULT_EN_VMT
+		if (opts.vmt % 2 == 1):
+			en_vmt = not DEFAULT_EN_VMT
+		en_jg  = DEFAULT_EN_JG
+		if (opts.jg % 2 == 1):
+			en_jg = not DEFAULT_EN_JG
+		en_bt = DEFAULT_EN_BTOR2
+		if (opts.bt % 2 == 1):
+			en_bt = not DEFAULT_EN_BTOR2
+		
 	print("\t(output dir: %s/work_%s)" % (opts.out, opts.name))
 	if (en_jg):
 		print("\t(frontend: jg)")
