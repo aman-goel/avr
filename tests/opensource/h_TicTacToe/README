@@ -1,4 +1,4 @@
-; printed by Yosys
+; author: Aman Goel (amangoel@umich.edu)
+; date: 09/24/2019
 id:	v2c14
-name:	h_TicTacToe
 top_file:	h_TicTacToe/main.sv

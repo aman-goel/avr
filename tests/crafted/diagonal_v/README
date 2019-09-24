@@ -1,4 +1,4 @@
-; printed by Yosys
+; author: Aman Goel (amangoel@umich.edu)
+; date: 09/24/2019
 id:	cra5
-name:	diagonal_v
 top_file:	diagonal_v/diagonal_v.v

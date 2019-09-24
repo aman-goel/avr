@@ -1,4 +1,4 @@
-; printed by Yosys
+; author: Aman Goel (amangoel@umich.edu)
+; date: 09/24/2019
 id:	v2c15
-name:	h_traffic_light_example
 top_file:	h_traffic_light_example/main.sv

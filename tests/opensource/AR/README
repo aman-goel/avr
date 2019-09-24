@@ -1,4 +1,4 @@
-; printed by Yosys
+; author: Aman Goel (amangoel@umich.edu)
+; date: 09/24/2019
 id:	vce1
-name:	AR
 top_file:	AR/example.v

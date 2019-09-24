@@ -1,4 +1,4 @@
-; printed by Yosys
+; author: Aman Goel (amangoel@umich.edu)
+; date: 09/24/2019
 id:	v2s29
-name:	vis_arrays_vsaR_p05
 top_file:	vis_arrays_vsaR_p05/vsaR_p05.v

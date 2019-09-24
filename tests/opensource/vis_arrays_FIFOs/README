@@ -1,4 +1,4 @@
-; printed by Yosys
+; author: Aman Goel (amangoel@umich.edu)
+; date: 09/24/2019
 id:	v2s1
-name:	vis_arrays_FIFOs
 top_file:	vis_arrays_FIFOs/FIFOs.v

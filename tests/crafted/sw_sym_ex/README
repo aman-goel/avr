@@ -1,4 +1,4 @@
-; printed by Yosys
+; author: Aman Goel (amangoel@umich.edu)
+; date: 09/24/2019
 id:	sof6
-name:	sw_sym_ex
 top_file:	sw_sym_ex/sw_sym_ex.v
