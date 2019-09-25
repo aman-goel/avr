@@ -225,6 +225,7 @@ then
 	fi
 	echo "yosys memory_unpack;" >> $YOSYS_CMD
 fi
+# echo "yosys wreduce;" >> $YOSYS_CMD
 if [ $AUTOOPT -eq 1 ]
 then
 	echo "yosys clean -purge;" >> $YOSYS_CMD

@@ -19,8 +19,8 @@ DEFAULT_INIT_FILE="-"
 DEFAULT_OUT="output"
 DEFAULT_YOSYS="yosys"
 DEFAULT_CLK="clk"
-DEFAULT_TIMEOUT=3600
-DEFAULT_MEMOUT=116000
+DEFAULT_TIMEOUT=1000
+DEFAULT_MEMOUT=15000
 DEFAULT_MEMORY=False
 DEFAULT_SPLIT=False
 DEFAULT_GRANULARITY=2
@@ -139,8 +139,10 @@ def main():
 	if (en_jg):
 		print("\t(frontend: jg)")
 		en_vmt = False
+		en_bt = False
 	elif en_vmt:
 		print("\t(frontend: vmt)")
+		en_bt = False
 	elif en_bt:
 		print("\t(frontend: btor2)")
 	else:
