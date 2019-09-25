@@ -2,4 +2,4 @@ python3 avr.py
 python3 avr.py -a sa
 python3 avr.py -s
 python3 avr.py -a sa8
-python3 avr.py -s -a sa
+python3 avr.py -f 1 --interpol 1
