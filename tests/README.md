@@ -1,4 +1,4 @@
-# Test cases for Model Checking
+# Benchmarks for Word-level Model Checking
 
 Compiled by Aman Goel [(amangoel@umich.edu)](amangoel@umich.edu)  and  Karem A. Sakallah [(karem@umich.edu)](karem@umich.edu) , University of Michigan
 
