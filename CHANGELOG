@@ -2,6 +2,40 @@ List of major changes and improvements between releases
 =======================================================
 
 
+AVR 2.0.19
+--------------------------
+(09 October 2019)
+ 
+ * Frontend
+    - BTOR2: Adds arithmetic overflow operators
+    
+ * Various
+    - Adds multi-property and array support to btor2 witness
+    - Minor corrections
+
+AVR 2.0.18
+--------------------------
+(08 October 2019)
+ 
+ * Various
+    - Version with low verbosity for HWMCC 2019
+    - Updates official name to AVR
+
+Averroes 2.0.17
+--------------------------
+(07 October 2019)
+ 
+ * API
+    - Updates to pr
+    - Now pr allows running btormc
+
+ * Frontend
+    - BTOR2: Corrections
+    - Yosys: Corrections
+    
+ * Backend
+    - Adds initial support for arrays inbt2 backend
+
 Averroes 2.0.16
 --------------------------
 (19 September 2019)

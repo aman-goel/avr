@@ -73,23 +73,24 @@ def getopts(header):
 	return args, p.parse_args()
 
 header="""
--------------------
-Averroes v""" + str(version) + """ (AVR)
--------------------
-  Abstract VERification of Reachability Of Electronic Systems
+---
+AVR
+---
+  Abstractly Verifying Reachability
   
   Reads a state transition system and performs property checking 
   using syntax-guided data abstraction
   
   Copyright (c) 2019  Aman Goel <amangoel@umich.edu> and 
-  Karem A. Sakallah <karem@umich.edu>, University of Michigan
+  Karem Sakallah <karem@umich.edu>, University of Michigan
   
   Please report bugs and share your usage experience via email 
   (amangoel@umich.edu) or on github (https://github.com/aman-goel/avr)	
 -------------------
 """
 
-short_header="""AVR (copyright (c) 2019  Aman Goel and Karem A. Sakallah, University of Michigan)"""
+short_header="""AVR 
+copyright (c) 2019  Aman Goel and Karem Sakallah, University of Michigan"""
 
 def split_path(name):
 	head, tail = ntpath.split(name)

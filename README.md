@@ -1,8 +1,8 @@
-# Averroes v2.0 (AVR) 
+# AVR (Averroes v2.0) 
 
-**A**bstract **VER**ification of **R**eachability **O**f **E**lectronic **S**ystems
+**A**bstractly **V**erifying **R**eachability of electronic systems
 
-> Copyright (c) 2019  Aman Goel [(amangoel@umich.edu)](amangoel@umich.edu)  and  Karem A. Sakallah [(karem@umich.edu)](karem@umich.edu) , University of Michigan
+> Copyright (c) 2019  Aman Goel [(amangoel@umich.edu)](amangoel@umich.edu)  and  Karem Sakallah [(karem@umich.edu)](karem@umich.edu) , University of Michigan
 
 Reads a state transition system and performs property checking  using syntax-guided data abstraction
 
@@ -86,12 +86,12 @@ f_*	-> Time or memory limit exceeded / error
 - [MathSAT5](http://mathsat.fbk.eu/)  &nbsp; [copyright (c) 2019 Fondazione Bruno Kessler, Italy] 
 ------------------- VMT frontend, SMT solver backend
 - [Boolector](https://github.com/Boolector/boolector)  &nbsp;&nbsp; [copyright (c) 2007-2019 Armin Biere, 2007-2009 Robert Brummayer, 2012-2019 Aina Niemetz, 2012-2019 Mathias Preiner] 
---------------------------------------------------------------------------- BTOR2 frontend, SMT solver backend
+--------------------------------------------------------------------------- BTOR2 frontend, SMT solver backend, BTORMC
 - [JG](https://www.cadence.com/content/cadence-www/global/en_US/home/tools/system-design-and-verification/formal-and-static-verification/jasper-gold-verification-platform.html)  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [copyright (c) 2007-Present Cadence Design Systems, Inc.] 
 -------- JG frontend
 
 #### License
-Copyright (c) 2019  Aman Goel and Karem A. Sakallah, University of Michigan. All rights reserved.
+Copyright (c) 2019  Aman Goel and Karem Sakallah, University of Michigan. All rights reserved.
 
 AVR is available for research and evaluation purposes only. 
 AVR is provided as is, without any warranty.

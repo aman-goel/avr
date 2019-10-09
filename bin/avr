@@ -237,8 +237,8 @@ then
 fi
 echo "yosys check;" >> $YOSYS_CMD
 echo "yosys write_ilang $OUT_PATH/$OUT_YOSYS;" >> $YOSYS_CMD
-echo "yosys write_btor $OUT_PATH/"$bm".btor2;" >> $YOSYS_CMD
 echo "yosys write_verilog -attr2comment $OUT_PATH/$OUT_VERILOG;" >> $YOSYS_CMD
+echo "yosys write_btor $OUT_PATH/"$bm".btor2;" >> $YOSYS_CMD
 $p_yosys/yosys -c $YOSYS_CMD -Q -T -q -q -l $OUT_PATH/yosys.log
 
 fi

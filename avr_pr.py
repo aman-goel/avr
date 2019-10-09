@@ -1,4 +1,4 @@
-import os, sys, datetime, time, psutil, resource, argparse, shutil
+import os, sys, datetime, time, psutil, resource, argparse, shutil, signal
 from subprocess import Popen, PIPE, DEVNULL, STDOUT
 from enum import Enum
 
@@ -19,7 +19,7 @@ DEFAULT_TOP="-"
 DEFAULT_OUT="output"
 DEFAULT_NAME="test"
 DEFAULT_WORKERS="workers.txt"
-DEFAULT_BIN="bin"
+#DEFAULT_BIN="bin"
 DEFAULT_TIMEOUT=3590
 DEFAULT_MEMOUT=118000
 DEFAULT_PRINT_SMT2=False
@@ -31,23 +31,24 @@ resultW = 0
 out_path = DEFAULT_OUT + "/" + DEFAULT_NAME
 
 header="""
----------------------------------
-Averroes v""" + str(version) + """ (AVR) -- Proof Race
----------------------------------
-  Abstract VERification of Reachability Of Electronic Systems
+-----------------
+AVR -- Proof Race
+-----------------
+  Abstractly Verifying Reachability
   
   Reads a state transition system and performs property checking 
   using syntax-guided data abstraction
   
   Copyright (c) 2019  Aman Goel <amangoel@umich.edu> and 
-  Karem A. Sakallah <karem@umich.edu>, University of Michigan
+  Karem Sakallah <karem@umich.edu>, University of Michigan
   
   Please report bugs and share your usage experience via email 
   (amangoel@umich.edu) or on github (https://github.com/aman-goel/avr)	
 ---------------------------------
 """
 
-short_header="""AVR -- Proof Race (copyright (c) 2019  Aman Goel and Karem A. Sakallah, University of Michigan)"""
+short_header="""AVR -- Proof Race 
+copyright (c) 2019  Aman Goel and Karem Sakallah, University of Michigan"""
 
 def getopts(header):
 	p = argparse.ArgumentParser(description=str(header), formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -55,7 +56,7 @@ def getopts(header):
 	p.add_argument('-o', '--out',       help='<output-path> (default: %s)' % DEFAULT_OUT, type=str, default=DEFAULT_OUT)
 	p.add_argument('-n', '--name',      help='<test-name> (default: %s)' % DEFAULT_NAME, type=str, default=DEFAULT_NAME)
 	p.add_argument('-w', '--worker',    help='workers config file (default: %s)' % DEFAULT_WORKERS, type=str, default=DEFAULT_WORKERS)
-	p.add_argument('-b', '--bin',       help='binary path (default: %s)' % DEFAULT_BIN, type=str, default=DEFAULT_BIN)
+	#p.add_argument('-b', '--bin',       help='binary path (default: %s)' % DEFAULT_BIN, type=str, default=DEFAULT_BIN)
 	p.add_argument('--timeout',         help='timeout (CPU time) in seconds (default: %s)' % DEFAULT_TIMEOUT, type=int, default=DEFAULT_TIMEOUT)
 	p.add_argument('--memout',          help='memory limit in mega bytes (default: %s)' % DEFAULT_MEMOUT, type=int, default=DEFAULT_MEMOUT)
 	p.add_argument('--smt2',     		help='toggles printing system in smt2 format (default: %r)' % DEFAULT_PRINT_SMT2, action="count", default=0)
@@ -70,14 +71,14 @@ def setup():
 	global out_path
 	known, opts = getopts(header)
 	print(short_header)
-	if not os.path.isfile(opts.bin + "/avr"):
-		raise Exception("avr: main shell script not found")
-	if not os.path.isfile(opts.bin + "/vwn"):
-		raise Exception("avr: vwn binary not found")
-	if not os.path.isfile(opts.bin + "/dpa"):
-		raise Exception("avr: dpa binary not found")
-	if not os.path.isfile(opts.bin + "/reach"):
-		raise Exception("avr: reach binary not found")
+	#if not os.path.isfile(opts.bin + "/avr"):
+		#raise Exception("avr: main shell script not found")
+	#if not os.path.isfile(opts.bin + "/vwn"):
+		#raise Exception("avr: vwn binary not found")
+	#if not os.path.isfile(opts.bin + "/dpa"):
+		#raise Exception("avr: dpa binary not found")
+	#if not os.path.isfile(opts.bin + "/reach"):
+		#raise Exception("avr: reach binary not found")
 	if not os.path.exists(opts.out):
 		os.makedirs(opts.out)
 	out_path = opts.out + "/pr_" + opts.name
@@ -94,7 +95,7 @@ def setup():
 	optSuffix = ""
 	optSuffix = optSuffix + " " + opts.file
 	optSuffix = optSuffix + " -o " + out_path
-	optSuffix = optSuffix + " -b " + opts.bin
+	#optSuffix = optSuffix + " -b " + opts.bin
 	
 	print_smt2 = DEFAULT_PRINT_SMT2
 	if (opts.smt2 % 2 == 1):
@@ -145,15 +146,15 @@ def run_command_all():
 def run_command(idx):
 	elapsed_time = time.time() - start_time
 	timeLimit = opts.timeout - elapsed_time
-	timeSuffix = " --timeout " + str(int(0.98*timeLimit))
+	timeSuffix = " --timeout " + str(int(0.99*timeLimit))
 
 	mem_usage = mem_usage_all()
-	memLimit = opts.memout - mem_usage
+	memLimit = max(opts.memout - (1.5*mem_usage), 500)
 	memSuffix = " --memout " + str(int(0.9*memLimit))
 	global numW
 	cmd = commands[idx] + optSuffix + timeSuffix + memSuffix + " -n w" + str(idx) + cmdSuffix
 	#print ("starting cmd: %s" % cmd)
-	proc = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+	proc = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, preexec_fn=os.setsid)
 	print (time_str(), "(started worker %d with pid %d)" % (idx, proc.pid))
 	processes[idx] = proc
 	commandsRun.append(idx)
@@ -163,7 +164,7 @@ def run_allowed(idx):
 	if idx in processes:
 		return False
 	total_mem_usage = mem_usage_all()
-	if total_mem_usage < (0.8*maxMemMB):
+	if total_mem_usage < (0.75*maxMemMB):
 		return True
 	return False
 
@@ -172,21 +173,20 @@ def run_commands_new(maxW):
 		return;
 	
 	numRun = 0
-	while (numW < len(commands) and numRun < maxW):
-		i = numW
-		retval = run_allowed(i)
+	wi = numW
+	while (wi < len(commands) and numRun < maxW):
+		retval = run_allowed(wi)
 		if retval:
-			run_command(i)
+			run_command(wi)
 			numRun += 1
-		else:
-			break
+		wi += 1
 	if numRun:
 		print (time_str(), "(spawned %d workers)" % numRun)
 		print (time_str(), "(total %d workers using %.0f MB)" % (numW, mem_usage_all()))
 	
 def kill_allowed(idx):
 	total_mem_usage = mem_usage_all()
-	if total_mem_usage >= (0.98*maxMemMB):
+	if total_mem_usage >= (0.9*maxMemMB):
 		return True
 	#print("kill not allowed since %f < %f" % (total_mem_usage, 0.98*maxMemMB))
 	return False
@@ -203,9 +203,11 @@ def kill_commands(maxW):
 	global memHigh
 	elapsed_time = time.time() - start_time
 	if (elapsed_time > (0.995*opts.timeout)):
+		memHigh = True
 		terminate_all()
 	mem_usage = mem_usage_all()
 	if (mem_usage > (opts.memout - 30)):
+		memHigh = True
 		terminate_all()
 	
 	if (numW <= 1):
@@ -260,14 +262,29 @@ def check_process(idx):
 				if 'avr-f_' in prVal:
 					retval = WorkerStatus.avr_err
 					return retval
+		else:
+			prFile = out_path + "/work_w" + str(idx) + "/btormc.out"
+			if os.path.isfile(prFile):
+				with open(prFile) as f:
+					prVal = f.read()
+					if 'sat' in prVal:
+						retval = WorkerStatus.avr_v
+						return retval
+					else:
+						retval = WorkerStatus.avr_err
+						return retval
 	else:
 		retval = WorkerStatus.avr_run
 	return retval
 
 def terminate(idx):
 	proc = processes[idx]
-	proc.terminate()
-	proc.kill()
+	if proc.poll() is None:
+		os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
+	if proc.poll() is None:
+		os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
+	#proc.terminate()
+	#proc.kill()
 
 def terminate_all():
 	print (time_str(), "(stopping all workers)")
@@ -294,9 +311,10 @@ def check_process_all():
 		time.sleep(0.1)
 		if (it % 10 == 0):
 			run_commands_new(1)
-			if (it % 50 == 0):
-				kill_commands(1)
-				print (time_str(), "(total %d workers using %.0f MB)" % (numW, mem_usage_all()))
+		if (it % 10 == 0):
+			kill_commands(1)
+		if (it % 100 == 0):
+			print (time_str(), "(total %d workers using %.0f MB)" % (numW, mem_usage_all()))
 	return WorkerStatus.avr_err
 
 def colored(s):
@@ -305,16 +323,19 @@ def colored(s):
 def post_compile(retval):
 	elapsed_time = time.time() - start_time
 	s = colored("(proof race finished with answer %s in %.2f seconds)" % (get_result(retval), elapsed_time))
-	print(time_str(), s)
 	res_path = out_path + "/work_w" + str(resultW) + "/"
 	for filename in os.listdir(res_path):
 		if filename.endswith('.results'):
 			shutil.copy(res_path + filename, out_path + "/" + opts.name + ".results")
-		elif filename.endswith('.btor2'):
-			shutil.copy(res_path + filename, out_path + "/" + opts.name + ".btor2")
-		elif filename.endswith('result.pr') or filename.endswith('design.smt2') or filename.startswith('inv.') or filename.startswith('cex.witness'):
+		#elif filename.endswith('.btor2'):
+			#shutil.copy(res_path + filename, out_path + "/" + opts.name + ".btor2")
+		#elif filename.endswith('result.pr') or filename.endswith('design.smt2') or filename.startswith('inv.') or filename.startswith('cex.witness'):
+		elif filename.endswith('design.smt2') or filename.startswith('inv.') or filename.startswith('cex.witness'):
 			shutil.copy(res_path + filename, out_path)
+		elif filename.endswith('btormc.out'):
+			shutil.copy(res_path + filename, out_path+ "/cex.witness")
 	print(time_str(), "(copied results from worker %d in %s)" % (resultW, out_path))
+	print(time_str(), s)
 
 def worker_desc(idx):
 	return commands[idx]
