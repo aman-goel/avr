@@ -1,5 +1,4 @@
 python3 avr.py
-python3 btormc.py -b deps -k 1000
 python3 avr.py -a sa
 python3 avr.py -s
 python3 avr.py -a sa --interpol 1 -f 1
