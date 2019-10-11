@@ -1,9 +1,10 @@
-python3 avr.py
 python3 avr.py -a sa
-python3 avr.py -s
+python3 avr.py
+python3 avr.py -b bin_bt_cadical -s --bmc
+python3 avr.py -b bin_y2 --bmc
+python3 avr.py -b bin_y2 -s -a sa8
+python3 avr.py -l 0 -a sa16
+python3 avr.py --bmc
+python3 avr.py -b bin_bt_cadical -g 3 -l 0 -a sa32
 python3 avr.py -a sa --interpol 1 -f 1
-python3 avr.py -s -a sa8 -b bin_y2
-python3 avr.py -a sa24
-python3 avr.py -l 0 -a sa12
-python3 avr.py -a sa32
-python3 avr.py -g 3 -a sa16
+python3 avr.py -s

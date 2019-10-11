@@ -123,10 +123,12 @@ Any usage of AVR needs to comply with the usage terms of the dependencies of AVR
       4 (also allow other predicates), 5 (also allow function equality).
 - Use --lazy_assume to configure laziness of assumptions
        0 (eager- add all assumptions), 1 (lazy- add assumptions but don't introduce new cones), 2 (lazy- don't add assumptions).
-- Use --smt2 to print the design in SMT-LIB v2 format, including the inductive proof (when AVR proves the property)
+- Use --smt2 to print the design in SMT-LIB v2 format
 - Use --dot <7-digit binary> to visualize the design and AVR learning using .dot files. Example- --dot 1000011
       position: 0 (property), 1 (transition relation), 2 (assumptions), 3 (xcat handler), 4 (xcat handler detailed), 
                 5 (refinement axioms), 6 (IC3 query solutions).
+- Use --witness to print witness in BTOR2 (for disproved) / SMT-LIB v2 (for proved) format
+- Use --bmc to instead run a BMC engine (set max bmc bound using --kmax)
 
 We would be glad to hear from you and help you in the case you are having a difficulty in using AVR
 Please report bugs and share your usage experience via email  [(amangoel@umich.edu)](amangoel@umich.edu) or on github [(https://github.com/aman-goel/avr)](https://github.com/aman-goel/avr)

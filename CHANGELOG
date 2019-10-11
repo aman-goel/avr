@@ -2,6 +2,27 @@ List of major changes and improvements between releases
 =======================================================
 
 
+AVR 2.0.21
+--------------------------
+(11 October 2019)
+ 
+ * API
+    - Modifications to pr workers
+    - Removed btormc (for hwmcc 2019 submission)
+    - Adds backend boolector (with cadical) config
+
+ * Various
+    - Minor corrections to witness printing
+
+AVR 2.0.20
+--------------------------
+(10 October 2019)
+ 
+ * Core
+    - BMC: New technique
+    - BMC: Simple, clean, incremental bmc
+    - BMC: Supported by y2 and bt backends
+
 AVR 2.0.19
 --------------------------
 (09 October 2019)

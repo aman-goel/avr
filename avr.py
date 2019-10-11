@@ -37,7 +37,10 @@ DEFAULT_AB_LEVEL=2
 DEFAULT_LAZY_ASSUME=0
 DEFAULT_JG_PREPROCESS="-"
 DEFAULT_PRINT_SMT2=False
+DEFAULT_PRINT_WITNESS=False
 DEFAULT_DOT="0000000"
+DEFAULT_BMC_EN=False
+DEFAULT_BMC_MAX_BOUND=1000
 
 def getopts(header):
 	p = argparse.ArgumentParser(description=str(header), formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -67,7 +70,10 @@ def getopts(header):
 	p.add_argument('-la', '--lazy_assume',	help='lazy assumptions level (between 0-2) (default: %r)' % DEFAULT_LAZY_ASSUME, type=int, default=DEFAULT_LAZY_ASSUME)
 	p.add_argument('--jgpre',  			help='preprocessing options for jg (default: %s)' % DEFAULT_JG_PREPROCESS, type=str, default=DEFAULT_JG_PREPROCESS)
 	p.add_argument('--smt2',     		help='toggles printing system in smt2 format (default: %r)' % DEFAULT_PRINT_SMT2, action="count", default=0)
+	p.add_argument('--witness',         help='toggles printing witness (default: %r)' % DEFAULT_PRINT_WITNESS, action="count", default=0)
 	p.add_argument('--dot', 			help='option to configure dot files generation (default: %s)' % DEFAULT_DOT, type=str, default=DEFAULT_DOT)
+	p.add_argument('--bmc',             help='toggles using bmc engine (default: %r)' % DEFAULT_BMC_EN, action="count", default=0)
+	p.add_argument('-k', '--kmax',      help='max bound for bmc (default: %r)' % DEFAULT_BMC_MAX_BOUND, type=int, default=DEFAULT_BMC_MAX_BOUND)
 	p.add_argument('-v', '--verbosity', help='verbosity level (default: %r)' % DEFAULT_VERBOSITY, type=int, default=DEFAULT_VERBOSITY)
 	args, leftovers = p.parse_known_args()
 	return args, p.parse_args()
@@ -211,8 +217,20 @@ def main():
 	if (opts.smt2 % 2 == 1):
 		print_smt2 = not DEFAULT_PRINT_SMT2
 	command = command + " " + str(print_smt2)
+	
+	print_wit = DEFAULT_PRINT_WITNESS
+	if (opts.witness % 2 == 1):
+		print_wit = not DEFAULT_PRINT_WITNESS
+	command = command + " " + str(print_wit)
+	
 	command = command + " " + str(opts.dot)
 	command = command + " " + str(en_bt)
+	
+	bmc_en = DEFAULT_BMC_EN
+	if (opts.bmc % 2 == 1):
+		bmc_en = not DEFAULT_BMC_EN
+	command = command + " " + str(bmc_en)
+	command = command + " " + str(opts.kmax)
 	
 	s = subprocess.call( command, shell=True)
 	if (s != 0):

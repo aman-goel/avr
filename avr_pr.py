@@ -6,12 +6,12 @@ version=2.0
 start_time = time.time()
 
 cmdSuffix = ""
-maxWorkers = 10
+maxWorkers = 12
 
 optSuffix = " "
 commands = []
 commandsRun = []
-memHigh = False
+disableNew = False
 numW = 0
 processes = {}
 
@@ -23,10 +23,11 @@ DEFAULT_WORKERS="workers.txt"
 DEFAULT_TIMEOUT=3590
 DEFAULT_MEMOUT=118000
 DEFAULT_PRINT_SMT2=False
+DEFAULT_PRINT_WITNESS=False
 
 maxTimeSec = DEFAULT_TIMEOUT
 maxMemMB = DEFAULT_MEMOUT
-maxInitW = 3
+maxInitW = 4
 resultW = 0
 out_path = DEFAULT_OUT + "/" + DEFAULT_NAME
 
@@ -60,6 +61,7 @@ def getopts(header):
 	p.add_argument('--timeout',         help='timeout (CPU time) in seconds (default: %s)' % DEFAULT_TIMEOUT, type=int, default=DEFAULT_TIMEOUT)
 	p.add_argument('--memout',          help='memory limit in mega bytes (default: %s)' % DEFAULT_MEMOUT, type=int, default=DEFAULT_MEMOUT)
 	p.add_argument('--smt2',     		help='toggles printing system in smt2 format (default: %r)' % DEFAULT_PRINT_SMT2, action="count", default=0)
+	p.add_argument('--witness',         help='toggles printing witness (default: %r)' % DEFAULT_PRINT_WITNESS, action="count", default=0)
 	args, leftovers = p.parse_known_args()
 	return args, p.parse_args()
 
@@ -103,6 +105,12 @@ def setup():
 	if print_smt2:
 		optSuffix = optSuffix + " " + "--smt2"
 
+	print_witness = DEFAULT_PRINT_WITNESS
+	if (opts.witness % 2 == 1):
+		print_witness = not DEFAULT_PRINT_WITNESS
+	if print_witness:
+		optSuffix = optSuffix + " " + "--witness"
+
 	maxTimeSec = opts.timeout
 	maxMemMB = opts.memout
 
@@ -140,7 +148,9 @@ def run_command_all():
 	with open(opts.worker) as f:
 		for x in f:
 			if (maxWorkers < 0 or len(commands) < maxWorkers):
-				commands.append(x.strip())
+				cmd = x.strip()
+				if not cmd.startswith('#'):
+					commands.append(x.strip())
 	print (time_str(), "(max %d workers)" % len(commands))
 
 def run_command(idx):
@@ -164,17 +174,20 @@ def run_allowed(idx):
 	if idx in processes:
 		return False
 	total_mem_usage = mem_usage_all()
+	#print (time_str(), "(%.0f MB)" % total_mem_usage)
+	
 	if total_mem_usage < (0.75*maxMemMB):
 		return True
 	return False
 
 def run_commands_new(maxW):
-	if memHigh:
+	if disableNew:
 		return;
 	
 	numRun = 0
 	wi = numW
 	while (wi < len(commands) and numRun < maxW):
+		#print (time_str(), "(trying running %d)" % wi)
 		retval = run_allowed(wi)
 		if retval:
 			run_command(wi)
@@ -200,15 +213,17 @@ def choose_kill_id():
 	return killIdx
 
 def kill_commands(maxW):
-	global memHigh
+	global disableNew
 	elapsed_time = time.time() - start_time
 	if (elapsed_time > (0.995*opts.timeout)):
-		memHigh = True
+		disableNew = True
 		terminate_all()
+		return
 	mem_usage = mem_usage_all()
 	if (mem_usage > (opts.memout - 30)):
-		memHigh = True
+		disableNew = True
 		terminate_all()
+		return
 	
 	if (numW <= 1):
 		return;
@@ -224,7 +239,7 @@ def kill_commands(maxW):
 		else:
 			break
 	if numKill:
-		memHigh = True
+		disableNew = True
 		print (time_str(), "(killed %d workers)" % numKill)
 		print (time_str(), "(total %d workers using %.0f MB)" % (numW, mem_usage_all()))
 	
@@ -283,6 +298,7 @@ def terminate(idx):
 		os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
 	if proc.poll() is None:
 		os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
+
 	#proc.terminate()
 	#proc.kill()
 
@@ -309,9 +325,9 @@ def check_process_all():
 					terminate_all()
 					return retval
 		time.sleep(0.1)
-		if (it % 10 == 0):
+		if (it % 5 == 0):
 			run_commands_new(1)
-		if (it % 10 == 0):
+		if (it % 20 == 0):
 			kill_commands(1)
 		if (it % 100 == 0):
 			print (time_str(), "(total %d workers using %.0f MB)" % (numW, mem_usage_all()))
@@ -347,7 +363,10 @@ def mem_usage(idx):
 		psproc = psutil.Process(proc.pid)
 		mem_usage = psproc.memory_info().rss
 		for child in psproc.children(recursive=True):
-			mem_usage += child.memory_info().rss
+			try:
+				mem_usage += child.memory_info().rss
+			except (psutil.NoSuchProcess, psutil.ZombieProcess, psutil.AccessDenied):
+				mem_usage += 0
 		mem_usage *= 1e-6
 		
 		#print (time_str(), "(worker %d memory usage %f)" % (idx, mem_usage / 1024 / 1024))
@@ -373,7 +392,7 @@ def mem_usage(idx):
 
 def mem_usage_all():
 	total_mem_usage = 0.0
-	for i in processes.keys():
+	for i in commandsRun:
 		total_mem_usage += mem_usage(i)
 	return total_mem_usage
 

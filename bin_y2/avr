@@ -27,8 +27,11 @@ abLevel="${24}"
 lazyAssume="${25}"
 jgPreprocess="${26}"
 printSmt2="${27}"
-printDot="${28}"
-enBt="${29}"
+printWitness="${28}"
+printDot="${29}"
+enBt="${30}"
+enBmc="${31}"
+bmcKmax="${32}"
 
 BM_PATH="$p_dir"
 OUT_DIR="$p_out"
@@ -122,14 +125,20 @@ echo "$jgPreprocess" >> $OUT_PATH/fconfig
 echo "print_smt2_design" >> $OUT_PATH/fconfig
 echo "$printSmt2" >> $OUT_PATH/fconfig
 
-echo "print_smt2_inv" >> $OUT_PATH/fconfig
-echo "$printSmt2" >> $OUT_PATH/fconfig
+echo "print_witness" >> $OUT_PATH/fconfig
+echo "$printWitness" >> $OUT_PATH/fconfig
 
 echo "print_dot" >> $OUT_PATH/fconfig
 echo "$printDot" >> $OUT_PATH/fconfig
 
 echo "verbosity" >> $OUT_PATH/fconfig
 echo "$verbosity" >> $OUT_PATH/fconfig
+
+echo "bmc" >> $OUT_PATH/fconfig
+echo "$enBmc" >> $OUT_PATH/fconfig
+
+echo "bmc_max_bound" >> $OUT_PATH/fconfig
+echo "$bmcKmax" >> $OUT_PATH/fconfig
 
 
 if [ "$initFile" != "-" ]
