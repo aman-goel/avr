@@ -164,7 +164,8 @@ def run_command(idx):
 	global numW
 	cmd = commands[idx] + optSuffix + timeSuffix + memSuffix + " -n w" + str(idx) + cmdSuffix
 	#print ("starting cmd: %s" % cmd)
-	proc = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, preexec_fn=os.setsid)
+	#proc = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, preexec_fn=os.setsid)
+	proc = Popen("exec " + cmd, shell=True, stdout=PIPE, stderr=PIPE)
 	print (time_str(), "(started worker %d with pid %d)" % (idx, proc.pid))
 	processes[idx] = proc
 	commandsRun.append(idx)
@@ -294,13 +295,21 @@ def check_process(idx):
 
 def terminate(idx):
 	proc = processes[idx]
-	if proc.poll() is None:
-		os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
-	if proc.poll() is None:
-		os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
+	#if proc.poll() is None:
+		#os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
+	#if proc.poll() is None:
+		#os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
 
-	#proc.terminate()
-	#proc.kill()
+	if proc.poll() is None:
+		psproc = psutil.Process(proc.pid)
+		for child in psproc.children(recursive=True):
+			try:
+				child.terminate()
+				child.kill()
+			except (psutil.NoSuchProcess, psutil.ZombieProcess, psutil.AccessDenied):
+				True
+		proc.terminate()
+		proc.kill()
 
 def terminate_all():
 	print (time_str(), "(stopping all workers)")

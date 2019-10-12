@@ -232,7 +232,7 @@ def main():
 	command = command + " " + str(bmc_en)
 	command = command + " " + str(opts.kmax)
 	
-	s = subprocess.call( command, shell=True)
+	s = subprocess.call("exec " + command, shell=True)
 	if (s != 0):
 		raise Exception("avr ERROR: return code %d" % s)
 
