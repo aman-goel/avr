@@ -71,7 +71,6 @@ def setup():
 	global maxTimeSec
 	global maxMemMB
 	global out_path
-	global pid_file
 	known, opts = getopts(header)
 	print(short_header)
 	#if not os.path.isfile(opts.bin + "/avr"):
