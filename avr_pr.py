@@ -1,4 +1,4 @@
-import os, sys, datetime, time, psutil, resource, argparse, shutil, signal
+import os, sys, datetime, time, resource, argparse, shutil, signal
 from subprocess import Popen, PIPE, DEVNULL, STDOUT
 from enum import Enum
 
@@ -71,6 +71,7 @@ def setup():
 	global maxTimeSec
 	global maxMemMB
 	global out_path
+	global pid_file
 	known, opts = getopts(header)
 	print(short_header)
 	#if not os.path.isfile(opts.bin + "/avr"):
@@ -171,12 +172,12 @@ def run_command(idx):
 	commandsRun.append(idx)
 	numW += 1
 
-def run_allowed(idx):
+def is_running(idx):
 	if idx in processes:
-		return False
-	total_mem_usage = mem_usage_all()
-	#print (time_str(), "(%.0f MB)" % total_mem_usage)
-	
+		return True
+	return False
+
+def run_allowed(total_mem_usage):
 	if total_mem_usage < (0.75*maxMemMB):
 		return True
 	return False
@@ -187,22 +188,25 @@ def run_commands_new(maxW):
 	
 	numRun = 0
 	wi = numW
+	total_mem_usage = 0
 	while (wi < len(commands) and numRun < maxW):
 		#print (time_str(), "(trying running %d)" % wi)
-		retval = run_allowed(wi)
-		if retval:
-			run_command(wi)
-			numRun += 1
+		if (not is_running(wi)):
+			if (total_mem_usage == 0):
+				total_mem_usage = mem_usage_all()
+			retval = run_allowed(total_mem_usage)
+			if retval:
+				run_command(wi)
+				numRun += 1
 		wi += 1
 	if numRun:
 		print (time_str(), "(spawned %d workers)" % numRun)
 		print (time_str(), "(total %d workers using %.0f MB)" % (numW, mem_usage_all()))
 	
-def kill_allowed(idx):
-	total_mem_usage = mem_usage_all()
-	if total_mem_usage >= (0.9*maxMemMB):
+def kill_allowed(mem_usage):
+	if mem_usage >= (0.9*maxMemMB):
 		return True
-	#print("kill not allowed since %f < %f" % (total_mem_usage, 0.98*maxMemMB))
+	#print("kill not allowed since %f < %f" % (mem_usage, 0.98*maxMemMB))
 	return False
 
 def kill_command(idx):
@@ -221,9 +225,14 @@ def kill_commands(maxW):
 		terminate_all()
 		return
 	mem_usage = mem_usage_all()
-	if (mem_usage > (opts.memout - 30)):
+	if (mem_usage > (opts.memout - 100)):
 		disableNew = True
-		terminate_all()
+		if (numW > 1):
+			terminate(commandsRun[-1])
+		else:
+			terminate_all()
+		if (numW > 2):
+			terminate(commandsRun[-2])
 		return
 	
 	if (numW <= 1):
@@ -232,7 +241,7 @@ def kill_commands(maxW):
 	numKill = 0
 	while (numKill < maxW):
 		i = (numW - 1)
-		retval = kill_allowed(i)
+		retval = kill_allowed(mem_usage)
 		if retval:
 			killIdx = choose_kill_id()
 			kill_command(killIdx)
@@ -293,28 +302,21 @@ def check_process(idx):
 		retval = WorkerStatus.avr_run
 	return retval
 
-def terminate(idx):
-	proc = processes[idx]
-	#if proc.poll() is None:
-		#os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
-	#if proc.poll() is None:
-		#os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
-
-	if proc.poll() is None:
-		psproc = psutil.Process(proc.pid)
-		for child in psproc.children(recursive=True):
-			try:
-				child.terminate()
-				child.kill()
-			except (psutil.NoSuchProcess, psutil.ZombieProcess, psutil.AccessDenied):
-				True
-		proc.terminate()
-		proc.kill()
-
 def terminate_all():
 	print (time_str(), "(stopping all workers)")
 	for i in processes.keys():
 		terminate(i)
+
+def terminate(idx):
+	proc = processes[idx]
+	if proc.poll() is None:
+		pidFile = out_path + "/work_w" + str(idx) + "/pid.txt"
+		if (os.path.exists(pidFile)):
+			with open(pidFile) as f:
+				for x in f:
+					terminate_ps(int(x))
+		proc.terminate()
+		proc.kill()
 
 def check_process_all():
 	global numW, resultW
@@ -334,9 +336,20 @@ def check_process_all():
 					terminate_all()
 					return retval
 		time.sleep(0.1)
-		if (it % 5 == 0):
+		den_run = 20
+		den_kill = 20
+		if (it > 600):
+			den_run = 40
+			den_kill = 40
+		elif (it > 300):
+			den_run = 30
+			den_kill = 30
+		elif (it < 100):
+			den_run = 5
+
+		if (it % den_run == 0):
 			run_commands_new(1)
-		if (it % 20 == 0):
+		if (it % den_kill == 0):
 			kill_commands(1)
 		if (it % 100 == 0):
 			print (time_str(), "(total %d workers using %.0f MB)" % (numW, mem_usage_all()))
@@ -365,45 +378,52 @@ def post_compile(retval):
 def worker_desc(idx):
 	return commands[idx]
 
-def mem_usage(idx):
-	proc = processes[idx]
-	mem_usage = 0
-	if proc.poll() == None:
-		psproc = psutil.Process(proc.pid)
-		mem_usage = psproc.memory_info().rss
-		for child in psproc.children(recursive=True):
-			try:
-				mem_usage += child.memory_info().rss
-			except (psutil.NoSuchProcess, psutil.ZombieProcess, psutil.AccessDenied):
-				mem_usage += 0
-		mem_usage *= 1e-6
-		
-		#print (time_str(), "(worker %d memory usage %f)" % (idx, mem_usage / 1024 / 1024))
-		#rusage_denom = 1024.
-		#mem = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / rusage_denom
-		#print (time_str(), "(worker %d memory usage2 %f)" % (idx, memory_usage_resource()))
-		#mem_usage *= 1e-6
-
-		#status = None
-		#try:
-			#status = open('/proc/self/status')
-			#for line in status:
-				#parts = line.split()
-				#key = parts[0][2:-1].lower()
-				#if key == 'rss':
-					#mem_usage = int(parts[1])
-					#mem_usage *= 1e-3
-		#finally:
-			#if status is not None:
-				#status.close()
-
-	return mem_usage
-
 def mem_usage_all():
 	total_mem_usage = 0.0
 	for i in commandsRun:
-		total_mem_usage += mem_usage(i)
+		total_mem_usage += mem_usage_new(i)
+	#print (time_str(), "(total memory usage %f)" % (total_mem_usage))
 	return total_mem_usage
+
+def mem_usage_new(idx):
+	proc = processes[idx]
+	mem_usage = 0
+	if proc.poll() == None:
+		pidFile = out_path + "/work_w" + str(idx) + "/pid.txt"
+		if (os.path.exists(pidFile)):
+			with open(pidFile) as f:
+				for x in f:
+					mem_usage += memory_usage_ps(x)
+		#print (time_str(), "(worker %d memory usage %f)" % (idx, mem_usage))
+		mem_usage *= 1e-3
+	return mem_usage
+
+def memory_usage_ps(pid):
+	mem = 0
+	if (check_pid(int(pid))):
+		out = Popen("ps -v -p " + str(pid), shell=True, stdout=PIPE).communicate()[0].split(b'\n')
+		#print("ps: ", out)
+		if (len(out) >= 2):
+			vsz_index = out[0].split().index(b'RSS')
+			out1 = out[1].split()
+			if (len(out1) > vsz_index):
+				mem = float(out1[vsz_index])
+				#print("mem: ", mem)
+	return mem
+
+def terminate_ps(pid):
+	if (check_pid(pid)):
+		os.kill(pid, signal.SIGTERM)
+		os.kill(pid, signal.SIGKILL)
+
+def check_pid(pid):
+	""" Check For the existence of a unix pid. """
+	try:
+		os.kill(pid, 0)
+	except OSError:
+		return False
+	else:
+		return True
 
 def main():
 	setup()

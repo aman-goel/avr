@@ -61,6 +61,7 @@ fi
 # echo "bm: $bm" "fname: $fname" "top: $top"
 
 OUT_PATH="$OUT_DIR/work_$bm"
+pidFile="$OUT_PATH/pid.txt"
 
 rm -rf $OUT_PATH
 mkdir $OUT_PATH
@@ -252,7 +253,8 @@ $p_yosys/yosys -c $YOSYS_CMD -Q -T -q -q -l $OUT_PATH/yosys.log
 
 fi
 
-$p_bin/vwn   $OUT_PATH $p_bin > $OUT_PATH/data/vwn.output 2>> >(tee -a $OUT_PATH/avr.err >&2)
+$p_bin/vwn   $OUT_PATH $p_bin > $OUT_PATH/data/vwn.output 2>> >(tee -a $OUT_PATH/avr.err >&2)  & echo $! > $pidFile
+wait
 avr_exit=$?
 if [ "$avr_exit" != 0 ]
 then
@@ -260,7 +262,8 @@ then
 	exit $avr_exit
 fi
 
-$p_bin/dpa   $OUT_PATH $p_bin > $OUT_PATH/data/dpa.output 2>> >(tee -a $OUT_PATH/avr.err >&2)
+$p_bin/dpa   $OUT_PATH $p_bin > $OUT_PATH/data/dpa.output 2>> >(tee -a $OUT_PATH/avr.err >&2)  & echo $! > $pidFile
+wait
 avr_exit=$?
 if [ "$avr_exit" != 0 ]
 then
@@ -268,7 +271,8 @@ then
 	exit $avr_exit
 fi
 
-$p_bin/reach $OUT_PATH $p_bin > $OUT_PATH/data/reach.output 2>> >(tee -a $OUT_PATH/avr.err >&2)
+$p_bin/reach $OUT_PATH $p_bin > $OUT_PATH/data/reach.output 2>> >(tee -a $OUT_PATH/avr.err >&2)  & echo $! > $pidFile
+wait
 avr_exit=$?
 
 tail -n 3 $OUT_PATH/data/reach.output &> >(tee -a $OUT_PATH/avr.err >&2)
