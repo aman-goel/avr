@@ -27,7 +27,7 @@ DEFAULT_PRINT_WITNESS=False
 
 maxTimeSec = DEFAULT_TIMEOUT
 maxMemMB = DEFAULT_MEMOUT
-maxInitW = 4
+maxInitW = 5
 resultW = 0
 out_path = DEFAULT_OUT + "/" + DEFAULT_NAME
 
@@ -410,6 +410,8 @@ def memory_usage_ps(pid_s):
 				if (len(out1) > vsz_index):
 					mem = float(out1[vsz_index])
 					#print("mem: ", mem)
+	#else:
+		#assert(0)
 	return mem
 
 def terminate_ps(pid_s):
@@ -418,6 +420,8 @@ def terminate_ps(pid_s):
 		if (check_pid(pid)):
 			os.kill(pid, signal.SIGTERM)
 			os.kill(pid, signal.SIGKILL)
+	#else:
+		#assert(0)
 
 def check_pid(pid):
 	""" Check For the existence of a unix pid. """
@@ -429,7 +433,7 @@ def check_pid(pid):
 		return True
 
 def is_valid_pid(pid_s):
-	if pid_s and pid_s.isdigit():
+	if pid_s and pid_s[0].isdigit():
 		try:
 			pid = int(pid_s)
 			return True, pid
