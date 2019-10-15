@@ -313,7 +313,7 @@ def terminate(idx):
 		if (os.path.exists(pidFile)):
 			with open(pidFile) as f:
 				for x in f:
-					terminate_ps(int(x))
+					terminate_ps(x)
 		proc.terminate()
 		proc.kill()
 
@@ -397,23 +397,27 @@ def mem_usage_new(idx):
 		mem_usage *= 1e-3
 	return mem_usage
 
-def memory_usage_ps(pid):
+def memory_usage_ps(pid_s):
 	mem = 0
-	if (check_pid(int(pid))):
-		out = Popen("ps -v -p " + str(pid), shell=True, stdout=PIPE).communicate()[0].split(b'\n')
-		#print("ps: ", out)
-		if (len(out) >= 2):
-			vsz_index = out[0].split().index(b'RSS')
-			out1 = out[1].split()
-			if (len(out1) > vsz_index):
-				mem = float(out1[vsz_index])
-				#print("mem: ", mem)
+	valid, pid = is_valid_pid(pid_s)
+	if (valid):
+		if (check_pid(pid)):
+			out = Popen("ps -v -p " + str(pid), shell=True, stdout=PIPE).communicate()[0].split(b'\n')
+			#print("ps: ", out)
+			if (len(out) >= 2):
+				vsz_index = out[0].split().index(b'RSS')
+				out1 = out[1].split()
+				if (len(out1) > vsz_index):
+					mem = float(out1[vsz_index])
+					#print("mem: ", mem)
 	return mem
 
-def terminate_ps(pid):
-	if (check_pid(pid)):
-		os.kill(pid, signal.SIGTERM)
-		os.kill(pid, signal.SIGKILL)
+def terminate_ps(pid_s):
+	valid, pid = is_valid_pid(pid_s)
+	if (valid):
+		if (check_pid(pid)):
+			os.kill(pid, signal.SIGTERM)
+			os.kill(pid, signal.SIGKILL)
 
 def check_pid(pid):
 	""" Check For the existence of a unix pid. """
@@ -423,6 +427,15 @@ def check_pid(pid):
 		return False
 	else:
 		return True
+
+def is_valid_pid(pid_s):
+	if pid_s and pid_s.isdigit():
+		try:
+			pid = int(pid_s)
+			return True, pid
+        except ValueError:
+			return False, 0
+	return False, 0
 
 def main():
 	setup()
