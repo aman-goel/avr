@@ -1,0 +1,4 @@
+; author: Aman Goel (amangoel@umich.edu)
+; date: 09/24/2019
+id:	sof3
+top_file:	sw_ball2004_1/sw_ball2004_1.v

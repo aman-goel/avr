@@ -1,0 +1,4 @@
+; author: Aman Goel (amangoel@umich.edu)
+; date: 09/24/2019
+id:	sim4
+top_file:	eq_sdp_v4/eq_sdp_v4.v

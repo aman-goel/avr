@@ -19,8 +19,8 @@ DEFAULT_INIT_FILE="-"
 DEFAULT_OUT="output"
 DEFAULT_YOSYS="yosys"
 DEFAULT_CLK="clk"
-DEFAULT_TIMEOUT=1000
-DEFAULT_MEMOUT=15000
+DEFAULT_TIMEOUT=3590
+DEFAULT_MEMOUT=118000
 DEFAULT_MEMORY=False
 DEFAULT_SPLIT=False
 DEFAULT_GRANULARITY=2
@@ -29,7 +29,7 @@ DEFAULT_EFFORT_MININV=0
 DEFAULT_VERBOSITY=0
 DEFAULT_EN_VMT=False
 DEFAULT_EN_JG=False
-DEFAULT_EN_BTOR2=False
+DEFAULT_EN_BTOR2=True
 DEFAULT_ABTYPE="sa+uf"
 DEFAULT_INTERPOLATION=0
 DEFAULT_FORWARD_CHECK=0
@@ -37,7 +37,10 @@ DEFAULT_AB_LEVEL=2
 DEFAULT_LAZY_ASSUME=0
 DEFAULT_JG_PREPROCESS="-"
 DEFAULT_PRINT_SMT2=False
+DEFAULT_PRINT_WITNESS=False
 DEFAULT_DOT="0000000"
+DEFAULT_BMC_EN=False
+DEFAULT_BMC_MAX_BOUND=1000
 
 def getopts(header):
 	p = argparse.ArgumentParser(description=str(header), formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -67,54 +70,33 @@ def getopts(header):
 	p.add_argument('-la', '--lazy_assume',	help='lazy assumptions level (between 0-2) (default: %r)' % DEFAULT_LAZY_ASSUME, type=int, default=DEFAULT_LAZY_ASSUME)
 	p.add_argument('--jgpre',  			help='preprocessing options for jg (default: %s)' % DEFAULT_JG_PREPROCESS, type=str, default=DEFAULT_JG_PREPROCESS)
 	p.add_argument('--smt2',     		help='toggles printing system in smt2 format (default: %r)' % DEFAULT_PRINT_SMT2, action="count", default=0)
+	p.add_argument('--witness',         help='toggles printing witness (default: %r)' % DEFAULT_PRINT_WITNESS, action="count", default=0)
 	p.add_argument('--dot', 			help='option to configure dot files generation (default: %s)' % DEFAULT_DOT, type=str, default=DEFAULT_DOT)
+	p.add_argument('--bmc',             help='toggles using bmc engine (default: %r)' % DEFAULT_BMC_EN, action="count", default=0)
+	p.add_argument('-k', '--kmax',      help='max bound for bmc (default: %r)' % DEFAULT_BMC_MAX_BOUND, type=int, default=DEFAULT_BMC_MAX_BOUND)
 	p.add_argument('-v', '--verbosity', help='verbosity level (default: %r)' % DEFAULT_VERBOSITY, type=int, default=DEFAULT_VERBOSITY)
 	args, leftovers = p.parse_known_args()
 	return args, p.parse_args()
 
 header="""
-	Averroes (avr) -- Abstract VERification of Reachability Of Electronic Systems
-	Versions """ + str(version) + """
-	Reads a Verilog file and performs property checking using syntactic data abstraction.
-		supports SystemVerilog concurrent assertions
-
-	Copyright (c) 2019  Aman Goel <amangoel@umich.edu> and Karem A. Sakallah <karem@umich.edu>, University of Michigan
-	
-	------------
-	Dependencies
-	------------
-	1. Yosys     (Copyright (c) 2019 Clifford Wolf <clifford@clifford.at>)
-	2. Yices 2   (Copyright (c) 2019 SRI International)
-	3. Z3        (Copyright (c) 2019 Microsoft Corporation)
-	4. MathSAT5  (Copyright (c) 2019 Fondazione Bruno Kessler, Italy)
-	5. Boolector (Copyright (c) 2007-2018 Armin Biere, 2007-2009 Robert Brummayer, 2012-2018 Aina Niemetz, 2012-2018 Mathias Preiner)
-	6. JG	     (Copyright (c) 2007-Present Cadence Design Systems, Inc.)
-	
-	--------------
-	Terms of usage
-	--------------
-	* Any usage of JG frontend requires prior written permission from Cadence Design Systems, Inc.
-
-	---------------------------------
-	NEW (Aug 20, 2019)
-	---------------------------------
-	1. New frontend for direct interface with JasperGold (Copyright (c) 2007-Present Cadence Design Systems, Inc.).
-
-	---------------------------------
-	Limitiations (as of Aug 20, 2019)
-	---------------------------------
-	1. Can only handle safety properties that can be expressed without temporal operators.
-	2. Handles asynchronous flops as synchronous.
-	3. Handles memory using memory abstraction (experimental).
-	4. avr uses yosys as its frontend and can handle most designs/formats that are supported by yosys.
-		(customize the bin/avr for special preprocessing using Yosys)
-	5. Support for .vmt frontend is limited.
-
-	Please report bugs and share your usage experience via email (amangoel@umich.edu) or on github (https://github.com/aman-goel/avr)
-	
+---
+AVR
+---
+  Abstractly Verifying Reachability
+  
+  Reads a state transition system and performs property checking 
+  using syntax-guided data abstraction
+  
+  Copyright (c) 2019  Aman Goel <amangoel@umich.edu> and 
+  Karem Sakallah <karem@umich.edu>, University of Michigan
+  
+  Please report bugs and share your usage experience via email 
+  (amangoel@umich.edu) or on github (https://github.com/aman-goel/avr)	
+-------------------
 """
 
-short_header="""Averroes v""" + str(version) + """\tCopyright (c) 2019  Aman Goel and Karem A. Sakallah, University of Michigan"""
+short_header="""AVR 
+copyright (c) 2019  Aman Goel and Karem Sakallah, University of Michigan"""
 
 def split_path(name):
 	head, tail = ntpath.split(name)
@@ -123,8 +105,8 @@ def split_path(name):
 	return head, tail
 
 def main():
-	print(short_header)
 	known, opts = getopts(header)
+	#print(short_header)
 	if not os.path.isfile(opts.bin + "/avr"):
 		raise Exception("avr: main shell script not found")
 	if not os.path.isfile(opts.bin + "/vwn"):
@@ -140,22 +122,34 @@ def main():
 	if not os.path.isfile(opts.file):
 		raise Exception("Unable to find top file: %s" % opts.file)
 
-	en_vmt = DEFAULT_EN_VMT
-	if (opts.vmt % 2 == 1):
-		en_vmt = not DEFAULT_EN_VMT
-	en_jg  = DEFAULT_EN_JG
-	if (opts.jg % 2 == 1):
-		en_jg = not DEFAULT_EN_JG
-	en_bt = DEFAULT_EN_BTOR2
-	if (opts.bt % 2 == 1):
-		en_bt = not DEFAULT_EN_BTOR2
-
+	en_vmt = False
+	en_jg = False
+	en_bt = False
+	if opts.file.endswith('.btor2') or opts.file.endswith('.btor'):
+		en_bt = True
+	elif opts.file.endswith('.vmt') or opts.file.endswith('.smt2'):
+		en_vmt = True
+	elif opts.file.endswith('.wif'):
+		en_jg = True
+	elif not (opts.file.endswith('.v') or opts.file.endswith('.sv')):
+		en_vmt = DEFAULT_EN_VMT
+		if (opts.vmt % 2 == 1):
+			en_vmt = not DEFAULT_EN_VMT
+		en_jg  = DEFAULT_EN_JG
+		if (opts.jg % 2 == 1):
+			en_jg = not DEFAULT_EN_JG
+		en_bt = DEFAULT_EN_BTOR2
+		if (opts.bt % 2 == 1):
+			en_bt = not DEFAULT_EN_BTOR2
+		
 	print("\t(output dir: %s/work_%s)" % (opts.out, opts.name))
 	if (en_jg):
 		print("\t(frontend: jg)")
 		en_vmt = False
+		en_bt = False
 	elif en_vmt:
 		print("\t(frontend: vmt)")
+		en_bt = False
 	elif en_bt:
 		print("\t(frontend: btor2)")
 	else:
@@ -167,8 +161,12 @@ def main():
 				opts.yosys = "/usr/local/bin"
 				print("\t(found yosys in /usr/local/bin)")
 	
+	bin_path = opts.bin + "/avr"
+	if not opts.bin.startswith("/"):
+		bin_path = "./" + bin_path
+		
 	command = ""
-	command = command + "./" + opts.bin + "/avr"
+	command = command + bin_path
 	command = command + " " + f
 	command = command + " " + str(opts.top)
 	command = command + " " + path
@@ -219,12 +217,24 @@ def main():
 	if (opts.smt2 % 2 == 1):
 		print_smt2 = not DEFAULT_PRINT_SMT2
 	command = command + " " + str(print_smt2)
+	
+	print_wit = DEFAULT_PRINT_WITNESS
+	if (opts.witness % 2 == 1):
+		print_wit = not DEFAULT_PRINT_WITNESS
+	command = command + " " + str(print_wit)
+	
 	command = command + " " + str(opts.dot)
 	command = command + " " + str(en_bt)
 	
-	s = subprocess.call( command, shell=True)
+	bmc_en = DEFAULT_BMC_EN
+	if (opts.bmc % 2 == 1):
+		bmc_en = not DEFAULT_BMC_EN
+	command = command + " " + str(bmc_en)
+	command = command + " " + str(opts.kmax)
+	
+	s = subprocess.call("exec " + command, shell=True)
 	if (s != 0):
 		raise Exception("avr ERROR: return code %d" % s)
-
+		
 if __name__ == '__main__':
 	main()

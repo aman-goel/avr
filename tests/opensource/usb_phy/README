@@ -1,0 +1,4 @@
+; author: Aman Goel (amangoel@umich.edu)
+; date: 09/24/2019
+id:	vce17
+top_file:	usb_phy/usb_phy_1.v

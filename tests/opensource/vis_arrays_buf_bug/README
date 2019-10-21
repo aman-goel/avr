@@ -1,0 +1,4 @@
+; author: Aman Goel (amangoel@umich.edu)
+; date: 09/24/2019
+id:	v2s11
+top_file:	vis_arrays_buf_bug/buf_bug.v

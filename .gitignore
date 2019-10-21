@@ -12,7 +12,8 @@ gmon.out
 .d/*
 work_*
 work_*/*
-#examples/*
+
+!examples/
 
 src/*
 */smt_queries/*
@@ -20,6 +21,7 @@ smt_queries/*
 output/*
 examples/averroes*
 examples/*.sh
+examples/*
 
 # But not these files
 !.gitignore
@@ -28,3 +30,6 @@ examples/*.sh
 # !examples/averroes*
 !examples/bm/*
 !examples/scripts/*
+!examples/verilog/
+!examples/vmt/
+!examples/btor2/
