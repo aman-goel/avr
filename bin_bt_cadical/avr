@@ -205,7 +205,9 @@ if [ $AUTOOPT -eq 1 ]
 then
 	echo "yosys clean;" >> $YOSYS_CMD
 fi
+
 echo "yosys splitnets -driver;" >> $YOSYS_CMD
+
 if [ $AUTOOPT -eq 1 ]
 then
 	echo "yosys clean;" >> $YOSYS_CMD
@@ -245,6 +247,14 @@ if [ $AUTOOPT -eq 1 ]
 then
 	echo "yosys clean;" >> $YOSYS_CMD
 fi
+
+# echo "yosys aigmap;" >> $YOSYS_CMD
+# echo "yosys techmap;" >> $YOSYS_CMD
+# echo "yosys clean;" >> $YOSYS_CMD
+# echo "yosys aigmap;" >> $YOSYS_CMD
+# echo "yosys techmap;" >> $YOSYS_CMD
+# echo "yosys clean;" >> $YOSYS_CMD
+
 echo "yosys check;" >> $YOSYS_CMD
 echo "yosys write_ilang $OUT_PATH/$OUT_YOSYS;" >> $YOSYS_CMD
 echo "yosys write_verilog -attr2comment $OUT_PATH/$OUT_VERILOG;" >> $YOSYS_CMD
@@ -281,6 +291,13 @@ echo "" &> >(tee -a $OUT_PATH/avr.err >&2)
 if [ "$avr_exit" != 0 ]
 then
 	echo "avr reachability analysis error (check file data/reach.output for details), error code: $avr_exit"
+fi
+
+if [[ -f "$OUT_PATH/inv.smt2" ]]; then
+	if [[ -f "$OUT_PATH/design.smt2" ]]; then
+		cat $OUT_PATH/design.smt2 $OUT_PATH/inv.smt2 > $OUT_PATH/proof.smt2
+		sed -i 's/[][|]/_/g' $OUT_PATH/proof.smt2
+	fi
 fi
 
 exit $avr_exit

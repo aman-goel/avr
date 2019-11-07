@@ -2,6 +2,16 @@ List of major changes and improvements between releases
 =======================================================
 
 
+AVR 2.0.22
+--------------------------
+(07 November 2019)
+ 
+ * Frontend
+    - BTOR2: Corrects init with arrays
+    
+ * Backend
+    - Corrects trivial HWMCC19 error
+
 AVR 2.0.21
 --------------------------
 (11 October 2019)
