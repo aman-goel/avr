@@ -22,6 +22,10 @@ Use AVR *Proof Race* to automatically run multiple configurations in parallel
 	Example:	python3 avr_pr.py -o foo -n bar examples/btor2/counter.btor2
 				(check the output in foo/pr_bar)
 
+#### AVR Tool Flow
+![Image of AVR toolflow](avr_toolflow.png)
+
+
 #### Output
 AVR creates a directory ```<output-path>```/pr_```<test-name>``` which contains results, statistics and logs relating to the run
 

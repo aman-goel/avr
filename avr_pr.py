@@ -6,7 +6,7 @@ version=2.0
 start_time = time.time()
 
 cmdSuffix = ""
-maxWorkers = 12
+maxWorkers = 8
 
 optSuffix = " "
 commands = []
@@ -20,14 +20,14 @@ DEFAULT_OUT="output"
 DEFAULT_NAME="test"
 DEFAULT_WORKERS="workers.txt"
 #DEFAULT_BIN="bin"
-DEFAULT_TIMEOUT=3590
-DEFAULT_MEMOUT=118000
-DEFAULT_PRINT_SMT2=False
-DEFAULT_PRINT_WITNESS=False
+DEFAULT_TIMEOUT=3600
+DEFAULT_MEMOUT=16000
+DEFAULT_PRINT_SMT2=True
+DEFAULT_PRINT_WITNESS=True
 
 maxTimeSec = DEFAULT_TIMEOUT
 maxMemMB = DEFAULT_MEMOUT
-maxInitW = 5
+maxInitW = 2
 resultW = 0
 out_path = DEFAULT_OUT + "/" + DEFAULT_NAME
 
@@ -100,13 +100,13 @@ def setup():
 	#optSuffix = optSuffix + " -b " + opts.bin
 	
 	print_smt2 = DEFAULT_PRINT_SMT2
-	if (opts.smt2 % 2 == 1):
+	if (not print_smt2) and (opts.smt2 % 2 == 1):
 		print_smt2 = not DEFAULT_PRINT_SMT2
 	if print_smt2:
 		optSuffix = optSuffix + " " + "--smt2"
 
 	print_witness = DEFAULT_PRINT_WITNESS
-	if (opts.witness % 2 == 1):
+	if (not print_witness) and (opts.witness % 2 == 1):
 		print_witness = not DEFAULT_PRINT_WITNESS
 	if print_witness:
 		optSuffix = optSuffix + " " + "--witness"
@@ -165,7 +165,8 @@ def run_command(idx):
 	cmd = commands[idx] + optSuffix + timeSuffix + memSuffix + " -n w" + str(idx) + cmdSuffix
 	#print ("starting cmd: %s" % cmd)
 	#proc = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, preexec_fn=os.setsid)
-	proc = Popen("exec " + cmd, shell=True, stdout=PIPE, stderr=PIPE)
+	proc = Popen("exec " + cmd, shell=True, stdout=PIPE, stderr=PIPE, close_fds=True)
+	#proc = Popen("exec " + cmd, shell=True, stdout=None, stderr=None)
 	print (time_str(), "(started worker %d with pid %d)" % (idx, proc.pid))
 	processes[idx] = proc
 	commandsRun.append(idx)
@@ -265,6 +266,7 @@ def check_process(idx):
 	retval = WorkerStatus.avr_run
 	retcode = proc.poll()
 	retval = WorkerStatus.avr_err
+	#print("worker %d status: %s" % (idx, str(retcode)))
 	if retcode != None:
 		prFile = out_path + "/work_w" + str(idx) + "/result.pr"
 		#print ("checking %s" % prFile)
@@ -367,11 +369,12 @@ def post_compile(retval):
 		#elif filename.endswith('.btor2'):
 			#shutil.copy(res_path + filename, out_path + "/" + opts.name + ".btor2")
 		#elif filename.endswith('result.pr') or filename.endswith('design.smt2') or filename.startswith('inv.') or filename.startswith('cex.witness'):
-		elif filename.endswith('design.smt2') or filename.startswith('inv.') or filename.startswith('cex.witness'):
+		elif filename.endswith('proof.smt2') or filename.endswith('design.smt2') or filename.startswith('inv.') or filename.startswith('cex.witness'):
 			shutil.copy(res_path + filename, out_path)
 		elif filename.endswith('btormc.out'):
 			shutil.copy(res_path + filename, out_path+ "/cex.witness")
 	print(time_str(), "(copied results from worker %d in %s)" % (resultW, out_path))
+	print (time_str(), "(best config: %s)" % (worker_desc(resultW)))
 	print(time_str(), s)
 
 def worker_desc(idx):

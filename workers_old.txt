@@ -1,0 +1,11 @@
+python3 avr.py -a sa
+python3 avr.py -s --bmc
+python3 avr.py
+python3 avr.py -b bin_y2 -s
+python3 avr.py -b bin_y2 --bmc
+python3 avr.py -g 3 -l 0 -a sa32
+python3 avr.py -a sa --interpol 1 -f 1
+python3 avr.py -s -l 0
+python3 avr.py -l 5 -g 3 -a sa8 --interpol 1 -f 1
+python3 avr.py -b bin_y2 -s -a sa4 --interpol 1 -f 1
+python3 avr.py --bmc
