@@ -6,6 +6,12 @@
 
 Reads a state transition system and performs property checking  using syntax-guided data abstraction
 
+#### Research Papers
+- [[TACAS'20](https://link.springer.com/chapter/10.1007%2F978-3-030-45190-5_23)] AVR at a high level
+- [[NFM'19](https://link.springer.com/chapter/10.1007/978-3-030-20652-9_11)]   Syntax-guided abstraction technique implemented in AVR
+- [[DATE'19](https://ieeexplore.ieee.org/document/8715289)]  Empirically understand the benefits of AVR
+- [[SOSP'19](https://dl.acm.org/doi/10.1145/3341301.3359651)]  Using AVR for verifying distributed protocols
+
 #### Installation
 Simply download or clone the repository and you are good to go
 - All dependencies are statically linked
