@@ -40,7 +40,7 @@ AVR -- Proof Race
   Reads a state transition system and performs property checking 
   using syntax-guided data abstraction
   
-  Copyright (c) 2019  Aman Goel <amangoel@umich.edu> and 
+  Copyright (c) 2020  Aman Goel <amangoel@umich.edu> and 
   Karem Sakallah <karem@umich.edu>, University of Michigan
   
   Please report bugs and share your usage experience via email 
@@ -49,7 +49,7 @@ AVR -- Proof Race
 """
 
 short_header="""AVR -- Proof Race 
-copyright (c) 2019  Aman Goel and Karem Sakallah, University of Michigan"""
+copyright (c) 2020  Aman Goel and Karem Sakallah, University of Michigan"""
 
 def getopts(header):
 	p = argparse.ArgumentParser(description=str(header), formatter_class=argparse.RawDescriptionHelpFormatter)

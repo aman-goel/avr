@@ -2,9 +2,12 @@
 
 **A**bstractly **V**erifying **R**eachability of electronic systems
 
-> Copyright (c) 2019  Aman Goel [(amangoel@umich.edu)](amangoel@umich.edu)  and  Karem Sakallah [(karem@umich.edu)](karem@umich.edu) , University of Michigan
+> Copyright (c) 2020  Aman Goel [(amangoel@umich.edu)](amangoel@umich.edu)  and  Karem Sakallah [(karem@umich.edu)](karem@umich.edu) , University of Michigan
 
 Reads a state transition system and performs property checking  using syntax-guided data abstraction
+
+#### Get Started (quickly)
+- Follow the tutorial artifact on using AVR [[artifact](https://zenodo.org/record/3677545#.Xw5iAHVKhhE)] 
 
 #### Research Papers
 - [[TACAS'20](https://link.springer.com/chapter/10.1007%2F978-3-030-45190-5_23)] AVR at a high level
@@ -87,21 +90,21 @@ f_*	-> Time or memory limit exceeded / error
 ````
 
 #### Dependencies
-- [Yosys](https://github.com/YosysHQ/yosys) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [copyright (c) 2019 Clifford Wolf] 
+- [Yosys](https://github.com/YosysHQ/yosys) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [copyright (c) 2020 Clifford Wolf] 
 --------------------------------------------- Verilog / VHDL frontend
-- [Yices 2](https://github.com/SRI-CSL/yices2)  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [copyright (c) 2019 SRI International] 
+- [Yices 2](https://github.com/SRI-CSL/yices2)  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [copyright (c) 2020 SRI International] 
 --------------------------------------- SMT solver backend
-- [Z3](https://github.com/Z3Prover/z3)  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [copyright (c) 2019 Microsoft Corporation] 
+- [Z3](https://github.com/Z3Prover/z3)  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [copyright (c) 2020 Microsoft Corporation] 
 --------------------------------- SMT solver backend
-- [MathSAT5](http://mathsat.fbk.eu/)  &nbsp; [copyright (c) 2019 Fondazione Bruno Kessler, Italy] 
+- [MathSAT5](http://mathsat.fbk.eu/)  &nbsp; [copyright (c) 2020 Fondazione Bruno Kessler, Italy] 
 ------------------- VMT frontend, SMT solver backend
-- [Boolector](https://github.com/Boolector/boolector)  &nbsp;&nbsp; [copyright (c) 2007-2019 Armin Biere, 2007-2009 Robert Brummayer, 2012-2019 Aina Niemetz, 2012-2019 Mathias Preiner] 
+- [Boolector](https://github.com/Boolector/boolector)  &nbsp;&nbsp; [copyright (c) 2007-2020 Armin Biere, 2007-2009 Robert Brummayer, 2012-2020 Aina Niemetz, 2012-2020 Mathias Preiner] 
 --------------------------------------------------------------------------- BTOR2 frontend, SMT solver backend, BTORMC
 - [JG](https://www.cadence.com/content/cadence-www/global/en_US/home/tools/system-design-and-verification/formal-and-static-verification/jasper-gold-verification-platform.html)  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [copyright (c) 2007-Present Cadence Design Systems, Inc.] 
 -------- JG frontend
 
 #### License
-Copyright (c) 2019  Aman Goel and Karem Sakallah, University of Michigan. All rights reserved.
+Copyright (c) 2020  Aman Goel and Karem Sakallah, University of Michigan. All rights reserved.
 
 AVR is available for research and evaluation purposes only. 
 AVR is provided as is, without any warranty.
