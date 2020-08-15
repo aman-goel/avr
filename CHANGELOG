@@ -2,6 +2,13 @@ List of major changes and improvements between releases
 =======================================================
 
 
+AVR 2.0.23
+--------------------------
+(15 August 2020)
+ 
+ * Various
+    - New branch for HWMCC'20
+
 AVR 2.0.22
 --------------------------
 (07 November 2019)
