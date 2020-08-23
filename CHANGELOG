@@ -2,6 +2,20 @@ List of major changes and improvements between releases
 =======================================================
 
 
+AVR 2.0.24
+--------------------------
+(23 August 2020)
+ 
+ * API
+    - New K-induction engine
+
+ * Backends
+    - Improved support for BV arrays
+
+ * Various
+    - New UF abstraction mode for BMC engine
+    - Minor corrections and improvements
+
 AVR 2.0.23
 --------------------------
 (15 August 2020)

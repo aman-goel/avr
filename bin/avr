@@ -31,7 +31,8 @@ printWitness="${28}"
 printDot="${29}"
 enBt="${30}"
 enBmc="${31}"
-bmcKmax="${32}"
+enKind="${32}"
+bmcKmax="${33}"
 
 BM_PATH="$p_dir"
 OUT_DIR="$p_out"
@@ -137,6 +138,9 @@ echo "$verbosity" >> $OUT_PATH/fconfig
 
 echo "bmc" >> $OUT_PATH/fconfig
 echo "$enBmc" >> $OUT_PATH/fconfig
+
+echo "kind" >> $OUT_PATH/fconfig
+echo "$enKind" >> $OUT_PATH/fconfig
 
 echo "bmc_max_bound" >> $OUT_PATH/fconfig
 echo "$bmcKmax" >> $OUT_PATH/fconfig
