@@ -13,4 +13,4 @@ python3 avr.py -s -l 0
 python3 avr.py -a sa -b bin_bt_cad --interpol 1 -f 1
 python3 avr.py -b bin_y2 -s --bmc
 python3 avr.py -b bin_bt_cad -g 3 -l 0 -a sa32
-python3 avr.py -b bin_bt_cad -s -a sa16 --interpol 1 -f 1
+python3 avr.py -b bin_bt_cad -s -a sa16 -f 1
