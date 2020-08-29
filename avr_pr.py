@@ -6,7 +6,7 @@ version=2.0
 start_time = time.time()
 
 cmdSuffix = ""
-maxWorkers = 13
+maxWorkers = 16
 
 optSuffix = " "
 commands = []
@@ -27,7 +27,7 @@ DEFAULT_PRINT_WITNESS=False
 
 maxTimeSec = DEFAULT_TIMEOUT
 maxMemMB = DEFAULT_MEMOUT
-maxInitW = 6
+maxInitW = 8
 resultW = 0
 out_path = DEFAULT_OUT + "/" + DEFAULT_NAME
 
