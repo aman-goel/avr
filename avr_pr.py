@@ -27,7 +27,7 @@ DEFAULT_PRINT_WITNESS=True
 
 maxTimeSec = DEFAULT_TIMEOUT
 maxMemMB = DEFAULT_MEMOUT
-maxInitW = 4
+maxInitW = 2
 resultW = 0
 out_path = DEFAULT_OUT + "/" + DEFAULT_NAME
 
