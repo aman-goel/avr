@@ -43,6 +43,7 @@ DEFAULT_DOT="1110000"
 DEFAULT_BMC_EN=False
 DEFAULT_KIND_EN=False
 DEFAULT_BMC_MAX_BOUND=1000
+DEFAULT_PRINT_AIG=False
 
 def getopts(header):
 	p = argparse.ArgumentParser(description=str(header), formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -76,6 +77,7 @@ def getopts(header):
 	p.add_argument('--dot', 			help='option to configure dot files generation (default: %s)' % DEFAULT_DOT, type=str, default=DEFAULT_DOT)
 	p.add_argument('--bmc',             help='toggles using bmc engine (default: %r)' % DEFAULT_BMC_EN, action="count", default=0)
 	p.add_argument('--kind',            help='toggles using k-ind engine (default: %r)' % DEFAULT_KIND_EN, action="count", default=0)
+	p.add_argument('--aig',             help='toggles printing aig (default: %r)' % DEFAULT_PRINT_AIG, action="count", default=0)
 	p.add_argument('-k', '--kmax',      help='max bound for bmc (default: %r)' % DEFAULT_BMC_MAX_BOUND, type=int, default=DEFAULT_BMC_MAX_BOUND)
 	p.add_argument('-v', '--verbosity', help='verbosity level (default: %r)' % DEFAULT_VERBOSITY, type=int, default=DEFAULT_VERBOSITY)
 	args, leftovers = p.parse_known_args()
@@ -246,6 +248,11 @@ def main():
 	command = command + " " + str(kind_en)
 	
 	command = command + " " + str(opts.kmax)
+		
+	print_aig = DEFAULT_PRINT_AIG
+	if (not print_aig) and (opts.aig % 2 == 1):
+		print_aig = not DEFAULT_PRINT_AIG
+	command = command + " " + str(print_aig)
 	
 	s = subprocess.call("exec " + command, shell=True)
 	if (s != 0):
