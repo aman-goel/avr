@@ -18,7 +18,7 @@ Reads a state transition system and performs property checking  using syntax-gui
 #### Installation
 Simply download or clone the repository and you are good to go
 - All dependencies are statically linked
-- If needed, install [Yosys](https://github.com/YosysHQ/yosys) to pass input as Verilog, VHDL
+- If Verilog frontend is needed, simply run ```` ./build.sh ```` from the avr folder to install [Yosys](https://github.com/YosysHQ/yosys)
 
 #### AVR Proof Race
 Use AVR *Proof Race* to automatically run multiple configurations in parallel
