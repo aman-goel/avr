@@ -223,12 +223,12 @@ def main():
 	command = command + " " + str(opts.jgpre)
 
 	print_smt2 = DEFAULT_PRINT_SMT2
-	if (opts.smt2 % 2 == 1):
+	if (not print_smt2) and (opts.smt2 % 2 == 1):
 		print_smt2 = not DEFAULT_PRINT_SMT2
 	command = command + " " + str(print_smt2)
 	
 	print_wit = DEFAULT_PRINT_WITNESS
-	if (opts.witness % 2 == 1):
+	if (not print_wit) and (opts.witness % 2 == 1):
 		print_wit = not DEFAULT_PRINT_WITNESS
 	command = command + " " + str(print_wit)
 	
