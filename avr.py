@@ -8,6 +8,7 @@ import shutil
 import ntpath
 from distutils import spawn
 import re
+from distutils.spawn import find_executable
 
 version=2.0
 
@@ -19,8 +20,8 @@ DEFAULT_INIT_FILE="-"
 DEFAULT_OUT="output"
 DEFAULT_YOSYS="yosys"
 DEFAULT_CLK="clk"
-DEFAULT_TIMEOUT=3590
-DEFAULT_MEMOUT=118000
+DEFAULT_TIMEOUT=3600
+DEFAULT_MEMOUT=64000
 DEFAULT_MEMORY=False
 DEFAULT_SPLIT=False
 DEFAULT_GRANULARITY=2
@@ -157,11 +158,17 @@ def main():
 	else:
 		print("\t(frontend: yosys)")
 		if not os.path.isfile(opts.yosys + "/yosys"):
-			if not os.path.isfile("/usr/local/bin/yosys"):
-				raise Exception("Please install yosys using build.sh")
+			ys_path = find_executable('yosys')
+			if not ys_path:
+				if not os.path.isfile("/usr/local/bin/yosys"):
+					raise Exception("Please install yosys using build.sh")
+				else:
+					opts.yosys = "/usr/local/bin"
 			else:
-				opts.yosys = "/usr/local/bin"
-				print("\t(found yosys in /usr/local/bin)")
+				if ys_path.endswith('/yosys'):
+					ys_path = ys_path[:-6]
+				opts.yosys = ys_path
+			print("\t(found yosys in %s)" % opts.yosys)
 	
 	bin_path = opts.bin + "/avr"
 	if not opts.bin.startswith("/"):

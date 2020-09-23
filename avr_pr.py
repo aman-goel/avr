@@ -6,7 +6,7 @@ version=2.0
 start_time = time.time()
 
 cmdSuffix = ""
-maxWorkers = 16
+maxWorkers = 8
 
 optSuffix = " "
 commands = []
@@ -18,16 +18,16 @@ processes = {}
 DEFAULT_TOP="-"
 DEFAULT_OUT="output"
 DEFAULT_NAME="test"
-DEFAULT_WORKERS="workers_hwmcc20.txt"
+DEFAULT_WORKERS="workers.txt"
 #DEFAULT_BIN="bin"
-DEFAULT_TIMEOUT=3590
-DEFAULT_MEMOUT=118000
-DEFAULT_PRINT_SMT2=False
-DEFAULT_PRINT_WITNESS=False
+DEFAULT_TIMEOUT=3600
+DEFAULT_MEMOUT=16000
+DEFAULT_PRINT_SMT2=True
+DEFAULT_PRINT_WITNESS=True
 
 maxTimeSec = DEFAULT_TIMEOUT
 maxMemMB = DEFAULT_MEMOUT
-maxInitW = 12
+maxInitW = 4
 resultW = 0
 out_path = DEFAULT_OUT + "/" + DEFAULT_NAME
 
