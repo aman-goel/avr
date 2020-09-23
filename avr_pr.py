@@ -6,7 +6,7 @@ version=2.0
 start_time = time.time()
 
 cmdSuffix = ""
-maxWorkers = 8
+maxWorkers = 16
 
 optSuffix = " "
 commands = []
@@ -18,16 +18,16 @@ processes = {}
 DEFAULT_TOP="-"
 DEFAULT_OUT="output"
 DEFAULT_NAME="test"
-DEFAULT_WORKERS="workers.txt"
+DEFAULT_WORKERS="workers_hwmcc20.txt"
 #DEFAULT_BIN="bin"
-DEFAULT_TIMEOUT=3600
-DEFAULT_MEMOUT=16000
-DEFAULT_PRINT_SMT2=True
-DEFAULT_PRINT_WITNESS=True
+DEFAULT_TIMEOUT=3590
+DEFAULT_MEMOUT=118000
+DEFAULT_PRINT_SMT2=False
+DEFAULT_PRINT_WITNESS=False
 
 maxTimeSec = DEFAULT_TIMEOUT
 maxMemMB = DEFAULT_MEMOUT
-maxInitW = 2
+maxInitW = 12
 resultW = 0
 out_path = DEFAULT_OUT + "/" + DEFAULT_NAME
 
@@ -100,13 +100,13 @@ def setup():
 	#optSuffix = optSuffix + " -b " + opts.bin
 	
 	print_smt2 = DEFAULT_PRINT_SMT2
-	if (not print_smt2) and (opts.smt2 % 2 == 1):
+	if (opts.smt2 % 2 == 1):
 		print_smt2 = not DEFAULT_PRINT_SMT2
 	if print_smt2:
 		optSuffix = optSuffix + " " + "--smt2"
 
 	print_witness = DEFAULT_PRINT_WITNESS
-	if (not print_witness) and (opts.witness % 2 == 1):
+	if (opts.witness % 2 == 1):
 		print_witness = not DEFAULT_PRINT_WITNESS
 	if print_witness:
 		optSuffix = optSuffix + " " + "--witness"

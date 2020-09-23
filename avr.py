@@ -8,7 +8,6 @@ import shutil
 import ntpath
 from distutils import spawn
 import re
-from distutils.spawn import find_executable
 
 version=2.0
 
@@ -20,8 +19,8 @@ DEFAULT_INIT_FILE="-"
 DEFAULT_OUT="output"
 DEFAULT_YOSYS="yosys"
 DEFAULT_CLK="clk"
-DEFAULT_TIMEOUT=3600
-DEFAULT_MEMOUT=64000
+DEFAULT_TIMEOUT=3590
+DEFAULT_MEMOUT=118000
 DEFAULT_MEMORY=False
 DEFAULT_SPLIT=False
 DEFAULT_GRANULARITY=2
@@ -41,6 +40,7 @@ DEFAULT_PRINT_SMT2=True
 DEFAULT_PRINT_WITNESS=True
 DEFAULT_DOT="1110000"
 DEFAULT_BMC_EN=False
+DEFAULT_KIND_EN=False
 DEFAULT_BMC_MAX_BOUND=1000
 
 def getopts(header):
@@ -74,6 +74,7 @@ def getopts(header):
 	p.add_argument('--witness',         help='toggles printing witness (default: %r)' % DEFAULT_PRINT_WITNESS, action="count", default=0)
 	p.add_argument('--dot', 			help='option to configure dot files generation (default: %s)' % DEFAULT_DOT, type=str, default=DEFAULT_DOT)
 	p.add_argument('--bmc',             help='toggles using bmc engine (default: %r)' % DEFAULT_BMC_EN, action="count", default=0)
+	p.add_argument('--kind',            help='toggles using k-ind engine (default: %r)' % DEFAULT_KIND_EN, action="count", default=0)
 	p.add_argument('-k', '--kmax',      help='max bound for bmc (default: %r)' % DEFAULT_BMC_MAX_BOUND, type=int, default=DEFAULT_BMC_MAX_BOUND)
 	p.add_argument('-v', '--verbosity', help='verbosity level (default: %r)' % DEFAULT_VERBOSITY, type=int, default=DEFAULT_VERBOSITY)
 	args, leftovers = p.parse_known_args()
@@ -156,17 +157,11 @@ def main():
 	else:
 		print("\t(frontend: yosys)")
 		if not os.path.isfile(opts.yosys + "/yosys"):
-			ys_path = find_executable('yosys')
-			if not ys_path:
-				if not os.path.isfile("/usr/local/bin/yosys"):
-					raise Exception("Please install yosys using build.sh")
-				else:
-					opts.yosys = "/usr/local/bin"
+			if not os.path.isfile("/usr/local/bin/yosys"):
+				raise Exception("Please install yosys using build.sh")
 			else:
-				if ys_path.endswith('/yosys'):
-					ys_path = ys_path[:-6]
-				opts.yosys = ys_path
-			print("\t(found yosys in %s)" % opts.yosys)
+				opts.yosys = "/usr/local/bin"
+				print("\t(found yosys in /usr/local/bin)")
 	
 	bin_path = opts.bin + "/avr"
 	if not opts.bin.startswith("/"):
@@ -221,12 +216,12 @@ def main():
 	command = command + " " + str(opts.jgpre)
 
 	print_smt2 = DEFAULT_PRINT_SMT2
-	if (not print_smt2) and (opts.smt2 % 2 == 1):
+	if (opts.smt2 % 2 == 1):
 		print_smt2 = not DEFAULT_PRINT_SMT2
 	command = command + " " + str(print_smt2)
 	
 	print_wit = DEFAULT_PRINT_WITNESS
-	if (not print_wit) and (opts.witness % 2 == 1):
+	if (opts.witness % 2 == 1):
 		print_wit = not DEFAULT_PRINT_WITNESS
 	command = command + " " + str(print_wit)
 	
@@ -237,6 +232,12 @@ def main():
 	if (opts.bmc % 2 == 1):
 		bmc_en = not DEFAULT_BMC_EN
 	command = command + " " + str(bmc_en)
+	
+	kind_en = DEFAULT_KIND_EN
+	if (opts.kind % 2 == 1):
+		kind_en = not DEFAULT_KIND_EN
+	command = command + " " + str(kind_en)
+	
 	command = command + " " + str(opts.kmax)
 	
 	s = subprocess.call("exec " + command, shell=True)
