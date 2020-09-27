@@ -22,7 +22,7 @@ DEFAULT_WORKERS="workers.txt"
 #DEFAULT_BIN="bin"
 DEFAULT_TIMEOUT=3600
 DEFAULT_MEMOUT=16000
-DEFAULT_PRINT_SMT2=True
+DEFAULT_PRINT_SMT2=False
 DEFAULT_PRINT_WITNESS=True
 
 maxTimeSec = DEFAULT_TIMEOUT
@@ -100,13 +100,13 @@ def setup():
 	#optSuffix = optSuffix + " -b " + opts.bin
 	
 	print_smt2 = DEFAULT_PRINT_SMT2
-	if (not print_smt2) and (opts.smt2 % 2 == 1):
+	if (opts.smt2 % 2 == 1):
 		print_smt2 = not DEFAULT_PRINT_SMT2
 	if print_smt2:
 		optSuffix = optSuffix + " " + "--smt2"
 
 	print_witness = DEFAULT_PRINT_WITNESS
-	if (not print_witness) and (opts.witness % 2 == 1):
+	if (opts.witness % 2 == 1):
 		print_witness = not DEFAULT_PRINT_WITNESS
 	if print_witness:
 		optSuffix = optSuffix + " " + "--witness"

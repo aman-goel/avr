@@ -37,9 +37,9 @@ DEFAULT_FORWARD_CHECK=0
 DEFAULT_AB_LEVEL=2
 DEFAULT_LAZY_ASSUME=0
 DEFAULT_JG_PREPROCESS="-"
-DEFAULT_PRINT_SMT2=True
-DEFAULT_PRINT_WITNESS=True
-DEFAULT_DOT="1110000"
+DEFAULT_PRINT_SMT2=False
+DEFAULT_PRINT_WITNESS=False
+DEFAULT_DOT="0000000"
 DEFAULT_BMC_EN=False
 DEFAULT_KIND_EN=False
 DEFAULT_BMC_MAX_BOUND=1000
@@ -225,12 +225,12 @@ def main():
 	command = command + " " + str(opts.jgpre)
 
 	print_smt2 = DEFAULT_PRINT_SMT2
-	if (not print_smt2) and (opts.smt2 % 2 == 1):
+	if (opts.smt2 % 2 == 1):
 		print_smt2 = not DEFAULT_PRINT_SMT2
 	command = command + " " + str(print_smt2)
 	
 	print_wit = DEFAULT_PRINT_WITNESS
-	if (not print_wit) and (opts.witness % 2 == 1):
+	if (opts.witness % 2 == 1):
 		print_wit = not DEFAULT_PRINT_WITNESS
 	command = command + " " + str(print_wit)
 	
@@ -250,7 +250,7 @@ def main():
 	command = command + " " + str(opts.kmax)
 		
 	print_aig = DEFAULT_PRINT_AIG
-	if (not print_aig) and (opts.aig % 2 == 1):
+	if (opts.aig % 2 == 1):
 		print_aig = not DEFAULT_PRINT_AIG
 	command = command + " " + str(print_aig)
 	
