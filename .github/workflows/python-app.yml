@@ -20,7 +20,7 @@ on:
       args:
         description: Additional arguments
         default: ""
-        required: true
+        required: false
 
 jobs:
   job1:
