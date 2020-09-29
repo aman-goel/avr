@@ -24,7 +24,7 @@ on:
 
 jobs:
   job1:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.7
@@ -34,7 +34,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo add-apt-repository -y ppa:saltmakrell/ppa
-        sudo apt-get update                                                                                                                                                                                              
+        sudo apt-get update -q                                                                                                                                                                                            
         sudo apt-get install yosys
     - name: Run file ${{ github.event.inputs.file }} with args  ${{ github.event.inputs.args }}
       run: |
