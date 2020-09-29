@@ -33,11 +33,9 @@ jobs:
         python-version: 3.7
     - name: Install Yosys
       run: |
-        if [[ ${{ github.event.inputs.file }} == "*.v" ]]; then
-            sudo add-apt-repository -y ppa:saltmakrell/ppa
-            sudo apt-get update -q                                                                                                                                                                                            
-            sudo apt-get install yosys
-        fi
+        sudo add-apt-repository -y ppa:saltmakrell/ppa
+        sudo apt-get update -q                                                                                                                                                                                            
+        sudo apt-get install yosys
       if: endsWith(github.event.inputs.file, '.v')
     - name: Run file ${{ github.event.inputs.file }} with args  ${{ github.event.inputs.args }}
       run: |
