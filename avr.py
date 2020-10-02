@@ -124,6 +124,8 @@ def main():
 		os.makedirs(opts.out)
 
 	path, f = split_path(opts.file)
+	if path == "":
+		path = "."
 	if not os.path.isfile(opts.file):
 		raise Exception("Unable to find top file: %s" % opts.file)
 
