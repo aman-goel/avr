@@ -8,8 +8,9 @@ Reads a state transition system and performs property checking  using syntax-gui
 
 #### Results
 - [[HWMCC'20](http://fmv.jku.at/hwmcc20/)] AVR won *1<sup>st</sup>* place at the prestigious *Hardware Model Checking Competition* (HWMCC) 2020
-![Image of AVR medals](hwmcc2020_medals.png)
-
+<p align="center">
+	<img align="center" width="300" height="auto" src="hwmcc2020_medals.png"></img>
+</p>
 
 #### Get Started (quickly)
 - Follow the tutorial artifact on using AVR [[artifact](https://zenodo.org/record/3677545#.Xw5iAHVKhhE)] 
