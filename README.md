@@ -128,6 +128,7 @@ Any usage of AVR needs to comply with the usage terms as detailed in the file [L
 - By default, Yices 2 backend is used for all SMT queries.
 - Enable appropriate ```BACKEND_*``` flag in ```src/reach/reach_backend.h``` to change solver backends for different kinds of SMT queries.
 - Pro tip: compile AVR binaries with different ```BACKEND_*``` flags in ```src/reach/reach_backend.h``` (rename ```build/bin/``` folder every time), and customize proof race workers in ```workers.txt``` (by changing ```--bin <binary-path>```) to run proof race with different SMT solver configurations.
+- After each run, AVR produces a statistics file called ```<test-name>.results```. Here is an incomplete and somewhat outdated description on these statistics: [link to spreadsheet](https://docs.google.com/spreadsheets/d/1uQQu1ISqhzZIgv1dTtlXIEyHErClrnJRr1jXxqcmrmc/edit?usp=sharing).
 - If Verilog frontend is needed, make appropriate changes in ```` ./build.sh ```` to install [Yosys](https://github.com/YosysHQ/yosys)
 - ```<output-path>``` (default: output) and ```<test-name>``` (default: test) can be customized using command-line options ```-o``` and ```-n``` in ```avr_pr.py```).
 - AVR is still in development phase and uses several parameters internally for efficient property checking. Many such parameters can be tuned / corrected, including frontend support via Yosys.
