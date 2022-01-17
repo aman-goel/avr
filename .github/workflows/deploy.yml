@@ -24,7 +24,7 @@ on:
 
 jobs:
   job1:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.7
@@ -37,6 +37,12 @@ jobs:
         sudo apt-get update -q                                                                                                                                                                                            
         sudo apt-get install yosys
       if: endsWith(github.event.inputs.file, '.v')
+    - name: Build AVR and all dependencies
+      run: |
+        chmod +x "deps/build_deps.sh"
+        chmod +x "build.sh"
+        chmod +x "build/avr"
+        ./build.sh
     - name: Run file ${{ github.event.inputs.file }} with args  ${{ github.event.inputs.args }}
       run: |
         ENVTIMEOUT=${{ github.event.inputs.timeout }} ./ci/deploy_bm.sh ${{ github.event.inputs.file }} ${{ github.event.inputs.name }} ${{ github.event.inputs.args }}
