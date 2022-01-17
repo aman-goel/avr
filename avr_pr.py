@@ -1,3 +1,13 @@
+######################################################################################
+# AVR: Abstractly Verifying Reachability
+#
+# Copyright (c) 2016 - Present  Aman Goel and Karem Sakallah, University of Michigan.
+# All rights reserved.
+#
+# Author: Aman Goel (amangoel@umich.edu), University of Michigan
+######################################################################################
+
+
 import os, sys, datetime, time, resource, argparse, shutil, signal
 from subprocess import Popen, PIPE, DEVNULL, STDOUT
 from enum import Enum
@@ -38,9 +48,9 @@ AVR -- Proof Race
   Abstractly Verifying Reachability
   
   Reads a state transition system and performs property checking 
-  using syntax-guided data abstraction
+  using equality abstraction
   
-  Copyright (c) 2021  Aman Goel <amangoel@umich.edu> and 
+  Copyright (c) 2016 - Present  Aman Goel <amangoel@umich.edu> and 
   Karem Sakallah <karem@umich.edu>, University of Michigan
   
   Please report bugs and share your usage experience via email 
@@ -49,7 +59,7 @@ AVR -- Proof Race
 """
 
 short_header="""AVR -- Proof Race 
-copyright (c) 2021  Aman Goel and Karem Sakallah, University of Michigan"""
+Copyright (c) 2016 - Present  Aman Goel and Karem Sakallah, University of Michigan"""
 
 def getopts(header):
 	p = argparse.ArgumentParser(description=str(header), formatter_class=argparse.RawDescriptionHelpFormatter)

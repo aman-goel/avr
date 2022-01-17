@@ -99,7 +99,7 @@ AVR
   Abstractly Verifying Reachability
   
   Reads a state transition system and performs property checking 
-  using syntax-guided data abstraction
+  using equality abstraction
   
   Copyright (c) 2016 - Present  Aman Goel <amangoel@umich.edu> and 
   Karem Sakallah <karem@umich.edu>, University of Michigan
@@ -120,7 +120,7 @@ def split_path(name):
 
 def main():
 	known, opts = getopts(header)
-	#print(short_header)
+	print(short_header)
 	if not os.path.isfile("build/avr"):
 		raise Exception("avr: main shell script not found")
 	if not os.path.isfile(opts.bin + "/vwn"):

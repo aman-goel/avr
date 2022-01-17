@@ -1,19 +1,19 @@
-# AVR (Averroes v2.0) 
+# AVR -- **A**bstractly **V**erifying **R**eachability
 
-**A**bstractly **V**erifying **R**eachability of electronic systems
+<p align="center">(also known as Averroes v2.0)
+</p>
+
 
 > Copyright (c) 2016 - Present  Aman Goel [(amangoel@umich.edu)](amangoel@umich.edu)  and  Karem Sakallah [(karem@umich.edu)](karem@umich.edu) , University of Michigan
 
-Reads a state transition system and performs property checking  using syntax-guided data abstraction
+Reads a state transition system and performs property checking  using equality abstraction
 
-#### Results
+#### News
+- AVR source code is now released! Check the folder ```` src/ ````
 - [[HWMCC'20](http://fmv.jku.at/hwmcc20/)] AVR won *1<sup>st</sup>* place at the prestigious *Hardware Model Checking Competition* (HWMCC) 2020
 <p align="center">
 	<img align="center" width="300" height="auto" src="hwmcc2020_medals.png"></img>
 </p>
-
-#### Get Started (quickly)
-- Follow the tutorial artifact on using AVR [[artifact](https://zenodo.org/record/3677545#.Xw5iAHVKhhE)] 
 
 #### Research Papers
 - [[TACAS'20](https://link.springer.com/chapter/10.1007%2F978-3-030-45190-5_23)] AVR at a high level
@@ -21,16 +21,25 @@ Reads a state transition system and performs property checking  using syntax-gui
 - [[DATE'19](https://ieeexplore.ieee.org/document/8715289)]  Empirically understand the benefits of AVR
 - [[SOSP'19](https://dl.acm.org/doi/10.1145/3341301.3359651)]  Using AVR for verifying distributed protocols
 
-#### Installation
-Simply download or clone the repository and you are good to go
-- All dependencies are statically linked
-- If Verilog frontend is needed, simply run ```` ./build.sh ```` from the avr folder to install [Yosys](https://github.com/YosysHQ/yosys)
+#### Build from source
+- Download/clone the GitHub repository
+- Simply run ```` ./build.sh ```` from the avr folder to install all dependencies and compile the source code with default options. AVR binaries are generated in the folder ```` build/bin/ ````
+
+#### How to run AVR
+	python3 avr.py -o <output-path> -n <test-name> <path>/<file>.btor2
+	(check the output in <output-path>/work_<test-name>)
+	 
+	Example:	python3 avr.py -o foo -n bar examples/btor2/counter.btor2
+				(check the output in foo/work_bar)
+
+#### Tutorial
+- Follow the tutorial artifact on using AVR [[artifact](https://zenodo.org/record/3677545#.Xw5iAHVKhhE)] 
 
 #### AVR Proof Race
 Use AVR *Proof Race* to automatically run multiple configurations in parallel
 - Allows process-level parallelism to solve the problem within a given time and memory budget
 
-#### Usage
+#### How to run Proof Race
 	python3 avr_pr.py -o <output-path> -n <test-name> <path>/<file>.btor2
 	(check the output in <output-path>/pr_<test-name>)
 	 
@@ -116,6 +125,10 @@ AVR is provided as is, without any warranty.
 Any usage of AVR needs to comply with the usage terms as detailed in the file [LICENSE](https://github.com/aman-goel/avr/blob/master/LICENSE).
 
 #### Notes for Pro Users
+- By default, Yices 2 backend is used for all SMT queries.
+- Enable appropriate ```BACKEND_*``` flag in ```src/reach/reach_backend.h``` to change solver backends for different kinds of SMT queries.
+- Pro tip: compile AVR binaries with different ```BACKEND_*``` flags in ```src/reach/reach_backend.h``` (rename ```build/bin/``` folder every time), and customize proof race workers in ```workers.txt``` (by changing ```--bin <binary-path>```) to run proof race with different SMT solver configurations.
+- If Verilog frontend is needed, make appropriate changes in ```` ./build.sh ```` to install [Yosys](https://github.com/YosysHQ/yosys)
 - ```<output-path>``` (default: output) and ```<test-name>``` (default: test) can be customized using command-line options ```-o``` and ```-n``` in ```avr_pr.py```).
 - AVR is still in development phase and uses several parameters internally for efficient property checking. Many such parameters can be tuned / corrected, including frontend support via Yosys.
 - After proving a property, AVR performs a series of checks to ensure correctness of the result (for the interpreted system).
