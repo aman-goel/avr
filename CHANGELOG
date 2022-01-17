@@ -2,11 +2,12 @@ List of major changes and improvements between releases
 =======================================================
 
 
-AVR 2.0.25
+AVR 2.1.0
 --------------------------
 (16 January 2022)
  
  * AVR source code is now released!
+ * Bump version to 2.1
 
 AVR 2.0.24
 --------------------------

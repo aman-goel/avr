@@ -19,7 +19,7 @@
 #include <cstdlib>
 #include <cstring>
 
-#define AVERROES_VERSION 2.0
+#define AVERROES_VERSION 2.1
 
 #include "avr_util.h"
 

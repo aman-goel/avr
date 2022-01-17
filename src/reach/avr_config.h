@@ -14,7 +14,7 @@
 #include "avr_def.h"
 #include "avr_util.h"
 
-#define AVERROES_VERSION 2.0
+#define AVERROES_VERSION 2.1
 #define WN_VERSION 0.1
 
 //#define I4
