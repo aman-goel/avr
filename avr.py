@@ -1,5 +1,14 @@
 #!/usr/bin/env python
 
+######################################################################################
+# AVR: Abstractly Verifying Reachability
+#
+# Copyright (c) 2016 - Present  Aman Goel and Karem Sakallah, University of Michigan.
+# All rights reserved.
+#
+# Author: Aman Goel (amangoel@umich.edu), University of Michigan
+######################################################################################
+
 import os, sys
 import subprocess
 import argparse
@@ -13,7 +22,7 @@ from distutils.spawn import find_executable
 version=2.0
 
 DEFAULT_TOP="-"
-DEFAULT_BIN="bin"
+DEFAULT_BIN="build/bin"
 DEFAULT_NAME="test"
 DEFAULT_PROP_SELECT="-"
 DEFAULT_INIT_FILE="-"
@@ -23,7 +32,7 @@ DEFAULT_CLK="clk"
 DEFAULT_TIMEOUT=3600
 DEFAULT_MEMOUT=64000
 DEFAULT_MEMORY=False
-DEFAULT_SPLIT=False
+DEFAULT_SPLIT=True
 DEFAULT_GRANULARITY=2
 DEFAULT_RANDOM=False
 DEFAULT_EFFORT_MININV=0
@@ -37,9 +46,9 @@ DEFAULT_FORWARD_CHECK=0
 DEFAULT_AB_LEVEL=2
 DEFAULT_LAZY_ASSUME=0
 DEFAULT_JG_PREPROCESS="-"
-DEFAULT_PRINT_SMT2=True
-DEFAULT_PRINT_WITNESS=True
-DEFAULT_DOT="1110000"
+DEFAULT_PRINT_SMT2=False
+DEFAULT_PRINT_WITNESS=False
+DEFAULT_DOT="0000000"
 DEFAULT_BMC_EN=False
 DEFAULT_KIND_EN=False
 DEFAULT_BMC_MAX_BOUND=1000
@@ -92,7 +101,7 @@ AVR
   Reads a state transition system and performs property checking 
   using syntax-guided data abstraction
   
-  Copyright (c) 2020  Aman Goel <amangoel@umich.edu> and 
+  Copyright (c) 2016 - Present  Aman Goel <amangoel@umich.edu> and 
   Karem Sakallah <karem@umich.edu>, University of Michigan
   
   Please report bugs and share your usage experience via email 
@@ -101,7 +110,7 @@ AVR
 """
 
 short_header="""AVR 
-copyright (c) 2020  Aman Goel and Karem Sakallah, University of Michigan"""
+Copyright (c) 2016 - Present  Aman Goel and Karem Sakallah, University of Michigan"""
 
 def split_path(name):
 	head, tail = ntpath.split(name)
@@ -112,7 +121,7 @@ def split_path(name):
 def main():
 	known, opts = getopts(header)
 	#print(short_header)
-	if not os.path.isfile(opts.bin + "/avr"):
+	if not os.path.isfile("build/avr"):
 		raise Exception("avr: main shell script not found")
 	if not os.path.isfile(opts.bin + "/vwn"):
 		raise Exception("avr: vwn binary not found")
@@ -124,6 +133,8 @@ def main():
 		os.makedirs(opts.out)
 
 	path, f = split_path(opts.file)
+	if path == "":
+		path = "."
 	if not os.path.isfile(opts.file):
 		raise Exception("Unable to find top file: %s" % opts.file)
 
@@ -172,12 +183,7 @@ def main():
 				opts.yosys = ys_path
 			print("\t(found yosys in %s)" % opts.yosys)
 	
-	bin_path = opts.bin + "/avr"
-	if not opts.bin.startswith("/"):
-		bin_path = "./" + bin_path
-		
-	command = ""
-	command = command + bin_path
+	command = "./build/avr"
 	command = command + " " + f
 	command = command + " " + str(opts.top)
 	command = command + " " + path
@@ -225,12 +231,12 @@ def main():
 	command = command + " " + str(opts.jgpre)
 
 	print_smt2 = DEFAULT_PRINT_SMT2
-	if (not print_smt2) and (opts.smt2 % 2 == 1):
+	if (opts.smt2 % 2 == 1):
 		print_smt2 = not DEFAULT_PRINT_SMT2
 	command = command + " " + str(print_smt2)
 	
 	print_wit = DEFAULT_PRINT_WITNESS
-	if (not print_wit) and (opts.witness % 2 == 1):
+	if (opts.witness % 2 == 1):
 		print_wit = not DEFAULT_PRINT_WITNESS
 	command = command + " " + str(print_wit)
 	
@@ -250,7 +256,7 @@ def main():
 	command = command + " " + str(opts.kmax)
 		
 	print_aig = DEFAULT_PRINT_AIG
-	if (not print_aig) and (opts.aig % 2 == 1):
+	if (opts.aig % 2 == 1):
 		print_aig = not DEFAULT_PRINT_AIG
 	command = command + " " + str(print_aig)
 	

@@ -1,0 +1,302 @@
+#!/bin/bash
+
+fname="$1"
+top="$2"
+p_dir="$3"
+bm="$4"
+p_out="$5"
+p_bin="$6"
+p_yosys="$7"
+clk="$8"
+timeMax="$9"
+memMax="${10}"
+allowMem="${11}"
+split="${12}"
+abGranularity="${13}"
+random="${14}"
+verbosity="${15}"
+propSelect="${16}"
+minInvEffort="${17}"
+initFile="${18}"
+enVmt="${19}"
+abType="${20}"
+enJg="${21}"
+interpolLevel="${22}"
+forwardCheck="${23}"
+abLevel="${24}"
+lazyAssume="${25}"
+jgPreprocess="${26}"
+printSmt2="${27}"
+printWitness="${28}"
+printDot="${29}"
+enBt="${30}"
+enBmc="${31}"
+enKind="${32}"
+bmcKmax="${33}"
+
+BM_PATH="$p_dir"
+OUT_DIR="$p_out"
+mkdir -p $OUT_DIR
+
+DEFAULT_TOP="main"
+DEFAULT_CLK="clk"
+run_yosys="true"
+AUTOOPT=1
+AUTOTOP=1
+
+if [ "$propSelect" != "-" ]
+then
+	AUTOOPT=0
+fi
+if [ "$initFile" != "-" ]
+then
+	AUTOOPT=0
+fi
+if [ "$top" != "-" ]
+then
+	AUTOOPT=0
+else
+	top=$DEFAULT_TOP
+fi
+
+# echo "bm: $bm" "fname: $fname" "top: $top"
+
+OUT_PATH="$OUT_DIR/work_$bm"
+pidFile="$OUT_PATH/pid.txt"
+
+rm -rf $OUT_PATH
+mkdir $OUT_PATH
+mkdir $OUT_PATH/data
+mkdir $OUT_PATH/dot
+mkdir $OUT_PATH/dot/ref
+mkdir $OUT_PATH/dot/ab
+mkdir $OUT_PATH/dot/excc
+
+
+echo "design_file" > $OUT_PATH/fconfig
+echo "$BM_PATH/$fname" >> $OUT_PATH/fconfig
+	
+echo "top_module" >> $OUT_PATH/fconfig
+echo $top >> $OUT_PATH/fconfig
+
+echo "clock_sig" >> $OUT_PATH/fconfig
+echo "$DEFAULT_CLK" >> $OUT_PATH/fconfig
+
+echo "timeout" >> $OUT_PATH/fconfig
+echo "$timeMax" >> $OUT_PATH/fconfig
+
+echo "memory_limit" >> $OUT_PATH/fconfig
+echo "$memMax" >> $OUT_PATH/fconfig
+
+echo "abstraction_type" >> $OUT_PATH/fconfig
+echo "$abType" >> $OUT_PATH/fconfig
+
+echo "split_signals" >> $OUT_PATH/fconfig
+echo "$split" >> $OUT_PATH/fconfig
+
+echo "ab_granularity" >> $OUT_PATH/fconfig
+echo "$abGranularity" >> $OUT_PATH/fconfig
+
+echo "random" >> $OUT_PATH/fconfig
+echo "$random" >> $OUT_PATH/fconfig
+
+if [ "$propSelect" != "-" ]
+then
+	echo "property_select" >> $OUT_PATH/fconfig
+	echo "$propSelect" >> $OUT_PATH/fconfig
+fi
+
+echo "minimize_inv_effort" >> $OUT_PATH/fconfig
+echo "$minInvEffort" >> $OUT_PATH/fconfig
+
+echo "interpolation" >> $OUT_PATH/fconfig
+echo "$interpolLevel" >> $OUT_PATH/fconfig
+
+echo "forward_check" >> $OUT_PATH/fconfig
+echo "$forwardCheck" >> $OUT_PATH/fconfig
+
+echo "fineness" >> $OUT_PATH/fconfig
+echo "$abLevel" >> $OUT_PATH/fconfig
+
+echo "lazy_assume" >> $OUT_PATH/fconfig
+echo "$lazyAssume" >> $OUT_PATH/fconfig
+
+echo "jg_preprocess" >> $OUT_PATH/fconfig
+echo "$jgPreprocess" >> $OUT_PATH/fconfig
+
+echo "print_smt2_design" >> $OUT_PATH/fconfig
+echo "$printSmt2" >> $OUT_PATH/fconfig
+
+echo "print_witness" >> $OUT_PATH/fconfig
+echo "$printWitness" >> $OUT_PATH/fconfig
+
+echo "print_dot" >> $OUT_PATH/fconfig
+echo "$printDot" >> $OUT_PATH/fconfig
+
+echo "verbosity" >> $OUT_PATH/fconfig
+echo "$verbosity" >> $OUT_PATH/fconfig
+
+echo "bmc" >> $OUT_PATH/fconfig
+echo "$enBmc" >> $OUT_PATH/fconfig
+
+echo "kind" >> $OUT_PATH/fconfig
+echo "$enKind" >> $OUT_PATH/fconfig
+
+echo "bmc_max_bound" >> $OUT_PATH/fconfig
+echo "$bmcKmax" >> $OUT_PATH/fconfig
+
+
+if [ "$initFile" != "-" ]
+then
+	echo "init_file" >> $OUT_PATH/fconfig
+	echo "$initFile" >> $OUT_PATH/fconfig
+fi
+
+if [ "$enVmt" == "True" ]
+then
+	echo "frontend" >> $OUT_PATH/fconfig
+	echo "vmt" >> $OUT_PATH/fconfig
+	
+	OUT_VMT="$bm".vmt
+	cp $BM_PATH/$fname $OUT_PATH/$OUT_VMT
+	run_yosys="false"
+elif [ "$enBt" == "True" ]
+then
+	echo "frontend" >> $OUT_PATH/fconfig
+	echo "btor2" >> $OUT_PATH/fconfig
+	
+	OUT_BTOR2="$bm".btor2
+	cp $BM_PATH/$fname $OUT_PATH/$OUT_BTOR2
+	run_yosys="false"
+else
+	echo "frontend" >> $OUT_PATH/fconfig
+	cp -R $BM_PATH/* $OUT_PATH
+	echo "yosys" >> $OUT_PATH/fconfig
+fi
+
+
+if [ "$run_yosys" = "true" ]
+then
+
+OUT_YOSYS="$bm".ilang
+OUT_VERILOG="$bm"_y.v
+
+YOSYS_CMD=$OUT_PATH/yosys.tcl
+rm -f $YOSYS_CMD
+
+echo "yosys read_verilog -noopt -nolatches -sv $OUT_PATH/$fname;" >> $YOSYS_CMD
+if [ $AUTOTOP -eq 1 ]
+then
+	echo "yosys hierarchy -auto-top;" >> $YOSYS_CMD
+else
+	echo "yosys hierarchy -top $top;" >> $YOSYS_CMD
+fi
+echo "yosys hierarchy -libdir $OUT_PATH;" >> $YOSYS_CMD
+echo "yosys hierarchy -check;" >> $YOSYS_CMD
+echo "yosys rename -top $top;" >> $YOSYS_CMD
+echo "yosys delete -output $top;" >> $YOSYS_CMD
+echo "yosys expose $top/"prop_neg";" >> $YOSYS_CMD
+echo "yosys proc;" >> $YOSYS_CMD
+if [ $AUTOOPT -eq 1 ]
+then
+	echo "yosys clean;" >> $YOSYS_CMD
+fi
+
+echo "yosys splitnets -driver;" >> $YOSYS_CMD
+
+if [ $AUTOOPT -eq 1 ]
+then
+	echo "yosys clean;" >> $YOSYS_CMD
+fi
+echo "yosys pmuxtree;" >> $YOSYS_CMD
+if [ $AUTOOPT -eq 1 ]
+then
+	echo "yosys clean;" >> $YOSYS_CMD
+fi
+if [ "$allowMem" = "True" ]
+then
+	echo "yosys memory_dff -wr_only;" >> $YOSYS_CMD
+	echo "yosys memory_collect;" >> $YOSYS_CMD
+else
+	echo "yosys memory;" >> $YOSYS_CMD
+fi
+if [ $AUTOOPT -eq 1 ]
+then
+	echo "yosys clean;" >> $YOSYS_CMD
+fi
+echo "yosys flatten;" >> $YOSYS_CMD
+if [ "$allowMem" = "True" ]
+then
+	if [ $AUTOOPT -eq 1 ]
+	then
+		echo "yosys clean;" >> $YOSYS_CMD
+	fi
+	echo "yosys memory_unpack;" >> $YOSYS_CMD
+fi
+# echo "yosys wreduce;" >> $YOSYS_CMD
+if [ $AUTOOPT -eq 1 ]
+then
+	echo "yosys clean -purge;" >> $YOSYS_CMD
+fi
+echo "yosys setundef -undriven -expose -undef;" >> $YOSYS_CMD
+if [ $AUTOOPT -eq 1 ]
+then
+	echo "yosys clean;" >> $YOSYS_CMD
+fi
+
+# echo "yosys aigmap;" >> $YOSYS_CMD
+# echo "yosys techmap;" >> $YOSYS_CMD
+# echo "yosys clean;" >> $YOSYS_CMD
+# echo "yosys aigmap;" >> $YOSYS_CMD
+# echo "yosys techmap;" >> $YOSYS_CMD
+# echo "yosys clean;" >> $YOSYS_CMD
+
+echo "yosys check;" >> $YOSYS_CMD
+echo "yosys write_ilang $OUT_PATH/$OUT_YOSYS;" >> $YOSYS_CMD
+echo "yosys write_verilog -attr2comment $OUT_PATH/$OUT_VERILOG;" >> $YOSYS_CMD
+echo "yosys write_btor $OUT_PATH/"$bm".btor2;" >> $YOSYS_CMD
+
+# echo "yosys write_aiger $OUT_PATH/"$bm".aig;" >> $YOSYS_CMD
+
+$p_yosys/yosys -c $YOSYS_CMD -Q -T -q -q -l $OUT_PATH/yosys.log
+
+fi
+
+$p_bin/vwn   $OUT_PATH $p_bin > $OUT_PATH/data/vwn.output 2>> >(tee -a $OUT_PATH/avr.err >&2)  & echo $! > $pidFile
+wait
+avr_exit=$?
+if [ "$avr_exit" != 0 ]
+then
+	echo "avr parser error (check file data/vwn.output for details), error code: $avr_exit"
+	exit $avr_exit
+fi
+
+$p_bin/dpa   $OUT_PATH $p_bin > $OUT_PATH/data/dpa.output 2>> >(tee -a $OUT_PATH/avr.err >&2)  & echo $! > $pidFile
+wait
+avr_exit=$?
+if [ "$avr_exit" != 0 ]
+then
+	echo "avr internal error before reachability analysis, error code: $avr_exit"
+	exit $avr_exit
+fi
+
+$p_bin/reach $OUT_PATH $p_bin > $OUT_PATH/data/reach.output 2>> >(tee -a $OUT_PATH/avr.err >&2)  & echo $! > $pidFile
+wait
+avr_exit=$?
+
+tail -n 3 $OUT_PATH/data/reach.output &> >(tee -a $OUT_PATH/avr.err >&2)
+echo "" &> >(tee -a $OUT_PATH/avr.err >&2)
+
+if [ "$avr_exit" != 0 ]
+then
+	echo "avr reachability analysis error (check file data/reach.output for details), error code: $avr_exit"
+fi
+
+if [[ -f "$OUT_PATH/inv.smt2" ]]; then
+	if [[ -f "$OUT_PATH/design.smt2" ]]; then
+		cat $OUT_PATH/design.smt2 $OUT_PATH/inv.smt2 > $OUT_PATH/proof.smt2
+		sed -i 's/[][|]/_/g' $OUT_PATH/proof.smt2
+	fi
+fi
+
+exit $avr_exit

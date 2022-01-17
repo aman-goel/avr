@@ -22,7 +22,7 @@ DEFAULT_WORKERS="workers.txt"
 #DEFAULT_BIN="bin"
 DEFAULT_TIMEOUT=3600
 DEFAULT_MEMOUT=16000
-DEFAULT_PRINT_SMT2=True
+DEFAULT_PRINT_SMT2=False
 DEFAULT_PRINT_WITNESS=True
 
 maxTimeSec = DEFAULT_TIMEOUT
@@ -40,7 +40,7 @@ AVR -- Proof Race
   Reads a state transition system and performs property checking 
   using syntax-guided data abstraction
   
-  Copyright (c) 2020  Aman Goel <amangoel@umich.edu> and 
+  Copyright (c) 2021  Aman Goel <amangoel@umich.edu> and 
   Karem Sakallah <karem@umich.edu>, University of Michigan
   
   Please report bugs and share your usage experience via email 
@@ -49,7 +49,7 @@ AVR -- Proof Race
 """
 
 short_header="""AVR -- Proof Race 
-copyright (c) 2020  Aman Goel and Karem Sakallah, University of Michigan"""
+copyright (c) 2021  Aman Goel and Karem Sakallah, University of Michigan"""
 
 def getopts(header):
 	p = argparse.ArgumentParser(description=str(header), formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -100,13 +100,13 @@ def setup():
 	#optSuffix = optSuffix + " -b " + opts.bin
 	
 	print_smt2 = DEFAULT_PRINT_SMT2
-	if (not print_smt2) and (opts.smt2 % 2 == 1):
+	if (opts.smt2 % 2 == 1):
 		print_smt2 = not DEFAULT_PRINT_SMT2
 	if print_smt2:
 		optSuffix = optSuffix + " " + "--smt2"
 
 	print_witness = DEFAULT_PRINT_WITNESS
-	if (not print_witness) and (opts.witness % 2 == 1):
+	if (opts.witness % 2 == 1):
 		print_witness = not DEFAULT_PRINT_WITNESS
 	if print_witness:
 		optSuffix = optSuffix + " " + "--witness"

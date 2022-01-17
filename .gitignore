@@ -1,35 +1,28 @@
-gmon.out
 # bin/dpa
 # bin/reach
 # bin/vwn
 
+build/bin*/dpa
+build/bin*/reach
+build/bin*/vwn
+
+deps/*
+output/*
+
 *.a
 *.o
 *.d
-.*
-.git/*
+.fuse*
+*.log
+*.*project
 */tmp.txt
+*/.settings/*
+.settings/*
 .d/*
-work_*
-work_*/*
-
-!examples/
-
-src/*
-*/smt_queries/*
-smt_queries/*
-output/*
-examples/averroes*
-examples/*.sh
-examples/*
+gmon.out
 
 # But not these files
 !.gitignore
 !.travis/*
 !.travis.yml
-# !examples/averroes*
-!examples/bm/*
-!examples/scripts/*
-!examples/verilog/
-!examples/vmt/
-!examples/btor2/
+!deps/*.sh

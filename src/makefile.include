@@ -1,0 +1,73 @@
+STATIC_MODE := 0
+
+### enable/disable solver environments
+### by default, z3 environment is disabled
+### also choose a BACKEND_* flag in src/reach/reach_backend.h 
+### to change solver backends for different kinds of SMT queries
+###
+ENABLE_Y2 := 1
+ENABLE_M5 := 1
+ENABLE_BT := 1
+ENABLE_Z3 := 0
+
+ENABLE_VMT   := 1
+ENABLE_BTOR2 := 1
+
+CURR_DIR = $(shell pwd)
+BIN_DIR = $(CURR_DIR)/../../build/bin
+DEPS = $(CURR_DIR)/../../deps
+
+ifeq ($(STATIC_MODE), 1)
+ STATIC_VWN = 1
+ STATIC_DPA = 1
+ STATIC_REA = 1
+endif
+
+STATIC_GMP   = -lgmp
+STATIC_GMPXX = -lgmpxx
+
+####	reach : reachability computation
+REACH_BIN = $(BIN_DIR)/reach
+REACH_OBJS = avr_word_netlist.o avr_util.o avr_config.o reach_sa.o reach_backend.o reach_z3.o reach_y2.o \
+             reach_evaluate.o reach_coi.o reach_simulate.o reach_util.o reach_tsim.o reach_solve.o       \
+             reach_cegar.o reach_core.o reach.o reach_cex.o reach_print.o reach_bmc.o reach_bool.o
+ifeq ($(ENABLE_M5), 1)
+  REACH_OBJS += reach_m5.o reach_m5_utils.o
+endif
+ifeq ($(ENABLE_BT), 1)
+  REACH_OBJS += reach_bt.o
+endif
+
+####	dpa : word-level netlist generator
+DPA_BIN = $(BIN_DIR)/dpa
+DPA_OBJS = avr_word_netlist.o avr_util.o avr_config.o dpa.o
+DPA_DEPS = avr_word_netlist.d avr_util.d avr_config.d dpa.d
+
+####	vwn : word-level netlist generator
+VWN_BIN = $(BIN_DIR)/vwn
+VWN_OBJS = avr_word_netlist.o avr_util.o avr_config.o vwn.o ilang_frontend.o init_pass.o 
+ifeq ($(ENABLE_VMT), 1)
+  VWN_OBJS += vmt_frontend.o vmt_parser.o
+endif
+ifeq ($(ENABLE_BTOR2), 1)
+  VWN_OBJS += btor2_frontend.o btor2_parser.o
+endif
+
+GPP=g++ -std=c++11
+
+####	flags
+CFLAG_OPT = -g -O3
+
+#### includes
+INCLUDE_DIRS = 
+
+CFLAGS_INC = $(INCLUDE_DIRS)
+CFLAGS = -c $(CFLAGS_INC) $(CFLAG_OPT)
+
+#### optional flags
+FLAG_PG = -pg
+
+#### link flags
+LINK_FLAGS = $(CFLAG_OPT)
+
+CXX = $(GPP)
