@@ -1,5 +1,14 @@
 #!/usr/bin/env python
 
+######################################################################################
+# AVR: Abstractly Verifying Reachability
+#
+# Copyright (c) 2016 - Present  Aman Goel and Karem Sakallah, University of Michigan.
+# All rights reserved.
+#
+# Author: Aman Goel (amangoel@umich.edu), University of Michigan
+######################################################################################
+
 import os, sys
 import subprocess
 import argparse
@@ -13,7 +22,7 @@ from distutils.spawn import find_executable
 version=2.0
 
 DEFAULT_TOP="-"
-DEFAULT_BIN="bin"
+DEFAULT_BIN="build/bin"
 DEFAULT_NAME="test"
 DEFAULT_PROP_SELECT="-"
 DEFAULT_INIT_FILE="-"
@@ -34,7 +43,7 @@ DEFAULT_EN_BTOR2=True
 DEFAULT_ABTYPE="sa+uf"
 DEFAULT_INTERPOLATION=0
 DEFAULT_FORWARD_CHECK=0
-DEFAULT_AB_LEVEL=5
+DEFAULT_AB_LEVEL=2
 DEFAULT_LAZY_ASSUME=0
 DEFAULT_JG_PREPROCESS="-"
 DEFAULT_PRINT_SMT2=False
@@ -92,7 +101,7 @@ AVR
   Reads a state transition system and performs property checking 
   using syntax-guided data abstraction
   
-  Copyright (c) 2021  Aman Goel <amangoel@umich.edu> and 
+  Copyright (c) 2016 - Present  Aman Goel <amangoel@umich.edu> and 
   Karem Sakallah <karem@umich.edu>, University of Michigan
   
   Please report bugs and share your usage experience via email 
@@ -101,7 +110,7 @@ AVR
 """
 
 short_header="""AVR 
-copyright (c) 2021  Aman Goel and Karem Sakallah, University of Michigan"""
+Copyright (c) 2016 - Present  Aman Goel and Karem Sakallah, University of Michigan"""
 
 def split_path(name):
 	head, tail = ntpath.split(name)
@@ -112,7 +121,7 @@ def split_path(name):
 def main():
 	known, opts = getopts(header)
 	#print(short_header)
-	if not os.path.isfile(opts.bin + "/avr"):
+	if not os.path.isfile("build/avr"):
 		raise Exception("avr: main shell script not found")
 	if not os.path.isfile(opts.bin + "/vwn"):
 		raise Exception("avr: vwn binary not found")
@@ -174,12 +183,7 @@ def main():
 				opts.yosys = ys_path
 			print("\t(found yosys in %s)" % opts.yosys)
 	
-	bin_path = opts.bin + "/avr"
-	if not opts.bin.startswith("/"):
-		bin_path = "./" + bin_path
-		
-	command = ""
-	command = command + bin_path
+	command = "./build/avr"
 	command = command + " " + f
 	command = command + " " + str(opts.top)
 	command = command + " " + path

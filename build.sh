@@ -1,21 +1,39 @@
-#!/bin/bash -x
-# Make sure we exit if there is a failure
+#!/bin/bash
 set -e
 
-# Build and install yosys
+# Prerequisites: git autoconf gperf libgmp3-dev curl cmake
+# Prerequisites (yosys): build-essential clang bison flex libreadline-dev gawk tcl-dev libffi-dev git graphviz xdot pkg-config python3 libboost-system-dev libboost-python-dev libboost-filesystem-dev zlib1g-dev
+
+# sudo apt update
+# sudo apt install git autoconf gperf libgmp3-dev curl cmake
+# sudo apt install build-essential clang bison flex libreadline-dev gawk tcl-dev libffi-dev git graphviz xdot pkg-config python3 libboost-system-dev libboost-python-dev libboost-filesystem-dev zlib1g-dev
+
+
+# Build and install dependencies
 pushd .
-# git clone https://github.com/YosysHQ/yosys.git
-git clone https://github.com/aman-goel/yosys.git
-cd yosys
-make PREFIX="$PWD"
-# sudo make install
+cd deps
+./build_deps.sh
+cd ..
 popd
 
-# Build and install yices2
-	# statically linked
 
-# Build and install z3
-	# statically linked
+# Build AVR source
+pushd .
+cd src
+make all
+cd ..
+popd
+
+
+# Test AVR
+
+python avr.py -n test_vmt      examples/vmt/counter.smt2
+python avr.py -n test_vmt2     examples/vmt/simple.c.vmt
+python avr.py -n test_btor2    examples/btor2/counter.btor2
+
+# requires yosys
+#python avr.py -n test_verilog  examples/verilog/counter.v
+
 
 RETURN="$?"
 if [ "${RETURN}" != "0" ]; then

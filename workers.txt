@@ -1,14 +1,14 @@
-python3 avr.py --bin bin
-python3 avr.py --bin bin --abstract sa
-python3 avr.py --bin bin --abstract sa --kind
-python3 avr.py --bin bin --abstract sa --bmc
-python3 avr.py --bin bin --split
-python3 avr.py --bin bin_bt_cad
-python3 avr.py --bin bin_bt_cad --abstract sa
-python3 avr.py --bin bin --abstract sa8
-python3 avr.py --bin bin --abstract sa16
-python3 avr.py --bin bin --abstract sa32
-python3 avr.py --bin bin --level 0
-python3 avr.py --bin bin --level 5
-python3 avr.py --bin bin --interpol 1
-python3 avr.py --bin bin --forward 1
+python3 avr.py --bin build/bin
+python3 avr.py --bin build/bin --abstract sa
+python3 avr.py --bin build/bin --abstract sa --kind
+python3 avr.py --bin build/bin --abstract sa --bmc
+python3 avr.py --bin build/bin --split
+# python3 avr.py --bin build/bin_bt_cad
+# python3 avr.py --bin build/bin_bt_cad --abstract sa
+python3 avr.py --bin build/bin --abstract sa8
+python3 avr.py --bin build/bin --abstract sa16
+python3 avr.py --bin build/bin --abstract sa32
+python3 avr.py --bin build/bin --level 0
+python3 avr.py --bin build/bin --level 5
+python3 avr.py --bin build/bin --interpol 1
+python3 avr.py --bin build/bin --forward 1
