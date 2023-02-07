@@ -33,6 +33,7 @@ enBt="${30}"
 enBmc="${31}"
 enKind="${32}"
 bmcKmax="${33}"
+createAig="${34}"
 
 BM_PATH="$p_dir"
 OUT_DIR="$p_out"
@@ -244,19 +245,25 @@ then
 	echo "yosys clean;" >> $YOSYS_CMD
 fi
 
-# echo "yosys aigmap;" >> $YOSYS_CMD
-# echo "yosys techmap;" >> $YOSYS_CMD
-# echo "yosys clean;" >> $YOSYS_CMD
-# echo "yosys aigmap;" >> $YOSYS_CMD
-# echo "yosys techmap;" >> $YOSYS_CMD
-# echo "yosys clean;" >> $YOSYS_CMD
+if [ "$createAig" == "True" ]
+then
+  echo "yosys aigmap;" >> $YOSYS_CMD
+  echo "yosys techmap;" >> $YOSYS_CMD
+  echo "yosys clean;" >> $YOSYS_CMD
+  echo "yosys aigmap;" >> $YOSYS_CMD
+  echo "yosys techmap;" >> $YOSYS_CMD
+  echo "yosys clean;" >> $YOSYS_CMD
+fi
 
 echo "yosys check;" >> $YOSYS_CMD
 echo "yosys write_ilang $OUT_PATH/$OUT_YOSYS;" >> $YOSYS_CMD
 echo "yosys write_verilog -attr2comment $OUT_PATH/$OUT_VERILOG;" >> $YOSYS_CMD
 echo "yosys write_btor $OUT_PATH/"$bm".btor2;" >> $YOSYS_CMD
+if [ "$createAig" == "True" ]
+then
+  echo "yosys write_aiger $OUT_PATH/"$bm".aig;" >> $YOSYS_CMD
+fi
 
-# echo "yosys write_aiger $OUT_PATH/"$bm".aig;" >> $YOSYS_CMD
 
 $p_yosys/yosys -c $YOSYS_CMD -Q -T -q -q -l $OUT_PATH/yosys.log
 
