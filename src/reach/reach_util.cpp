@@ -410,8 +410,9 @@ Inst* Reach::replace_constant_with_value(Inst *top) {
 					assert(size == c->get_sort_range()->sz);
 
 					Inst* wI = NumInst::create(width, 32, SORT());
+					Inst* sI = NumInst::create(size, 32, SORT());
 					Inst* dI = NumInst::create(value, size, 2, SORT());
-					num = OpInst::create(OpInst::ArrayConst, wI, dI);
+					num = OpInst::create(OpInst::ArrayConst, wI, sI, dI);
     		}
     		else {
     			num = c->get_parent();

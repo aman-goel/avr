@@ -3560,7 +3560,7 @@ void OpInst::calc_size() {
 	}
 		break;
 	case ArrayConst: {
-		assert(m_exps.size() == 2);
+		assert(m_exps.size() == 3);
 		InstL::iterator cit = m_exps.begin();
 		assert((*cit)->get_type() == Num);
 		unsigned width = NumInst::as(*cit)->get_num();

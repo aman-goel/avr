@@ -19,6 +19,7 @@
 #define SRC_DPA_DPA_H_
 
 #include <algorithm>
+#include <climits>
 
 // For Averroes
 #include "avr_config.h"
