@@ -4,11 +4,11 @@ HEADERS = *.h *.hpp
 LINKTARGET = $(VWN_BIN)
 
 INCLUDE  = -I.
-LINKLIBS = 
+LINKLIBS =
 
 ifeq ($(STATIC_VWN), 1)
   CXX += -static-libstdc++ -static-libgcc -static
-  LINK_FLAGS += -L/usr/lib/x86_64-redhat-linux6E/lib64 
+  LINK_FLAGS += -L/usr/lib/x86_64-redhat-linux6E/lib64
   LINK_FLAGS += -static -pthread -Wl,--whole-archive -lpthread -Wl,--no-whole-archive
   LINKLIBS += $(STATIC_GMPXX) $(STATIC_GMP)
 else
@@ -39,7 +39,7 @@ COMPILE.cc = $(CXX) $(DEPFLAGS) $(CFLAGS) $(INCLUDE)
 POSTCOMPILE = mv -f $(DEPDIR)/$*.Td $(DEPDIR)/$*.d
 
 all:
-	make $(VWN_BIN)
+	$(MAKE) $(VWN_BIN)
 
 $(VWN_BIN):$(VWN_OBJS)
 	@mkdir -p $(@D)
@@ -54,7 +54,7 @@ clean:
 	rm -f *.o
 	rm -f $(VWN_BIN)
 	rm -rf .d/
-	
+
 $(DEPDIR)/%.d: ;
 .PRECIOUS: $(DEPDIR)/%.d
 

@@ -4,7 +4,7 @@ CFLAGS += -Werror -Wreturn-type -Wunknown-pragmas -Wunused-value -Wunused-label
 
 ifeq ($(STATIC_REA), 1)
   CXX += -static-libstdc++ -static-libgcc -static
-  LINK_FLAGS += -L/usr/lib/x86_64-redhat-linux6E/lib64 
+  LINK_FLAGS += -L/usr/lib/x86_64-redhat-linux6E/lib64
   LINK_FLAGS += $(STATIC_GMPXX) $(STATIC_GMP) -pthread -Wl,--whole-archive -lpthread -Wl,--no-whole-archive
 else
   LINK_FLAGS += -pthread -lgmpxx -lgmp -lrt -ldl
@@ -52,7 +52,7 @@ COMPILE.cc = $(CXX) $(DEPFLAGS) $(CFLAGS) $(INCLUDE)
 POSTCOMPILE = mv -f $(DEPDIR)/$*.Td $(DEPDIR)/$*.d
 
 all:
-	make $(REACH_BIN)
+	$(MAKE) $(REACH_BIN)
 
 $(REACH_BIN):$(REACH_OBJS)
 	@mkdir -p $(@D)

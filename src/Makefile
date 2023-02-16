@@ -3,36 +3,36 @@ DPA_LOC = dpa
 VWN_LOC = vwn
 
 all:
-	make da
-	make re
-	make vw
+	$(MAKE) da
+	$(MAKE) re
+	$(MAKE) vw
 
 clean:
-	make dac
-	make rec
-	make vwc
+	$(MAKE) dac
+	$(MAKE) rec
+	$(MAKE) vwc
 	@echo Cleaning Complete
 
 re:
-	@cd $(REA_LOC); make
+	@cd $(REA_LOC); $(MAKE)
 	@echo
 	@echo %%% reach: Compilation Complete.
 
 da:
-	@cd $(DPA_LOC); make
+	@cd $(DPA_LOC); $(MAKE)
 	@echo
 	@echo %%% dpa: Compilation Complete.
 
 vw:
-	@cd $(VWN_LOC) ; make
+	@cd $(VWN_LOC) ; $(MAKE)
 	@echo
 	@echo %%% vwn: Compilation Complete.
-	
+
 rec:
-	@cd $(REA_LOC); make clean
+	@cd $(REA_LOC); $(MAKE) clean
 
 dac:
-	@cd $(DPA_LOC); make clean
+	@cd $(DPA_LOC); $(MAKE) clean
 
 vwc:
-	@cd $(VWN_LOC) ; make clean
+	@cd $(VWN_LOC) ; $(MAKE) clean
