@@ -424,7 +424,7 @@ void z3_API::assert_distinct_constants(z3_solver& solver)
 
 	m_constraints.clear();
 	int idx = z3_API::m_distinct_constraints.first;
-	if (idx != -1)
+	if (false && idx != -1)
 	{
 		z3_expr_vec& dV = z3_API::m_distinct_constraints.second;
 		for (auto& dis_ptr : dV)

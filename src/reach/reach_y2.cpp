@@ -5887,7 +5887,7 @@ void y2_API::assert_distinct_constants(void)
 
 	m_constraints.clear();
 	int idx = y2_API::m_distinct_constraints.first;
-	if (idx != -1)
+	if (false && idx != -1)
 	{
 		y2_expr_vec& dV = y2_API::m_distinct_constraints.second;
 		for (auto& dis : dV)
