@@ -1,0 +1,10 @@
+version: '3'
+services:
+  avr:
+    stdin_open: true
+    tty: true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./input_files:/app/input_files
