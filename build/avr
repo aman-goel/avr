@@ -34,6 +34,7 @@ enBmc="${31}"
 enKind="${32}"
 bmcKmax="${33}"
 createAig="${34}"
+parseOnly="${35}"
 
 BM_PATH="$p_dir"
 OUT_DIR="$p_out"
@@ -275,6 +276,11 @@ avr_exit=$?
 if [ "$avr_exit" != 0 ]
 then
 	echo "avr parser error (check file data/vwn.output for details), error code: $avr_exit"
+	exit $avr_exit
+fi
+
+if [ "$parseOnly" == "True" ]
+then
 	exit $avr_exit
 fi
 

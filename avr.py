@@ -53,6 +53,7 @@ DEFAULT_BMC_EN=False
 DEFAULT_KIND_EN=False
 DEFAULT_BMC_MAX_BOUND=1000
 DEFAULT_CREATE_AIG=False
+DEFAULT_PARSE_ONLY=False
 
 def getopts(header):
 	p = argparse.ArgumentParser(description=str(header), formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -87,6 +88,7 @@ def getopts(header):
 	p.add_argument('--bmc',             help='toggles using bmc engine (default: %r)' % DEFAULT_BMC_EN, action="count", default=0)
 	p.add_argument('--kind',            help='toggles using k-ind engine (default: %r)' % DEFAULT_KIND_EN, action="count", default=0)
 	p.add_argument('--aig',             help='toggles synthesizing to aig (default: %r)' % DEFAULT_CREATE_AIG, action="count", default=0)
+	p.add_argument('--parse',           help='toggles quitting after parsing (default: %r)' % DEFAULT_PARSE_ONLY, action="count", default=0)
 	p.add_argument('-k', '--kmax',      help='max bound for bmc (default: %r)' % DEFAULT_BMC_MAX_BOUND, type=int, default=DEFAULT_BMC_MAX_BOUND)
 	p.add_argument('-v', '--verbosity', help='verbosity level (default: %r)' % DEFAULT_VERBOSITY, type=int, default=DEFAULT_VERBOSITY)
 	args, leftovers = p.parse_known_args()
@@ -259,6 +261,11 @@ def main():
 	if (opts.aig % 2 == 1):
 		create_aig = not DEFAULT_CREATE_AIG
 	command = command + " " + str(create_aig)
+		
+	parse_only = DEFAULT_PARSE_ONLY
+	if (opts.parse % 2 == 1):
+		parse_only = not DEFAULT_PARSE_ONLY
+	command = command + " " + str(parse_only)
 	
 	s = subprocess.call("exec " + command, shell=True)
 	if (s != 0):

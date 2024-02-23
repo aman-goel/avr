@@ -161,6 +161,7 @@ Any usage of AVR needs to comply with the usage terms as detailed in the file [L
                 5 (refinement axioms), 6 (IC3 query solutions).
 - Use --witness to print witness in BTOR2 (for disproved) / SMT-LIB v2 (for proved) format
 - Use --bmc to instead run a BMC engine (set max bmc bound using --kmax)
+- Use --parse to just parse the input and skip verification (e.g., to convert verilog to btor2/aig)
 
 We would be glad to hear from you and help you in the case you are having a difficulty in using AVR
 Please report bugs and share your usage experience via email  [(amangoel@umich.edu)](amangoel@umich.edu) or on github [(https://github.com/aman-goel/avr)](https://github.com/aman-goel/avr)
