@@ -3188,10 +3188,12 @@ void m5_API::inst2yices(Inst*e, bool bvAllConstraints) {
 					res = bit;
 				}
 					break;
+				case OpInst::RotateR:
 				case OpInst::VRotateR:{
 					m5_loge("TODO");
 				}
 				  break;
+				case OpInst::RotateL:
 				case OpInst::VRotateL:{
 					m5_loge("TODO");
 				}

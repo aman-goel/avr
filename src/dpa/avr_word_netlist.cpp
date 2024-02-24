@@ -875,11 +875,11 @@ Inst* OpInst::create(OpInst::OpType op, InstL exps, int o_size, bool to_simplify
 // 			assert(0);
 // 		}
 // 	}
-	if (op == BitWiseNand || op == BitWiseNor) {
-		string temp = op == BitWiseNand ? "BitWiseNand" : "BitWiseNor";
-		cout << temp << endl << exps << endl;
-		assert(0);
-	}
+	// if (op == BitWiseNand || op == BitWiseNor) {
+	// 	string temp = op == BitWiseNand ? "BitWiseNand" : "BitWiseNor";
+	// 	cout << temp << endl << exps << endl;
+	// 	assert(0);
+	// }
 
 	// 	if(op == BitWiseXor || op == LogXor){
 	// 		string temp = op == BitWiseXor ? "BitWiseXor" : "LogXor";

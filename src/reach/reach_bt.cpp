@@ -2364,10 +2364,12 @@ void bt_API::inst2yices(Inst*e, bool bvAllConstraints) {
 						res = boolector_not(g_ctx, res);
 				}
 					break;
+				case OpInst::RotateR:
 				case OpInst::VRotateR:{
 					bt_loge("TODO");
 				}
 				  break;
+				case OpInst::RotateL:
 				case OpInst::VRotateL:{
 					bt_loge("TODO");
 				}

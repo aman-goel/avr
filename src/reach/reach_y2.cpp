@@ -1781,7 +1781,10 @@ void y2_API::add_variable(y2_expr& lhs, Inst*e) {
 }
 
 void y2_API::add_gate_constraint(y2_expr& lhs, y2_expr_ptr rhs, std::string comment, Inst*e, bool asConstraint, bool checkType) {
-	assert(rhs != Y2_INVALID_EXPR);
+	if (rhs == Y2_INVALID_EXPR) {
+		cout << "Error encountered for " << *e << " with comment: " << comment << endl;
+		assert(0);
+	}
 
 	if (checkType) {
 		if (e->get_sort_type() == bvtype) {
@@ -7209,6 +7212,35 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 					res = bit;
 				}
 					break;
+
+				case OpInst::RotateL:
+				case OpInst::RotateR: {
+					assert(y_ch.size() == 2);
+					InstL::const_iterator ve_it = ch->begin(), ve_it2 = ch->begin();
+					ve_it2++;
+					NumInst* num = NumInst::as(*ve_it2);
+					// cout << "Rotate: " << *e << endl;
+					if (num != 0)
+					{
+						int rotate_amount = num->get_mpz()->get_si() % e->get_size();
+						// cout << "rotate_amount: " << rotate_amount << endl;
+						if (rotate_amount != 0) {
+							if (o == OpInst::RotateL)
+							{
+								res = yices_rotate_left(a, rotate_amount);
+							} else {
+								res = yices_rotate_right(a, rotate_amount);
+							}
+						} else {
+							res = a;
+						}
+					} else {
+						cout << "Expected second operand as number in " << *e << endl;
+						assert(0);
+					}
+					assert(res != -1);
+				}
+					break;
 				case OpInst::VRotateR:{
 					const InstL* ch = e->get_children();
 					InstL::const_iterator ve_it = ch->begin();
@@ -7364,6 +7396,7 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 					break;
 				}
 				default:
+					cout << "Error converting expression to yices equivalent: " << *e << endl;
 					assert(0);
 				}
 			} else if (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP || m_mapper->fetch_op(e) == TheoryMapper::CLU_OP) {

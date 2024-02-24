@@ -739,12 +739,24 @@ void Btor2Frontend::get_node(NODE_INFO& info, InstL& args) {
 	case BTOR2_TAG_rol: {
 		assert(args.size() == 2);
 		assert(args.front()->get_size() == args.back()->get_size());
-		opt = OpInst::RotateL;
+		Inst* arg2 = args.back();
+		if (NumInst::as(arg2)) {
+			opt = OpInst::RotateL;
+		} else {
+			opt = OpInst::VRotateL;
+			btor2_loge("unsupported (rotate by non-constant amount): " << t.name << " arg2: " << *arg2);
+		}
 	} break;
 	case BTOR2_TAG_ror: {
 		assert(args.size() == 2);
 		assert(args.front()->get_size() == args.back()->get_size());
-		opt = OpInst::RotateR;
+		Inst* arg2 = args.back();
+		if (NumInst::as(arg2)) {
+			opt = OpInst::RotateR;
+		} else {
+			opt = OpInst::VRotateR;
+			btor2_loge("unsupported (rotate by non-constant amount): " << t.name << " arg2: " << *arg2);
+		}
 	} break;
 	case BTOR2_TAG_saddo: {
 		assert(sort.sz == 1);

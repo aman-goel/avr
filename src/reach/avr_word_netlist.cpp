@@ -1919,11 +1919,11 @@ Inst* OpInst::create(OpInst::OpType op, InstL exps, int o_size, bool to_simplify
 		}
 	}
 
-	if (op == BitWiseNand || op == BitWiseNor) {
-		string temp = op == BitWiseNand ? "BitWiseNand" : "BitWiseNor";
-		cout << temp << endl << exps << endl;
-		assert(0);
-	}
+	// if (op == BitWiseNand || op == BitWiseNor) {
+	// 	string temp = op == BitWiseNand ? "BitWiseNand" : "BitWiseNor";
+	// 	cout << temp << endl << exps << endl;
+	// 	assert(0);
+	// }
 	
 	if (Config::g_uf_no_bitwise)
 	if (op == BitWiseNot || op == BitWiseAnd || op == BitWiseOr) {
