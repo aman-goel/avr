@@ -83,6 +83,7 @@ pushd .
 echo "  Installing Yosys (custom version) from https://github.com/aman-goel/yosys ..."
 git clone https://github.com/aman-goel/yosys.git
 cd yosys
+make config-gcc
 make -j$(nproc) PREFIX="$PWD"
 echo "  Done!"
 popd
