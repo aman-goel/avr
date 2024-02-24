@@ -27,7 +27,7 @@ DEFAULT_NAME="test"
 DEFAULT_PROP_SELECT="-"
 DEFAULT_INIT_FILE="-"
 DEFAULT_OUT="output"
-DEFAULT_YOSYS="yosys"
+DEFAULT_YOSYS="deps/yosys"
 DEFAULT_CLK="clk"
 DEFAULT_TIMEOUT=3600
 DEFAULT_MEMOUT=64000
@@ -176,7 +176,7 @@ def main():
 			ys_path = find_executable('yosys')
 			if not ys_path:
 				if not os.path.isfile("/usr/local/bin/yosys"):
-					raise Exception("Please install yosys using build.sh")
+					raise Exception("Please install yosys (check deps/build_deps.sh)")
 				else:
 					opts.yosys = "/usr/local/bin"
 			else:

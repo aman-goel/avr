@@ -12,7 +12,7 @@ git clone https://github.com/SRI-CSL/yices2.git
 cd yices2
 autoconf
 ./configure
-make
+make -j$(nproc)
 cd ..
 echo "  Done!"
 popd
@@ -27,7 +27,7 @@ cd boolector
 ./contrib/setup-cadical.sh
 ./configure.sh --only-cadical
 cd build
-make
+make -j$(nproc)
 cd ..
 echo "  Done!"
 popd
@@ -51,7 +51,7 @@ git clone https://github.com/Boolector/btor2tools.git
 cd btor2tools
 ./configure.sh --static
 cd build
-make
+make -j$(nproc)
 cd ../..
 echo "  Done!"
 popd
@@ -64,18 +64,28 @@ echo "  Skipping installing Z3 (install manually if needed)"
 # cd z3
 # python scripts/mk_make.py --prefix . --staticlib
 # cd build
-# make -j4
+# make -j$(nproc)
 # cd ../..
 # popd
 
-echo "  Skipping installing Yosys (install manually if needed, preferrably from https://github.com/aman-goel/yosys)"
-### By default, yosys installation is disabled
-# ### Build and install yosys
-# pushd .
-# git clone https://github.com/aman-goel/yosys.git
-# cd yosys
-# make -j8 PREFIX="$PWD"
-# popd
+## Build and install Yosys
+### Build and install abc first (needed by yosys)
+pushd .
+echo "  Installing ABC from https://github.com/berkeley-abc/abc (needed by yosys) ..."
+git clone https://github.com/berkeley-abc/abc.git
+cd abc
+make -j$(nproc)
+export ABCEXTERNAL="$PWD/abc"
+echo "  Done!"
+popd
+### Build and install yosys
+pushd .
+echo "  Installing Yosys (custom version) from https://github.com/aman-goel/yosys ..."
+git clone https://github.com/aman-goel/yosys.git
+cd yosys
+make -j$(nproc) PREFIX="$PWD"
+echo "  Done!"
+popd
 
 
 RETURN="$?"

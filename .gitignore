@@ -2,6 +2,9 @@
 # bin/reach
 # bin/vwn
 
+.vscode/
+.idea/
+
 build/bin*/dpa
 build/bin*/reach
 build/bin*/vwn

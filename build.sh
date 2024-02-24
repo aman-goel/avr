@@ -40,9 +40,7 @@ popd
 python avr.py -n test_vmt      examples/vmt/counter.smt2
 python avr.py -n test_vmt2     examples/vmt/simple.c.vmt
 python avr.py -n test_btor2    examples/btor2/counter.btor2
-
-# requires yosys
-#python avr.py -n test_verilog  examples/verilog/counter.v
+python avr.py -n test_verilog  examples/verilog/counter.v   # requires yosys
 
 
 RETURN="$?"
