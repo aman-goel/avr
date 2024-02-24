@@ -88,8 +88,10 @@ void y2_API::y2_unset()
 	m_func_decs.clear();
 	m_num_to_const.clear();
 
+#ifdef ASSERT_DISTINCT_NUMBERS
 	m_distinct_constraints.second.clear();
 	m_distinct_constraints = make_pair(-1, y2_expr_vec());
+#endif
 
 	g_ctx = NULL;
 

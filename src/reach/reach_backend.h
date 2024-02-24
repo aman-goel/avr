@@ -26,66 +26,33 @@
 /// Configurations
 /// Note: Only one of the below flag should be enabled
 
-#define BACKEND_Y2			// Yices 2 for all queries
-// #define BACKEND_HYBRID	// hybrid config
-// #define BACKEND_BT		// Boolector for all queries
-// #define BACKEND_Z3		// Z3 for all queries
-// #define BACKEND_M5		// MathSAT 5 for all queries
+#define BACKEND_Y2		// Yices 2 for all queries
+// #define BACKEND_BT		// Yices 2 for abstract, Boolector for bv queries
+// #define BACKEND_M5		// Yices 2 for abstract, MathSAT 5 for bv queries
+
+// Use Y2 backend for all abstract queries
+#define SOLVER_CTI		  y2_API		// Solver for checking SAT_abstract ? [ F[top] ^ P ^ T ^ !P+ ]
+#define SOLVER_REACH	  y2_API		// Solver for checking SAT_abstract ? [ F[k-1] ^ P ^ T ^ C+ ] and for Fast-forward check
+#define SOLVER_CONTAIN	  y2_API		// Solver for checking if frame restriction global
+#define SOLVER_AB		  y2_API		// Solver for all other abstract queries: Basis check, Lemma redundancy check
+#define SOLVER_CORE       y2_API		// Solver for getting unsat core
+#define SOLVER_MUS		  y2_API		// Solver for getting minimal unsat core
 
 /// Config: BACKEND_Y2
 #ifdef BACKEND_Y2
-	#define SOLVER_CTI		  y2_API		// Solver for checking SAT_abstract ? [ F[top] ^ P ^ T ^ !P+ ]
-	#define SOLVER_REACH	  y2_API		// Solver for checking SAT_abstract ? [ F[k-1] ^ P ^ T ^ C+ ] and for Fast-forward check
-	#define SOLVER_CONTAIN	  y2_API		// Solver for checking if frame restriction global
-	#define SOLVER_AB		  y2_API		// Solver for all other abstract queries: Basis check, Lemma redundancy check
-	#define SOLVER_CORE       y2_API		// Solver for getting unsat core
-	#define SOLVER_MUS		  y2_API		// Solver for getting minimal unsat core
-	#define SOLVER_BV         y2_API		// Solver for concrete / bit-vector queries
-#endif
-
-/// Config: BACKEND_HYBRID
-#ifdef BACKEND_HYBRID
-	#define SOLVER_CTI		  y2_API
-	#define SOLVER_REACH	  y2_API
-	#define SOLVER_CONTAIN	  y2_API
-	#define SOLVER_AB		  y2_API
-    #define SOLVER_CORE       y2_API
-	#define SOLVER_MUS		  y2_API
-	#define SOLVER_BV         bt_API
+	#define SOLVER_BV         y2_API	// Solver for concrete / bit-vector queries
 #endif
 
 /// Config: BACKEND_BT
 #ifdef BACKEND_BT
-	#define SOLVER_CTI		  bt_API
-	#define SOLVER_REACH	  bt_API
-	#define SOLVER_CONTAIN	  bt_API
-	#define SOLVER_AB		  bt_API
-    #define SOLVER_CORE       bt_API
-	#define SOLVER_MUS		  bt_API
-    #define SOLVER_BV         bt_API
+    #define SOLVER_BV         bt_API	// Solver for concrete / bit-vector queries
 #endif
 
 /// Config: BACKEND_M5
 #ifdef BACKEND_M5
-	#define SOLVER_CTI		  m5_API
-	#define SOLVER_REACH	  m5_API
-	#define SOLVER_CONTAIN	  m5_API
-	#define SOLVER_AB		  m5_API
-    #define SOLVER_CORE       m5_API
-	#define SOLVER_MUS		  m5_API
-    #define SOLVER_BV         m5_API
+    #define SOLVER_BV         m5_API	// Solver for concrete / bit-vector queries
 #endif
 
-/// Config: BACKEND_Z3
-#ifdef BACKEND_Z3
-	#define SOLVER_CTI		z3_API
-	#define SOLVER_REACH	z3_API
-	#define SOLVER_CONTAIN	z3_API
-	#define SOLVER_AB		z3_API
-    #define SOLVER_CORE     z3_API
-	#define SOLVER_MUS		z3_API
-	#define SOLVER_BV		z3_API
-#endif
 
 #define MICRO_ALARM
 
