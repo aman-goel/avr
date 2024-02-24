@@ -1,3 +1,5 @@
+[![Build AVR on Ubuntu](https://github.com/aman-goel/avr/actions/workflows/build.yml/badge.svg)](https://github.com/aman-goel/avr/actions/workflows/build.yml)
+
 # AVR -- **A**bstractly **V**erifying **R**eachability
 
 <p align="center">(also known as Averroes v2.0)
