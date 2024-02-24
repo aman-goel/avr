@@ -37,7 +37,7 @@ endif
 ifeq ($(ENABLE_BT), 1)
   BT_DIR = $(DEPS)/boolector
   BT_LIB = $(BT_DIR)/build/lib/libboolector.a
-  BT_LIB += $(BT_DIR)/deps/btor2tools/build/libbtor2parser.a
+  BT_LIB += $(BT_DIR)/deps/btor2tools/build/lib/libbtor2parser.a
   BT_LIB += $(BT_DIR)/deps/cadical/build/libcadical.a
   INCLUDE += -I$(BT_DIR)/src
   LINKLIBS += $(BT_LIB)
