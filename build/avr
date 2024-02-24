@@ -172,7 +172,7 @@ then
 	run_yosys="false"
 else
 	echo "frontend" >> $OUT_PATH/fconfig
-	cp -R $BM_PATH/* $OUT_PATH
+	cp -R $BM_PATH/$fname $OUT_PATH/$fname
 	echo "yosys" >> $OUT_PATH/fconfig
 fi
 
@@ -186,7 +186,7 @@ then
 	YOSYS_CMD=$OUT_PATH/yosys.tcl
 	rm -f $YOSYS_CMD
 
-	echo "yosys read_verilog -noopt -nolatches -sv $OUT_PATH/$fname;" >> $YOSYS_CMD
+	echo "yosys read_verilog -noopt -nolatches -Idir=$OUT_PATH/ -sv $OUT_PATH/$fname;" >> $YOSYS_CMD
 	if [ $AUTOTOP -eq 1 ]
 	then
 		echo "yosys hierarchy -auto-top;" >> $YOSYS_CMD
