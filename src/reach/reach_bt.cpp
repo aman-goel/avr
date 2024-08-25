@@ -1691,7 +1691,7 @@ void bt_API::inst2yices(Inst*e, bool bvAllConstraints) {
 
 #ifdef INTERPRET_EX_CC
 	if (m_allow_ex_cc) {
-		if (Config::g_uf_mult_only || (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP) ||
+		if (Config::g_uf_heavy_only || (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP) ||
 				(m_mapper->fetch_op(e->t_simple) == TheoryMapper::EUF_OP)) {
 			Inst* simplified = e->t_simple;
 			if (OpInst::as(e) && e != simplified) {
@@ -2323,11 +2323,11 @@ void bt_API::inst2yices(Inst*e, bool bvAllConstraints) {
 						InstL::const_iterator ve_it = ch->begin(), ve_it2 = ch->begin();
 						ve_it2++;
 						NumInst* num = NumInst::as(*ve_it2);
-						cout << "Rotate: " << *e << endl;
+						// cout << "Rotate: " << *e << endl;
 						if (num != 0)
 						{
 							int rotate_amount = num->get_mpz()->get_si() % e->get_size();
-							cout << "rotate_amount: " << rotate_amount << endl;
+							// cout << "rotate_amount: " << rotate_amount << endl;
 							if (rotate_amount != 0) {
 								if (o == OpInst::RotateL)
 								{
@@ -2682,7 +2682,7 @@ void bt_API::inst2yices(Inst*e, bool bvAllConstraints) {
 
 #ifdef INTERPRET_EX_CC
 	if (m_allow_ex_cc) {
-		if (Config::g_uf_mult_only || (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP) ||
+		if (Config::g_uf_heavy_only || (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP) ||
 				(m_mapper->fetch_op(e->t_simple) == TheoryMapper::EUF_OP)) {
 			Inst* simplified = e->t_simple;
 			if (e != simplified) {

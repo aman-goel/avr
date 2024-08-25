@@ -683,10 +683,10 @@ class UFBV_Mapper: public Solver::TheoryMapper {
 		if (e) {
 			e = e->get_port();
 
-			if (Config::g_uf_mult_only) {
+			if (Config::g_uf_heavy_only) {
 				if (e->get_type() == Op) {
 					OpInst* op = OpInst::as(e);
-					if (op->get_op() == OpInst::Mult)
+					if (op->is_heavy_uf())
 						return Solver::TheoryMapper::EUF_OP;
 				}
 				return Solver::TheoryMapper::BV_OP;
@@ -709,7 +709,7 @@ class UFBV_Mapper: public Solver::TheoryMapper {
 		return Solver::TheoryMapper::EUF_OP;
 	}
 	virtual Solver::TheoryMapper::VarType fetch_var(Inst*e) {
-		if (Config::g_uf_mult_only)
+		if (Config::g_uf_heavy_only)
 			return Solver::TheoryMapper::BV_VAR;
 		else if (Config::g_ab_interpret_excc >= LEVEL_EXCC_ALL)
 			return Solver::TheoryMapper::BV_VAR;
