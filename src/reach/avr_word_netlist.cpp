@@ -5427,16 +5427,16 @@ void OpInst::calc_size() {
 		assert((*cit)->get_type() == Num);
 		unsigned width = NumInst::as(*cit)->get_num();
 		cit++;
+		unsigned sz = NumInst::as(*cit)->get_num();
+		cit++;
 		assert((*cit)->get_type() == Num);
-		m_size = (*cit)->get_size();
+		m_size = sz;
 		m_sort.sz = m_size;
-		unsigned range = m_size;
-		assert(range > 0);
 
 		m_sort.type = arraytype;
 		m_sort.args.clear();
 		m_sort.args.push_back(SORT(width));
-		m_sort.args.push_back(SORT(range));
+		m_sort.args.push_back(SORT(m_size));
 		assert(m_size > 0);
 		assert(m_sort.sz > 0);
 	}
@@ -5643,7 +5643,7 @@ unsigned find_size(OpInst::OpType op, InstL& exps)
 		second++;
 		assert((*first)->get_type() == Num);
 		assert((*second)->get_type() == Num);
-		size = (*second)->get_size();
+		size = NumInst::as(*second)->get_num();
 		assert (size > 0);
 	}
 		break;

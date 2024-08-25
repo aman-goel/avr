@@ -6,11 +6,13 @@
 .idea/
 
 build/bin*/dpa
-build/bin*/reach
+build/bin*/reach*
 build/bin*/vwn
 
+hwmcc*/
 deps/*
 output/*
+xtras/*/
 
 *.a
 *.o

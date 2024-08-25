@@ -1,7 +1,7 @@
 #!/bin/bash -x
 set -e
 
-MATHSATVERSION="5.6.10"
+MATHSATVERSION="5.6.11"
 
 echo "Installing dependencies..."
 

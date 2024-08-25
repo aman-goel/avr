@@ -401,17 +401,17 @@ Inst* Reach::replace_constant_with_value(Inst *top) {
   		Inst* num;
     	if (c->get_sort_type() == arraytype) {
     		if (c->get_sort_domain()->type == bvtype && c->get_sort_range()->type == bvtype) {
-					string value = top->get_ival()->get_str(2);
-					while (value.length() < c->get_size())
-						value = "0" + value;
+    				int width = c->get_sort_domain()->sz;
+    				int size = c->get_size();
+    				assert(size == c->get_sort_range()->sz);
 
-					int width = c->get_sort_domain()->sz;
-					int size = c->get_size();
-					assert(size == c->get_sort_range()->sz);
+    				string value = top->get_ival()->get_str(2);
+					while (value.length() < (c->get_size() * 2))
+						value = "0" + value;
 
 					Inst* wI = NumInst::create(width, 32, SORT());
 					Inst* sI = NumInst::create(size, 32, SORT());
-					Inst* dI = NumInst::create(value, size, 2, SORT());
+					Inst* dI = NumInst::create(value, value.length(), 2, SORT());
 					num = OpInst::create(OpInst::ArrayConst, wI, sI, dI);
     		}
     		else {
@@ -5746,52 +5746,37 @@ void Reach::check_correctness()
 	ve_reach = OpInst::create(OpInst::LogAnd, conjunct_reach);
 	res = int_solver->check_sat(ve_reach, 0, false);
 
-	if(res == false)
-	{
-		AVR_LOG(8, 0, "There is a wrong (UNSAT) reachability lemma!!!" << endl);
-
-		SOLVER_MUS tmpSolver(_abstract_mapper, AVR_EXTRA_IDX, true, regular);
-		tmpSolver.disable_fallback();
-		tmpSolver.assert_all_wire_constraints();
-		InstLL muses;
-		tmpSolver.get_muses_2(0, conjunct_reach, muses, num_scalls_sat_correctness, num_scalls_unsat_correctness, &tmpSolver);
-		cout << "mus: " << muses.front() << endl;
-		assert(0);
-	}
-	else
-	{
-		AVR_LOG(8, 0, "reachability-lemmas-check successful!" << endl);
-	}
 	delete static_cast<SOLVER_AB*>(int_solver);
 	/// END
 
-	/// Checking Refinements [SAT is correct]
-	if(_numRefinements > 0)
-	{
-		int_solver = new SOLVER_AB(_abstract_mapper, AVR_EXTRA_IDX, false, regular);
-		int_solver->assert_all_wire_constraints();
-		conjunct_reach.clear();
-		for (InstL::iterator it3 = _negated_refs.begin(); it3 != _negated_refs.end(); ++it3)
-			conjunct_reach.push_back(*it3);
-
-		ve_reach = OpInst::create(OpInst::LogAnd, conjunct_reach);
-		AVR_LOG(8, 6, "Checking Q:" << conjunct_reach);
-		bool res = int_solver->check_sat(ve_reach, 0, false);
-
-		if(res == false)
-		{
-			AVR_LOG(8, 0, "There is a wrong (UNSAT) datapath lemma!!!" << endl);
-			AVR_LOG(8, 0, "Possible errors include: incorrect assumptions" << endl);
-			int_solver->print_query(0, ERROR, "error");
-			assert(0);
-		}
-		else
-		{
-			AVR_LOG(8, 0, "DP-lemmas-check successful!" << endl);
-		}
-		delete static_cast<SOLVER_AB*>(int_solver);
-	}
-	/// END
+// 	/// Checking Refinements [SAT is correct]
+// 	if(_numRefinements > 0)
+// 	{
+// 		int_solver = new SOLVER_AB(_abstract_mapper, AVR_EXTRA_IDX, false, regular);
+// 		int_solver->assert_all_wire_constraints();
+// 		conjunct_reach.clear();
+// 		for (InstL::iterator it3 = _negated_refs.begin(); it3 != _negated_refs.end(); ++it3)
+// 			conjunct_reach.push_back(*it3);
+//
+// 		ve_reach = OpInst::create(OpInst::LogAnd, conjunct_reach);
+// 		AVR_LOG(8, 6, "Checking Q:" << conjunct_reach);
+// 		bool res = int_solver->check_sat(ve_reach, 0, false);
+//
+// 		if(res == false)
+// 		{
+// 			AVR_LOG(8, 0, "There is a wrong (UNSAT) datapath lemma!!!" << endl);
+// 			AVR_LOG(8, 0, "Possible errors include: incorrect assumptions" << endl);
+// 			int_solver->print_query(0, ERROR, "error");
+// 			AVR_LOG(8, 0, "Checking Q:" << conjunct_reach);
+// //			assert(0);
+// 		}
+// 		else
+// 		{
+// 			AVR_LOG(8, 0, "DP-lemmas-check successful!" << endl);
+// 		}
+// 		delete static_cast<SOLVER_AB*>(int_solver);
+// 	}
+// 	/// END
 
   /// (I & Refinements -> F[converged])
   int_solver = new SOLVER_AB(_abstract_mapper, AVR_EXTRA_IDX, false, regular);

@@ -35,6 +35,7 @@ enKind="${32}"
 bmcKmax="${33}"
 createAig="${34}"
 parseOnly="${35}"
+backendSuffix="${36}"
 
 BM_PATH="$p_dir"
 OUT_DIR="$p_out"
@@ -293,7 +294,7 @@ then
 	exit $avr_exit
 fi
 
-$p_bin/reach $OUT_PATH $p_bin > $OUT_PATH/data/reach.output 2>> >(tee -a $OUT_PATH/avr.err >&2)  & echo $! > $pidFile
+$p_bin/reach_${backendSuffix} $OUT_PATH $p_bin > $OUT_PATH/data/reach.output 2>> >(tee -a $OUT_PATH/avr.err >&2)  & echo $! > $pidFile
 wait
 avr_exit=$?
 

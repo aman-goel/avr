@@ -1893,7 +1893,14 @@ void bt_API::inst2yices(Inst*e, bool bvAllConstraints) {
 					int maxaddress = pow(2, width) - 1;
 					bool initialized = false;
 					for (int i = 0; i <= maxaddress; i++) {
-						string v = value.substr(i*size, size);
+						string v;
+						if (value.size() <= size) {
+							v = value;
+						} else if (value.size() > (i*size)) {
+							v = value.substr(i*size, size);
+						} else {
+							v = "0";
+						}
 						Inst* address = NumInst::create(maxaddress - i, width, SORT());
 						Inst* data = NumInst::create(v, size, 2, SORT());
 						bt_expr_ptr b = create_bt_number(NumInst::as(data));
@@ -2180,6 +2187,10 @@ void bt_API::inst2yices(Inst*e, bool bvAllConstraints) {
 				case OpInst::AShiftR:
 				case OpInst::Sext:
 				case OpInst::Zext:
+				case OpInst::RotateL:
+				case OpInst::RotateR:
+				case OpInst::VRotateL:
+				case OpInst::VRotateR:
 				case OpInst::IntAdd:
 				case OpInst::IntSub:
 				case OpInst::IntMult:
@@ -2306,6 +2317,43 @@ void bt_API::inst2yices(Inst*e, bool bvAllConstraints) {
 							res = boolector_uext(g_ctx, a2, amount);
 					}
 						break;
+					case OpInst::RotateL:
+					case OpInst::RotateR: {
+						assert(y_ch.size() == 2);
+						InstL::const_iterator ve_it = ch->begin(), ve_it2 = ch->begin();
+						ve_it2++;
+						NumInst* num = NumInst::as(*ve_it2);
+						cout << "Rotate: " << *e << endl;
+						if (num != 0)
+						{
+							int rotate_amount = num->get_mpz()->get_si() % e->get_size();
+							cout << "rotate_amount: " << rotate_amount << endl;
+							if (rotate_amount != 0) {
+								if (o == OpInst::RotateL)
+								{
+									res = boolector_roli(g_ctx, a, rotate_amount);
+								} else {
+									res = boolector_rori(g_ctx, a, rotate_amount);
+								}
+							} else {
+								res = a;
+							}
+						} else {
+							cout << "Expected second operand as number in " << *e << endl;
+							assert(0);
+						}
+					}
+						break;
+					case OpInst::VRotateL:{
+						assert(y_ch.size() == 2);
+						res = boolector_rol(g_ctx, a, b);
+					}
+						break;
+					case OpInst::VRotateR:{
+						assert(y_ch.size() == 2);
+						res = boolector_ror(g_ctx, a, b);
+					}
+						break;
 					case OpInst::IntAdd: {
 						bt_loge("unsupported");
 					}
@@ -2335,7 +2383,6 @@ void bt_API::inst2yices(Inst*e, bool bvAllConstraints) {
 					}
 				}
 					break;
-
 				case OpInst::AddC:
 				case OpInst::AShiftL:
 					assert(0); // for now.
@@ -2364,15 +2411,6 @@ void bt_API::inst2yices(Inst*e, bool bvAllConstraints) {
 						res = boolector_not(g_ctx, res);
 				}
 					break;
-				case OpInst::RotateR:
-				case OpInst::VRotateR:{
-					bt_loge("TODO");
-				}
-				  break;
-				case OpInst::RotateL:
-				case OpInst::VRotateL:{
-					bt_loge("TODO");
-				}
 				  break;
 				case OpInst::VShiftL:
 				case OpInst::VShiftR:

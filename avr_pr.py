@@ -16,7 +16,7 @@ version=2.1
 start_time = time.time()
 
 cmdSuffix = ""
-maxWorkers = 8
+maxWorkers = 16
 
 optSuffix = " "
 commands = []
@@ -30,14 +30,14 @@ DEFAULT_OUT="output"
 DEFAULT_NAME="test"
 DEFAULT_WORKERS="workers.txt"
 #DEFAULT_BIN="bin"
-DEFAULT_TIMEOUT=3600
-DEFAULT_MEMOUT=16000
+DEFAULT_TIMEOUT=3590
+DEFAULT_MEMOUT=118000
 DEFAULT_PRINT_SMT2=False
-DEFAULT_PRINT_WITNESS=True
+DEFAULT_PRINT_WITNESS=False
 
 maxTimeSec = DEFAULT_TIMEOUT
 maxMemMB = DEFAULT_MEMOUT
-maxInitW = 2
+maxInitW = 12
 resultW = 0
 out_path = DEFAULT_OUT + "/" + DEFAULT_NAME
 
