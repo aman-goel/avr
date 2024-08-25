@@ -1,8 +1,3 @@
-#ENABLE_Y2 := 0
-#ENABLE_M5 := 0
-#ENABLE_BT := 0
-#ENABLE_Z3 := 0
-
 REA_LOC = reach
 DPA_LOC = dpa
 VWN_LOC = vwn
@@ -10,9 +5,9 @@ VWN_LOC = vwn
 all:
 	$(MAKE) vw
 	$(MAKE) da
-	ENABLE_Y2=1 $(MAKE) re
-	ENABLE_BT=1 $(MAKE) re
-#	ENABLE_M5=1 $(MAKE) re
+	CONFIG_Y2=1 $(MAKE) re
+	CONFIG_BT=1 $(MAKE) re
+	CONFIG_M5=1 $(MAKE) re
 
 clean:
 	$(MAKE) vwc

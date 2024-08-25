@@ -3,6 +3,11 @@ STATIC_MODE := 0
 ENABLE_VMT   := 1
 ENABLE_BTOR2 := 1
 
+ENABLE_Y2 := 1
+ENABLE_BT := 1
+ENABLE_M5 := 1
+ENABLE_Z3 := 0
+
 CURR_DIR = $(shell pwd)
 BIN_DIR = $(CURR_DIR)/../../build/bin
 DEPS = $(CURR_DIR)/../../deps
