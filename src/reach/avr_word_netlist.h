@@ -2560,6 +2560,7 @@ public:
   int get_simple_version();
   bool is_unordered_uf();
 #endif
+bool is_heavy_uf();
 
 protected:
 	OpType m_op;

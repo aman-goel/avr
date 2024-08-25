@@ -27,7 +27,7 @@ int Config::g_fineness = 0;
 int Config::g_lazy_assume = 0;
 
 bool Config::g_uf_unordered = false;
-bool Config::g_uf_mult_only = false;
+bool Config::g_uf_heavy_only = false;
 bool Config::g_uf_no_bitwise = false;
 bool Config::g_uf_no_sext = false;
 bool Config::g_uf_no_shift = false;
@@ -249,8 +249,8 @@ void Config::set_abstraction(string& name) {
 	{
 		if (name.find(NAME_UF_UNORDERED) != string::npos)
 			g_uf_unordered = !g_uf_unordered;
-		if (name.find(NAME_UF_MULT_ONLY) != string::npos)
-			g_uf_mult_only = !g_uf_mult_only;
+		if (name.find(NAME_UF_HEAVY_ONLY) != string::npos)
+			g_uf_heavy_only = !g_uf_heavy_only;
 		if (name.find(NAME_UF_NO_BITWISE) != string::npos)
 			g_uf_no_bitwise = !g_uf_no_bitwise;
 		if (name.find(NAME_UF_NO_SEXT) != string::npos)
@@ -287,11 +287,11 @@ void Config::set_abstraction(string& name) {
 		}
 	}
 
-	if (g_uf_mult_only) {
+	if (g_uf_heavy_only) {
 		g_ab_interpret = true;
 		g_ab_interpret_limit = 0;
-		g_ab_interpret_excc = LEVEL_EXCC_ALL;
-		g_uf_unordered = true;
+		// g_ab_interpret_excc = LEVEL_EXCC_NONE;
+		// g_uf_unordered = false;
 	}
 
 	cerr << "\t(abstraction: " << (g_ab_interpret?"sa":"sa+uf")
@@ -299,7 +299,7 @@ void Config::set_abstraction(string& name) {
 														 << ((g_ab_interpret_excc != LEVEL_EXCC_DEFAULT)?"+ec"+to_string(g_ab_interpret_excc):"")
 														 << (g_fineness != FINENESS_DEFAULT?"+l"+to_string(g_fineness):"")
 														 << (g_uf_unordered?"+unordered":"")
-														 << (g_uf_mult_only?"+mult":"")
+														 << (g_uf_heavy_only?"+heavy":"")
 														 << (g_uf_no_bitwise?"+nobitwise":"")
 														 << (g_uf_no_sext?"+nosignex":"")
 														 << (g_uf_no_shift?"+noshift":"")

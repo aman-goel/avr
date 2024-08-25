@@ -2416,7 +2416,7 @@ void m5_API::inst2yices(Inst*e, bool bvAllConstraints) {
 
 #ifdef INTERPRET_EX_CC
 	if (m_allow_ex_cc) {
-		if (Config::g_uf_mult_only || (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP) ||
+		if (Config::g_uf_heavy_only || (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP) ||
 				(m_mapper->fetch_op(e->t_simple) == TheoryMapper::EUF_OP)) {
 			Inst* simplified = e->t_simple;
 			if (OpInst::as(e) && e != simplified) {
@@ -3508,7 +3508,7 @@ void m5_API::inst2yices(Inst*e, bool bvAllConstraints) {
 
 #ifdef INTERPRET_EX_CC
 	if (m_allow_ex_cc) {
-		if (Config::g_uf_mult_only || (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP) ||
+		if (Config::g_uf_heavy_only || (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP) ||
 				(m_mapper->fetch_op(e->t_simple) == TheoryMapper::EUF_OP)) {
 			Inst* simplified = e->t_simple;
 			if (e != simplified) {

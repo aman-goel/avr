@@ -1882,6 +1882,26 @@ bool OpInst::is_unordered_uf() {
 }
 #endif
 
+bool OpInst::is_heavy_uf() {
+	bool result = false;
+	switch (m_op) {
+		case Mult:
+		case Div:
+		case SDiv:
+		case Rem:
+		case SRem:
+		case SMod:
+		// case ArrayConst:
+		// case ArraySelect:
+		case ArrayStore:
+			result = (get_size() > 4);
+			break;
+		default:
+			;
+	}
+	return result;
+}
+
 Inst* OpInst::create(OpType op, Inst* exp1, Inst* exp2, Inst* exp3, int o_size, bool to_simplify, Inst* wire, SORT sort) {
 	if (op == OpInst::LogNot) {
 		OpInst* opt = OpInst::as(exp1);

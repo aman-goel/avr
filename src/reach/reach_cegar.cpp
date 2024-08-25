@@ -94,7 +94,7 @@ void Reach::retrieve_ab_sol(Solver* solver, Inst* e, InstS& relSig, InstS& relCo
 
 #ifdef INTERPRET_EX_CC
   if (solver->m_allow_ex_cc) {
-		if (Config::g_uf_mult_only || (_abstract_mapper->fetch_op(e) == Solver::TheoryMapper::EUF_OP) ||
+		if (Config::g_uf_heavy_only || (_abstract_mapper->fetch_op(e) == Solver::TheoryMapper::EUF_OP) ||
 				(_abstract_mapper->fetch_op(e->t_simple) == Solver::TheoryMapper::EUF_OP)) {
       Inst* simplified = e->t_simple;
       if (e != simplified)
@@ -170,7 +170,7 @@ void Reach::retrieve_cex_val(Inst* e, Solver*solver, bool abstract, bool init_vi
   e->set_visit();
 
 #ifdef INTERPRET_EX_CC
-  if (Config::g_uf_mult_only || solver->m_allow_ex_cc && abstract && evalSimple)
+  if (Config::g_uf_heavy_only || solver->m_allow_ex_cc && abstract && evalSimple)
   {
 		if ((_abstract_mapper->fetch_op(e) == Solver::TheoryMapper::EUF_OP) ||
 				(_abstract_mapper->fetch_op(e->t_simple) == Solver::TheoryMapper::EUF_OP)) {
