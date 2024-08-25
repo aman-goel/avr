@@ -23,16 +23,17 @@ version=2.1
 
 DEFAULT_TOP="-"
 DEFAULT_BIN="build/bin"
+DEFAULT_BACKEND="y2"
 DEFAULT_NAME="test"
 DEFAULT_PROP_SELECT="-"
 DEFAULT_INIT_FILE="-"
 DEFAULT_OUT="output"
 DEFAULT_YOSYS="deps/yosys"
 DEFAULT_CLK="clk"
-DEFAULT_TIMEOUT=3600
-DEFAULT_MEMOUT=64000
+DEFAULT_TIMEOUT=3590
+DEFAULT_MEMOUT=118000
 DEFAULT_MEMORY=False
-DEFAULT_SPLIT=True
+DEFAULT_SPLIT=False
 DEFAULT_GRANULARITY=2
 DEFAULT_RANDOM=False
 DEFAULT_EFFORT_MININV=0
@@ -64,6 +65,7 @@ def getopts(header):
 	p.add_argument('-n', '--name',      help='<test-name> (default: %s)' % DEFAULT_NAME, type=str, default=DEFAULT_NAME)
 	p.add_argument('-o', '--out',       help='<output-path> (default: %s)' % DEFAULT_OUT, type=str, default=DEFAULT_OUT)
 	p.add_argument('-b', '--bin',       help='binary path (default: %s)' % DEFAULT_BIN, type=str, default=DEFAULT_BIN)
+	p.add_argument('--backend',         help='backend to use: y2, bt, m5 (default: %s)' % DEFAULT_BACKEND, type=str, default=DEFAULT_BACKEND)
 	p.add_argument('-y', '--yosys',     help='path to yosys installation (default: %s)' % DEFAULT_YOSYS, type=str, default=DEFAULT_YOSYS)
 	p.add_argument('--vmt',             help='toggles using vmt frontend (default: %s)' % DEFAULT_EN_VMT, action="count", default=0)
 	p.add_argument('-j', '--jg',        help='toggles using jg frontend (default: %s)' % DEFAULT_EN_JG, action="count", default=0)
@@ -123,14 +125,14 @@ def split_path(name):
 def main():
 	known, opts = getopts(header)
 	print(short_header)
-	if not os.path.isfile("build/avr"):
+	if not os.path.isfile("avr"):
 		raise Exception("avr: main shell script not found")
 	if not os.path.isfile(opts.bin + "/vwn"):
-		raise Exception("avr: vwn binary not found")
+		raise Exception(f"avr: vwn binary not found in {opts.bin}")
 	if not os.path.isfile(opts.bin + "/dpa"):
-		raise Exception("avr: dpa binary not found")
-	if not os.path.isfile(opts.bin + "/reach"):
-		raise Exception("avr: reach binary not found")
+		raise Exception(f"avr: dpa binary not found in {opts.bin}")
+	if not os.path.isfile(opts.bin + "/reach_" + opts.backend):
+		raise Exception(f"avr: reach binary not found in {opts.bin}")
 	if not os.path.exists(opts.out):
 		os.makedirs(opts.out)
 
@@ -161,6 +163,8 @@ def main():
 			en_bt = not DEFAULT_EN_BTOR2
 		
 	print("\t(output dir: %s/work_%s)" % (opts.out, opts.name))
+	print("\t(backend: %s)" % opts.backend)
+
 	if (en_jg):
 		print("\t(frontend: jg)")
 		en_vmt = False
@@ -185,7 +189,7 @@ def main():
 				opts.yosys = ys_path
 			print("\t(found yosys in %s)" % opts.yosys)
 	
-	command = "./build/avr"
+	command = "./avr"
 	command = command + " " + f
 	command = command + " " + str(opts.top)
 	command = command + " " + path
@@ -266,7 +270,9 @@ def main():
 	if (opts.parse % 2 == 1):
 		parse_only = not DEFAULT_PARSE_ONLY
 	command = command + " " + str(parse_only)
-	
+
+	command = command + " " + str(opts.backend)
+
 	s = subprocess.call("exec " + command, shell=True)
 	if (s != 0):
 		raise Exception("avr ERROR: return code %d" % s)

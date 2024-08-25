@@ -4517,7 +4517,9 @@ int Reach::ccext_block() {
 			s_check_result = y_solver.solver_main->s_check(AB_QUERY_TIMEOUT, false);
 			if (s_check_result == AVR_QUSAT) {
 				assumptions.clear();
-				cube = conjunct_cube.front();
+				if (!conjunct_cube.empty()) {
+					cube = conjunct_cube.front();
+				}
 				// possible in relational inputs (like vmt - gulwani_cegar1)
 				AVR_LOG(15, 0, "\t(warning: F[" << frameIdx << "] has become UNSAT)" << endl);
 
@@ -4966,10 +4968,9 @@ int Reach::ccext_block() {
 #ifdef AVR_ADD_INITS_ENABLE
 			Inst *ve_gcube_before = ve_gcube;
 			AVR_LOG(6, 1, "## call add_inits_to_gcube in ccext_block !" << endl);
-//			cout << "Cube: " << *cube << endl;
-//			cout << "Gcube: " << *ve_gcube << endl;
-//			cout << "Gcubes: " << gcubes << endl;
-//			cout << "Gcubes$: " << gcubes_next << endl;
+			// cout << "Cube: " << *cube << endl;
+			// cout << "Gcube: " << *ve_gcube << endl;
+			// cout << "Gcubes: " << gcubes << endl;
 
 			InstL conjunct_ve_gcube;
 			collect_cubes(ve_gcube, true);

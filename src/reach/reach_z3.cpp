@@ -5372,22 +5372,7 @@ void z3_API::inst2yices(Inst*e, bool bvAllConstraints)
 						assert(y_ch.size() == 2);
 						InstL::const_iterator ve_it = ch->begin(), ve_it2 = ch->begin();
 						ve_it2++;
-						NumInst* num = NumInst::as(*ve_it2);
-						if (num != 0)
 						{
-							if (o == OpInst::ShiftL)
-							{
-								z3_expr_ptr sExpr = new z3_expr(*g_ctx);
-								*sExpr = shl(term(a), num->get_mpz()->get_si());
-								res = sExpr;
-							}
-							else {
-								z3_expr_ptr sExpr = new z3_expr(*g_ctx);
-								*sExpr = lshr(term(a), num->get_mpz()->get_si());
-								res = sExpr;
-							}
-						}
-						else {
 							if (o == OpInst::ShiftR)
 							{
 								z3_expr_ptr sExpr = new z3_expr(*g_ctx);

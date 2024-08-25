@@ -1586,7 +1586,7 @@ void IlangFrontend::process_memory(Cell& c) {
 
 		args.push_back(NumInst::create(width, 32));
 		args.push_back(NumInst::create(size, 32));
-		args.push_back(NumInst::create(*value, size));
+		args.push_back(NumInst::create(*value, init_val->get_size()));
 		Inst* rhs = OpInst::create(OpInst::ArrayConst, args);
 		initials.push_back(OpInst::create(OpInst::Eq, pre, rhs));
 		map_init[pre] = rhs;

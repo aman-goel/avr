@@ -896,7 +896,13 @@ bool Reach::find_from_minset2(Solver* solver, Inst*e, InstS& relSig, InstS& relC
     	find_from_minset2(solver, child, relSig, relConst, relUFtype);
       e->coi.update(child->coi);
     }
-    else if (opT == OpInst::LogAnd || opT == OpInst::LogOr) {
+    else if (opT == OpInst::LogAnd
+    	|| opT == OpInst::LogNand
+    	|| opT == OpInst::LogOr
+		|| opT == OpInst::LogNor
+		|| opT == OpInst::LogXor
+		|| opT == OpInst::LogXNor
+		) {
       int eVal = get_bval(solver, e);
 //  	  AVR_LOG(9, 1, "[COI]: (sval) e: " << *e << "\t" << eVal << endl);
       if (eVal == INVALID_SVAL) {
@@ -939,7 +945,7 @@ bool Reach::find_from_minset2(Solver* solver, Inst*e, InstS& relSig, InstS& relC
     else {
       string ufType = op->get_euf_func_name();
       if (ufType == "0")
-        cout << "\t(error: unexpected uf type)\t" << *e << endl;
+        cout << "\t(error: unexpected uf type)\t" << *e << "\t" << op->get_op() << endl;
       assert (ufType != "0");
 
 //      if (_s_uf.find(e) != _s_uf.end()) {

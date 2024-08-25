@@ -306,7 +306,7 @@ Inst* Btor2Frontend::get_init(Btor2Line& t, int sz, SORT sort, InstL& args) {
 				InstL args;
 				args.push_back(NumInst::create(width, 32));
 				args.push_back(NumInst::create(sz, 32));
-				args.push_back(NumInst::create(*value, sz));
+				args.push_back(NumInst::create(*value, init_val->get_size()));
 				rhs = OpInst::create(OpInst::ArrayConst, args);
 				done = true;
 			}
@@ -508,6 +508,9 @@ void Btor2Frontend::get_node(NODE_INFO& info, InstL& args) {
 	} break;
 	case BTOR2_TAG_constd: {
 		string snum(t.constant);
+		if (sz == 1 && snum != "1") {
+			snum = "0";
+		}
 		node = NumInst::create(snum, sz, 10, sort);
 //		{
 //			string numstr = NumInst::as(node)->get_mpz()->get_str(10);

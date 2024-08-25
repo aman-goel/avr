@@ -5367,7 +5367,7 @@ bool y2_API::get_relation(Inst* lhs, Inst* rhs, bool expected)
 
 bool y2_API::get_assignment(Inst* e, int& val)
 {
-	assert(e->get_sort_type() == bvtype);
+	assert(e->get_sort_type() == bvtype || e->get_sort_type() == arraytype);
 	assert(m_model != NULL);
 
 	y2_expr decl = e->y2_node.solv_var(get_vIdx());
@@ -6004,6 +6004,9 @@ y2_expr_ptr y2_API::create_y2_number(NumInst* num) {
 			if (num->get_num() == 1)
 				return m_b1;
 			else {
+				if (num->get_num() != 0) {
+					cout << "num: " << *num << endl;
+				}
 				assert (num->get_num() == 0);
 				return m_b0;
 			}
@@ -6620,7 +6623,14 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 						value = "0" + value;
 					int maxaddress = pow(2, width) - 1;
 					for (int i = 0; i <= maxaddress; i++) {
-						string v = value.substr(i*size, size);
+						string v;
+						if (value.size() <= size) {
+							v = value;
+						} else if (value.size() > (i*size)) {
+							v = value.substr(i*size, size);
+						} else {
+							v = "0";
+						}
 						Inst* address = NumInst::create(maxaddress - i, width, SORT());
 						Inst* data = NumInst::create(v, size, 2, SORT());
 						y2_expr_ptr a = create_y2_number(NumInst::as(address));
@@ -7085,25 +7095,12 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 						assert(y_ch.size() == 2);
 						InstL::const_iterator ve_it = ch->begin(), ve_it2 = ch->begin();
 						ve_it2++;
-						NumInst* num = NumInst::as(*ve_it2);
-						if (num != 0)
-						{
-							if (o == OpInst::ShiftL)
-							{
-								res = yices_shift_left0(a, num->get_mpz()->get_si());
-							} else {
-								res = yices_shift_right0(a, num->get_mpz()->get_si());
-							}
-						}
+						if (o == OpInst::ShiftR)
+							res = yices_bvlshr(a, b);
+						else if (o == OpInst::ShiftL)
+							res = yices_bvshl(a, b);
 						else
-						{
-							if (o == OpInst::ShiftR)
-								res = yices_bvlshr(a, b);
-							else if (o == OpInst::ShiftL)
-								res = yices_bvshl(a, b);
-							else
-								assert(0);
-						}
+							assert(0);
 						assert(res != -1);
 					}
 						break;
@@ -7111,16 +7108,7 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 						assert(y_ch.size() == 2);
 						InstL::const_iterator ve_it = ch->begin(), ve_it2 = ch->begin();
 						ve_it2++;
-						NumInst* num = NumInst::as(*ve_it2);
-						if (num != 0)
-						{
-							res = yices_ashift_right(a, num->get_mpz()->get_si());
-							assert(res != -1);
-						}
-						else
-						{
-							res = yices_bvashr(a, b);
-						}
+						res = yices_bvashr(a, b);
 						assert(res != -1);
 					}
 						break;
@@ -7239,6 +7227,10 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 					} else {
 						cout << "Expected second operand as number in " << *e << endl;
 						assert(0);
+					}
+					if (res == -1) {
+						cout << "e: " << *e << endl;
+						cout << yices_error_string() << endl;
 					}
 					assert(res != -1);
 				}

@@ -10,28 +10,14 @@ else
   LINK_FLAGS += -pthread -lgmpxx -lgmp -lrt -ldl
 endif
 
+Y2_DIR = $(DEPS)/yices2
+Y2_LIB = $(Y2_DIR)/build/x86_64-pc-linux-gnu-release/dist/lib/libyices.a
+INCLUDE += -I$(Y2_DIR)/build/x86_64-pc-linux-gnu-release/dist/include
+LINKLIBS += $(Y2_LIB)
+CFLAGS += -D_Y2
 ifeq ($(ENABLE_Y2), 1)
-  Y2_DIR = $(DEPS)/yices2
-  Y2_LIB = $(Y2_DIR)/build/x86_64-pc-linux-gnu-release/dist/lib/libyices.a
-  INCLUDE += -I$(Y2_DIR)/build/x86_64-pc-linux-gnu-release/dist/include
-  LINKLIBS += $(Y2_LIB)
-  CFLAGS += -D_Y2
-endif
-
-ifeq ($(ENABLE_Z3), 1)
-  Z3_DIR = $(DEPS)/z3
-  Z3_LIB = $(Z3_DIR)/build/lib/libz3.a
-  INCLUDE += -I$(Z3_DIR)/build/include
-  LINKLIBS += $(Z3_LIB)
-  CFLAGS += -D_Z3
-endif
-
-ifeq ($(ENABLE_M5), 1)
-  MSAT_DIR = $(DEPS)/mathsat
-  MSAT_LIB = $(MSAT_DIR)/lib/libmathsat.a $(STATIC_GMPXX) $(STATIC_GMP)
-  INCLUDE += -I$(MSAT_DIR)/include
-  LINKLIBS += $(MSAT_LIB)
-  CFLAGS += -D_M5
+  CFLAGS += -DBACKEND_Y2
+  REACH_SUFFIX = y2
 endif
 
 ifeq ($(ENABLE_BT), 1)
@@ -42,6 +28,27 @@ ifeq ($(ENABLE_BT), 1)
   INCLUDE += -I$(BT_DIR)/src
   LINKLIBS += $(BT_LIB)
   CFLAGS += -D_BT
+  CFLAGS += -DBACKEND_BT
+  REACH_SUFFIX = bt
+endif
+
+ifeq ($(ENABLE_M5), 1)
+  MSAT_DIR = $(DEPS)/mathsat
+  MSAT_LIB = $(MSAT_DIR)/lib/libmathsat.a $(STATIC_GMPXX) $(STATIC_GMP)
+  INCLUDE += -I$(MSAT_DIR)/include
+  LINKLIBS += $(MSAT_LIB)
+  CFLAGS += -D_M5
+  CFLAGS += -DBACKEND_M5
+  REACH_SUFFIX = m5
+endif
+
+ifeq ($(ENABLE_Z3), 1)
+  Z3_DIR = $(DEPS)/z3
+  Z3_LIB = $(Z3_DIR)/build/lib/libz3.a
+  INCLUDE += -I$(Z3_DIR)/build/include
+  LINKLIBS += $(Z3_LIB)
+  CFLAGS += -D_Z3 -DBACKEND_Z3
+  REACH_SUFFIX = z3
 endif
 
 DEPDIR := .d
@@ -51,7 +58,10 @@ DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.Td
 COMPILE.cc = $(CXX) $(DEPFLAGS) $(CFLAGS) $(INCLUDE)
 POSTCOMPILE = mv -f $(DEPDIR)/$*.Td $(DEPDIR)/$*.d
 
+REACH_BIN = $(BIN_DIR)/reach_$(REACH_SUFFIX)
+
 all:
+	rm -f *.o
 	$(MAKE) $(REACH_BIN)
 
 $(REACH_BIN):$(REACH_OBJS)
@@ -65,7 +75,7 @@ $(REACH_BIN):$(REACH_OBJS)
 
 clean:
 	rm -f *.o
-	rm -f $(REACH_BIN)
+	rm -f $(BIN_DIR)/reach*
 	rm -rf .d/
 
 $(DEPDIR)/%.d: ;

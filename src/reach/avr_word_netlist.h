@@ -2155,6 +2155,8 @@ private:
 
 	// you can't call!
 	NumInst(unsigned long num, unsigned size, bool fromSystem, SORT sort) {
+		if (size == 1)
+			assert(num == 0 || num == 1);
 		m_sort = sort;
 		m_size = size;
 		m_mpz = mpz_class(num);
@@ -2188,6 +2190,8 @@ private:
 // 		m_mpz.set_str(snum, base);
 // 	}
 	NumInst(mpz_class mnum, unsigned size, bool fromSystem, SORT sort) {
+		if (size == 1)
+			assert(mnum.get_si() == 0 || mnum.get_si() == 1);
 		m_sort = sort;
 		m_size = size;
 		m_mpz = mnum;

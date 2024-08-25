@@ -2632,7 +2632,14 @@ void m5_API::inst2yices(Inst*e, bool bvAllConstraints) {
 
 					Inst* defval;
 					for (int i = 0; i <= maxaddress; i++) {
-						string v = value.substr(i*size, size);
+						string v;
+						if (value.size() <= size) {
+							v = value;
+						} else if (value.size() > (i*size)) {
+							v = value.substr(i*size, size);
+						} else {
+							v = "0";
+						}
 						Inst* data = NumInst::create(v, size, 2, SORT());
 						if (i == 0) {
 							defval = data;

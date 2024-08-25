@@ -1,15 +1,5 @@
 STATIC_MODE := 0
 
-### enable/disable solver environments
-### by default, z3 environment is disabled
-### also choose a BACKEND_* flag in src/reach/reach_backend.h 
-### to change solver backends for different kinds of SMT queries
-###
-ENABLE_Y2 := 1
-ENABLE_M5 := 1
-ENABLE_BT := 1
-ENABLE_Z3 := 0
-
 ENABLE_VMT   := 1
 ENABLE_BTOR2 := 1
 
@@ -27,7 +17,6 @@ STATIC_GMP   = -lgmp
 STATIC_GMPXX = -lgmpxx
 
 ####	reach : reachability computation
-REACH_BIN = $(BIN_DIR)/reach
 REACH_OBJS = avr_word_netlist.o avr_util.o avr_config.o reach_sa.o reach_backend.o reach_z3.o reach_y2.o \
              reach_evaluate.o reach_coi.o reach_simulate.o reach_util.o reach_tsim.o reach_solve.o       \
              reach_cegar.o reach_core.o reach.o reach_cex.o reach_print.o reach_bmc.o reach_bool.o
@@ -53,7 +42,7 @@ ifeq ($(ENABLE_BTOR2), 1)
   VWN_OBJS += btor2_frontend.o btor2_parser.o
 endif
 
-GPP=g++ -std=c++11
+GPP=g++ -std=c++17
 
 ####	flags
 CFLAG_OPT = -g -O3

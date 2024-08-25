@@ -273,7 +273,7 @@ void Reach::init_solv()
 #endif
 
 #ifdef BACKEND_M5
-	s += "+y2";
+	s += "+m5";
 #endif
 
 #ifdef BACKEND_BT
