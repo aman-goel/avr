@@ -6060,16 +6060,28 @@ y2_expr_ptr y2_API::create_y2_number(NumInst* num) {
 	}
 }
 
+void y2_API::increase_cond_activity() {
+//  for (auto& cond: conds) {
+//    double act1 = -1;
+//    y2_get_activity(m_ctx, cond, &act1);
+//    y2_increase_activity(m_ctx, cond);
+//    double act2 = -1;
+//    y2_get_activity(m_ctx, cond, &act2);
+////    cout << print_term(cond) << " : " << act1 << " -> " << act2 << endl;
+////    assert(0);
+//  }
+}
+
 void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 {
-//  	cout<< endl << "--en--> " << *e << endl;
+	//  	cout<< endl << "--en--> " << *e << endl;
 	assert(e != 0);
 	assert(m_mapper);
-//	cout << "m_ba_idx: " << m_ba_idx << "  e->yvar_sz: " << e->yvar.size() << endl;
+	//	cout << "m_ba_idx: " << m_ba_idx << "  e->yvar_sz: " << e->yvar.size() << endl;
 
 	if (e->get_visit())
 	{
-//	  	cout<< endl << "--gex--> " << *e << "\t" << print_term(e->yvar[m_ba_idx]) << endl;
+		//	  	cout<< endl << "--gex--> " << *e << "\t" << print_term(e->yvar[m_ba_idx]) << endl;
 
 		assert (e->y2_node.get_y2_key() == Y2_INFO::st_y2_key);
 		return;
@@ -6099,11 +6111,11 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 			reuseAllowed = false;
 			if (!allow_all)
 			{
-//				if (w->get_name().length() > 5 && w->get_name().substr(w->get_name().length() - 5) == "$next")
-//				{
-//					ch = 0;
-//				}
-//				else
+				//				if (w->get_name().length() > 5 && w->get_name().substr(w->get_name().length() - 5) == "$next")
+				//				{
+				//					ch = 0;
+				//				}
+				//				else
 				{
 					if (w->is_connected(WireInst::get_connect_key()))
 					{
@@ -6112,46 +6124,46 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 					else
 					{
 						ch = 0;
-//						cout << "(ignoring wire: " << *w << ")" << endl;
+						//						cout << "(ignoring wire: " << *w << ")" << endl;
 					}
 				}
 			}
 #endif
 
-//			WireInst* w = WireInst::as(e);
-//			if (w)
-//			{
-//				if (w->is_connected(WireInst::get_connect_key()))
-//				{
-//					ch = 0;
-//					reuseAllowed = false;
-//
-//					Inst* rhs = w->get_connection();
-//					inst2yices(rhs);
-//					y_ch.push_back(rhs->y_var[yIdx]);
-//					s_sz.push_back(rhs->get_size());
-//					assert(y_ch.back());
-//				}
-//			}
+			//			WireInst* w = WireInst::as(e);
+			//			if (w)
+			//			{
+			//				if (w->is_connected(WireInst::get_connect_key()))
+			//				{
+			//					ch = 0;
+			//					reuseAllowed = false;
+			//
+			//					Inst* rhs = w->get_connection();
+			//					inst2yices(rhs);
+			//					y_ch.push_back(rhs->y_var[yIdx]);
+			//					s_sz.push_back(rhs->get_size());
+			//					assert(y_ch.back());
+			//				}
+			//			}
 		}
 	}
 
-//	if (ch)
-//	{
-//		for (auto& v: *ch)
-//		{
-//			inst2yices(v);
-//			y_ch.push_back(v->y2_node.solv_var(yIdx));
-//			s_sz.push_back(v->get_size());
-//			assert(y_ch.back());
-//			assert(v->y2_node.solv_vset(yIdx));
-//		}
-//	}
+	//	if (ch)
+	//	{
+	//		for (auto& v: *ch)
+	//		{
+	//			inst2yices(v);
+	//			y_ch.push_back(v->y2_node.solv_var(yIdx));
+	//			s_sz.push_back(v->get_size());
+	//			assert(y_ch.back());
+	//			assert(v->y2_node.solv_vset(yIdx));
+	//		}
+	//	}
 
 	// first, collect data
 	if (m_mapper->fetch_var(e) == TheoryMapper::BV_VAR)
 	{
-//		assert(!m_abstract);
+		//		assert(!m_abstract);
 	}
 	else if (m_mapper->fetch_var(e) == TheoryMapper::EUF_VAR)
 	{
@@ -6192,7 +6204,7 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 	if (m_allow_ex_cc)
 	{
 		if (Config::g_uf_heavy_only || (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP) ||
-				(m_mapper->fetch_op(e->t_simple) == TheoryMapper::EUF_OP)) {
+		    (m_mapper->fetch_op(e->t_simple) == TheoryMapper::EUF_OP)) {
 			Inst* simplified = e->t_simple;
 			if (OpInst::as(e) && e != simplified)
 			{
@@ -6203,47 +6215,47 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 		}
 	}
 
-//#ifdef INTERPRET_UF_EXCC
-//	{
-//		OpInst* op = OpInst::as(e);
-//		if (op && op->get_op() == OpInst::Concat) {
-//			if (e->get_size() != 1) {
-//
-//				const InstL* ch = op->get_children();
-//				assert(ch);
-//				unsigned s_loc = 0, e_loc = 0;
-////      cout << "Asserting for " << *e << endl;
-//				for (InstL::const_iterator cit = ch->begin(); cit != ch->end(); ++cit)
-//				{
-//					Inst *tve = *cit;
-//					unsigned size = tve->get_size();
-//					s_loc = e_loc;
-//					e_loc += size;
-//					unsigned ns = s_loc;
-//					unsigned ne = size - 1 + s_loc;
-//
-//					{
-//						Inst* Ki = ExInst::create(e, ne, ns);
-//						Inst* eqInst = OpInst::create(OpInst::Eq, tve, Ki);
-//						inst2yices(eqInst);
-//						force(eqInst);
-//					}
-//
-//					int c = 0;
-//					for (int i = ns; i<= ne; i++, c++) {
-//						Inst* lhs = ExInst::create(e, i, i);
-//						Inst* rhs = ExInst::create(tve, c, c);
-//						Inst* eqInst = OpInst::create(OpInst::Eq, lhs, rhs);
-//						inst2yices(eqInst);
-//						force(eqInst);
-//					}
-//
-////       cout << "\t" << *eqInst << endl;
-//				}
-//			}
-//		}
-//	}
-//#endif
+	//#ifdef INTERPRET_UF_EXCC
+	//	{
+	//		OpInst* op = OpInst::as(e);
+	//		if (op && op->get_op() == OpInst::Concat) {
+	//			if (e->get_size() != 1) {
+	//
+	//				const InstL* ch = op->get_children();
+	//				assert(ch);
+	//				unsigned s_loc = 0, e_loc = 0;
+	////      cout << "Asserting for " << *e << endl;
+	//				for (InstL::const_iterator cit = ch->begin(); cit != ch->end(); ++cit)
+	//				{
+	//					Inst *tve = *cit;
+	//					unsigned size = tve->get_size();
+	//					s_loc = e_loc;
+	//					e_loc += size;
+	//					unsigned ns = s_loc;
+	//					unsigned ne = size - 1 + s_loc;
+	//
+	//					{
+	//						Inst* Ki = ExInst::create(e, ne, ns);
+	//						Inst* eqInst = OpInst::create(OpInst::Eq, tve, Ki);
+	//						inst2yices(eqInst);
+	//						force(eqInst);
+	//					}
+	//
+	//					int c = 0;
+	//					for (int i = ns; i<= ne; i++, c++) {
+	//						Inst* lhs = ExInst::create(e, i, i);
+	//						Inst* rhs = ExInst::create(tve, c, c);
+	//						Inst* eqInst = OpInst::create(OpInst::Eq, lhs, rhs);
+	//						inst2yices(eqInst);
+	//						force(eqInst);
+	//					}
+	//
+	////       cout << "\t" << *eqInst << endl;
+	//				}
+	//			}
+	//		}
+	//	}
+	//#endif
 
 #endif
 
@@ -6264,7 +6276,7 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 		if (e->y2_node.solv_cset(cIdx))
 		{
 			/// Constraints already set, use stored constraints.
-	//		cout << "reusing stored constraints " << *e << " nC: " << e->y_constraints[yIdx].size() << endl;
+			//		cout << "reusing stored constraints " << *e << " nC: " << e->y_constraints[yIdx].size() << endl;
 
 			for (auto& c : e->y2_node.solv_constraints(cIdx))
 			{
@@ -6288,7 +6300,7 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 
 	e->y2_node.y2_cset[cIdx] = true;
 
-//	cout << " e: " << *e << " of type " << e->get_sort().sort2str() << endl;
+	//	cout << " e: " << *e << " of type " << e->get_sort().sort2str() << endl;
 	//	assert(name == print_term(yvar));
 
 	// now link this node with the children's yices expressions
@@ -6353,25 +6365,25 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 
 	switch (e->get_type())
 	{
-	case Num: {
-		NumInst* num = NumInst::as(e);
-		assert(num != 0);
+		case Num: {
+			NumInst* num = NumInst::as(e);
+			assert(num != 0);
 
-		if (m_mapper->fetch_var(e) == TheoryMapper::BV_VAR) {
-      y2_expr_ptr c = create_y2_number(num);
-			add_gate_constraint(yvar, c, "constant link", e, false, false);
+			if (m_mapper->fetch_var(e) == TheoryMapper::BV_VAR) {
+				y2_expr_ptr c = create_y2_number(num);
+				add_gate_constraint(yvar, c, "constant link", e, false, false);
 
-      // required to remain in QF_LIA
-      if (e->get_sort_type() == inttype)
-      	yvar = c;
-		}
-		else if (m_mapper->fetch_var(e) == TheoryMapper::BOOL_VAR) {
-			yvar = ((*(num->get_mpz()) == 0) ? m_b0 : m_b1);
+				// required to remain in QF_LIA
+				if (e->get_sort_type() == inttype)
+					yvar = c;
+			}
+			else if (m_mapper->fetch_var(e) == TheoryMapper::BOOL_VAR) {
+				yvar = ((*(num->get_mpz()) == 0) ? m_b0 : m_b1);
 
-//			add_constraint(yices_eq((*(num->get_mpz()) == 0) ? m_b0 : m_b1, yvar), "num to boolean conversion", e);
-		}
-		else {
-		add_variable(yvar, e);
+				//			add_constraint(yices_eq((*(num->get_mpz()) == 0) ? m_b0 : m_b1, yvar), "num to boolean conversion", e);
+			}
+			else {
+				add_variable(yvar, e);
 #ifdef Y2_CREATE_UCONSTANTS
 		  y2_expr_ptr c = create_const_var(num->get_mpz(), num->get_size());
       add_constraint(yices_eq(yvar, c), "num constraint", e);
@@ -6392,586 +6404,508 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 
 
 #endif
+			}
 		}
-	}
 		break;
-	case Sig: {
-		add_variable(yvar, e);
-		// nothing!
-	}
+		case Sig: {
+			add_variable(yvar, e);
+			// nothing!
+		}
 		break;
-	case Wire: {
-		if (m_mapper->fetch_op(e) == TheoryMapper::BV_OP) {
-      if (y_ch.size() == 0) {
-    		add_variable(yvar, e);
-      }
-      else {
-        assert(y_ch.size() == 1);
-        y2_expr_ptr res = y_ch.front();
+		case Wire: {
+			if (m_mapper->fetch_op(e) == TheoryMapper::BV_OP) {
+				if (y_ch.size() == 0) {
+					add_variable(yvar, e);
+				}
+				else {
+					assert(y_ch.size() == 1);
+					y2_expr_ptr res = y_ch.front();
 
-  			add_gate_constraint(yvar, res, "port connection", e, !m_abstract, false);
-      }
-		}
-		else if (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP || m_mapper->fetch_op(e) == TheoryMapper::CLU_OP) {
-      assert(y_ch.size() == 1);
-      y2_expr_ptr res = y_ch.front();
+					add_gate_constraint(yvar, res, "port connection", e, !m_abstract, false);
+				}
+			}
+			else if (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP || m_mapper->fetch_op(e) == TheoryMapper::CLU_OP) {
+				assert(y_ch.size() == 1);
+				y2_expr_ptr res = y_ch.front();
 
-			add_gate_constraint(yvar, res, "port connection", e, false, false);
+				add_gate_constraint(yvar, res, "port connection", e, false, false);
+			}
+			else {
+				assert(0);
+			}
 		}
-		else {
-			assert(0);
-		}
-	}
 		break;
-	case Const: {
-		add_variable(yvar, e);
-		// nothing!
-	}
+		case Const: {
+			add_variable(yvar, e);
+			// nothing!
+		}
 		break;
-	case Op: {
-		OpInst* op = OpInst::as(e);
-		assert(op != 0);
-		y2_expr res = 0;
-		string opstr = "";
-		bool interpreted = false;
+		case Op: {
+			OpInst* op = OpInst::as(e);
+			assert(op != 0);
+			y2_expr res = 0;
+			string opstr = "";
+			bool interpreted = false;
 
-		y2_expr_list::iterator it = y_ch.begin(), it2 = y_ch.begin(), end_it = y_ch.end();
-		it2++;
+			y2_expr_list::iterator it = y_ch.begin(), it2 = y_ch.begin(), end_it = y_ch.end();
+			it2++;
 
-		OpInst::OpType o = op->get_op();
+			OpInst::OpType o = op->get_op();
 
-		if (o == OpInst::BitWiseXor && op->get_size() == 1 && (m_mapper->fetch_op(e) != TheoryMapper::BV_OP)) {
-			o = OpInst::LogXor;
-		}
-		if (o == OpInst::BitWiseXNor && op->get_size() == 1 && (m_mapper->fetch_op(e) != TheoryMapper::BV_OP)) {
-			o = OpInst::LogXNor;
-		}
+			if (o == OpInst::BitWiseXor && op->get_size() == 1 && (m_mapper->fetch_op(e) != TheoryMapper::BV_OP)) {
+				o = OpInst::LogXor;
+			}
+			if (o == OpInst::BitWiseXNor && op->get_size() == 1 && (m_mapper->fetch_op(e) != TheoryMapper::BV_OP)) {
+				o = OpInst::LogXNor;
+			}
 
-		switch (o) {
-		case OpInst::Extract:
-		case OpInst::Unknown:
-		case OpInst::Future:
-			cout << *op << endl;
-			assert(0);
-			break;
-
-			// "control" operators!
-		case OpInst::LogNot:
-		case OpInst::LogNand:
-		case OpInst::LogNor:
-		case OpInst::LogAnd:
-		case OpInst::LogXor:
-		case OpInst::LogXNor:
-		case OpInst::LogOr:
-		case OpInst::Eq:
-		case OpInst::NotEq:
-		case OpInst::ArrayConst:
-		case OpInst::ArraySelect:
-		case OpInst::ArrayStore:
-		case OpInst::Gr:
-		case OpInst::SGr:
-		case OpInst::Le:
-		case OpInst::SLe:
-		case OpInst::GrEq:
-		case OpInst::SGrEq:
-		case OpInst::LeEq:
-		case OpInst::SLeEq:
-		case OpInst::IntLe:
-		case OpInst::IntLeEq:
-		case OpInst::IntGr:
-		case OpInst::IntGrEq:
-		{
-			y2_expr log = 0;
 			switch (o) {
-
-			case OpInst::LogNot: {
-				if (m_mapper->fetch_var(e) == TheoryMapper::BV_VAR) {
-					log = yices_not(*it);
-				} else if (m_mapper->fetch_var(e) == TheoryMapper::BOOL_VAR) {
-					log = yices_not(*it);
-				} else {
+				case OpInst::Extract:
+				case OpInst::Unknown:
+				case OpInst::Future:
+					cout << *op << endl;
 					assert(0);
-				}
-				assert(log != Y2_INVALID_EXPR);
-				interpreted = true;
-			}
-				break;
-			case OpInst::LogNand:
-			case OpInst::LogNor:
-			case OpInst::LogAnd:
-			case OpInst::LogOr: {
-				y2_expr arguments[y_ch.size()];
-				for (unsigned j = 0; j < y_ch.size(); j++, ++it) {
-					arguments[j] = *it;
-				}
+					break;
 
-				if (m_mapper->fetch_var(e) == TheoryMapper::BV_VAR) {
-					log = ((o == OpInst::LogAnd) || (o == OpInst::LogNand)) ? yices_and(y_ch.size(), arguments) : yices_or(y_ch.size(), arguments);
-					if((o == OpInst::LogNor) || (o == OpInst::LogNand)){
-						log = yices_not(log);
-					}
-				} else if (m_mapper->fetch_var(e) == TheoryMapper::BOOL_VAR) {
-					log = ((o == OpInst::LogAnd) || (o == OpInst::LogNand)) ? yices_and(y_ch.size(), arguments) : yices_or(y_ch.size(), arguments);
-					if((o == OpInst::LogNor) || (o == OpInst::LogNand)){
-						log = yices_not(log);
-					}
-				} else {
-					assert(0);
-				}
-				interpreted = true;
-			}
-				break;
-			case OpInst::LogXNor:
-			case OpInst::LogXor: {
-				y2_expr arguments[y_ch.size()];
-				for (unsigned j = 0; j < y_ch.size(); j++, ++it) {
-					arguments[j] = *it;
-				}
+				// "control" operators!
+				case OpInst::LogNot:
+				case OpInst::LogNand:
+				case OpInst::LogNor:
+				case OpInst::LogAnd:
+				case OpInst::LogXor:
+				case OpInst::LogXNor:
+				case OpInst::LogOr:
+				case OpInst::Eq:
+				case OpInst::NotEq:
+				case OpInst::ArrayConst:
+				case OpInst::ArraySelect:
+				case OpInst::ArrayStore:
+				case OpInst::Gr:
+				case OpInst::SGr:
+				case OpInst::Le:
+				case OpInst::SLe:
+				case OpInst::GrEq:
+				case OpInst::SGrEq:
+				case OpInst::LeEq:
+				case OpInst::SLeEq:
+				case OpInst::IntLe:
+				case OpInst::IntLeEq:
+				case OpInst::IntGr:
+				case OpInst::IntGrEq:
+				{
+					y2_expr log = 0;
+					switch (o) {
 
-				if (m_mapper->fetch_var(e) == TheoryMapper::BV_VAR) {
-					log = yices_xor(y_ch.size(), arguments);
-					if(o == OpInst::LogXNor){
-						log = yices_not(log);
-					}
-				} else if (m_mapper->fetch_var(e) == TheoryMapper::BOOL_VAR) {
-					log = yices_xor(y_ch.size(), arguments);
-					if(o == OpInst::LogXNor){
-						log = yices_not(log);
-					}
-				} else {
-					assert(0);
-				}
-				interpreted = true;
-			}
-				break;
-			case OpInst::Eq:{
-				assert(y_ch.size() == 2);
-				if (m_mapper->fetch_var(e) == TheoryMapper::BV_VAR) {
-					log = yices_eq(*it, *it2);
-				} else if (m_mapper->fetch_var(e) == TheoryMapper::BOOL_VAR) {
-					log = yices_eq(*it, *it2);
-
-					assert(log);
-
-//#ifdef INTERPRET_EX_CC
-//          if (m_allow_ex_cc)
-//          {
-//            OpInst* op_t = OpInst::as(e);
-//            assert(op_t);
-//
-//            Inst* simplified = op_t->t_simple;
-//            if (e != simplified)
-//            {
-//              y2_expr_ptr a = simplified->y2_node.solv_var(get_vIdx());
-//              add_constraint(yices_eq(log, a), "partial interpretation of == with Ex/Cc", e);
-////              cout << "Asserting " << *e << " == " << *simplified << endl;
-//            }
-//          }
-//#endif
-				} else {
-					assert(0);
-				}
-				interpreted = true;
-			}
-				break;
-			case OpInst::NotEq: {
-				assert(y_ch.size() == 2);
-				if (m_mapper->fetch_var(e) == TheoryMapper::BV_VAR) {
-					log = yices_neq(*it, *it2);
-				} else if (m_mapper->fetch_var(e) == TheoryMapper::BOOL_VAR) {
-					log = yices_neq(*it, *it2);
-
-//#ifdef INTERPRET_EX_CC
-//          if (m_allow_ex_cc)
-//          {
-//            OpInst* op_t = OpInst::as(e);
-//            assert(op_t);
-//
-//            Inst* simplified = op_t->t_simple;
-//            if (e != simplified)
-//            {
-//              y2_expr_ptr a = simplified->y2_node.solv_var(get_vIdx());
-//              add_constraint(yices_eq(log, a), "partial interpretation of != with Ex/Cc", e);
-////              cout << "Asserting " << *e << " == " << *simplified << endl;
-//            }
-//          }
-//#endif
-				} else {
-					assert(0);
-				}
-				interpreted = true;
-			}
-				break;
-			case OpInst::ArrayConst: {
-				if (m_mapper->fetch_op(e) == TheoryMapper::BV_OP) {
-					y2_type functt = create_bv_sort(make_pair(e->get_size(), e->get_sort()));
-					y2_expr funct = yices_new_uninterpreted_term(functt);
-					log = funct;
-//					cout << "constarray: " << print_term(log) << " of type " << print_type(yices_type_of_term(log)) << endl;
-
-					SORT* d = e->get_sort_domain();
-					SORT* r = e->get_sort_range();
-					assert(d->type == bvtype);
-					assert(r->type == bvtype);
-					int width = d->sz;
-					int size = r->sz;
-
-					Inst* init_val = e->get_children()->back();
-					assert(init_val->get_type() == Num);
-					string value = NumInst::as(init_val)->get_mpz()->get_str(2);
-					while (value.length() < e->get_size())
-						value = "0" + value;
-					int maxaddress = pow(2, width) - 1;
-					for (int i = 0; i <= maxaddress; i++) {
-						string v;
-						if (value.size() <= size) {
-							v = value;
-						} else if (value.size() > (i*size)) {
-							v = value.substr(i*size, size);
-						} else {
-							v = "0";
+						case OpInst::LogNot: {
+							if (m_mapper->fetch_var(e) == TheoryMapper::BV_VAR) {
+								log = yices_not(*it);
+							} else if (m_mapper->fetch_var(e) == TheoryMapper::BOOL_VAR) {
+								log = yices_not(*it);
+							} else {
+								assert(0);
+							}
+							assert(log != Y2_INVALID_EXPR);
+							interpreted = true;
 						}
-						Inst* address = NumInst::create(maxaddress - i, width, SORT());
-						Inst* data = NumInst::create(v, size, 2, SORT());
-						y2_expr_ptr a = create_y2_number(NumInst::as(address));
-						y2_expr_ptr b = create_y2_number(NumInst::as(data));
+						break;
+						case OpInst::LogNand:
+						case OpInst::LogNor:
+						case OpInst::LogAnd:
+						case OpInst::LogOr: {
+							y2_expr arguments[y_ch.size()];
+							for (unsigned j = 0; j < y_ch.size(); j++, ++it) {
+								arguments[j] = *it;
+							}
+
+							if (m_mapper->fetch_var(e) == TheoryMapper::BV_VAR) {
+								log = ((o == OpInst::LogAnd) || (o == OpInst::LogNand)) ? yices_and(y_ch.size(), arguments) : yices_or(y_ch.size(), arguments);
+								if((o == OpInst::LogNor) || (o == OpInst::LogNand)){
+									log = yices_not(log);
+								}
+							} else if (m_mapper->fetch_var(e) == TheoryMapper::BOOL_VAR) {
+								log = ((o == OpInst::LogAnd) || (o == OpInst::LogNand)) ? yices_and(y_ch.size(), arguments) : yices_or(y_ch.size(), arguments);
+								if((o == OpInst::LogNor) || (o == OpInst::LogNand)){
+									log = yices_not(log);
+								}
+							} else {
+								assert(0);
+							}
+							interpreted = true;
+						}
+						break;
+						case OpInst::LogXNor:
+						case OpInst::LogXor: {
+							y2_expr arguments[y_ch.size()];
+							for (unsigned j = 0; j < y_ch.size(); j++, ++it) {
+								arguments[j] = *it;
+							}
+
+							if (m_mapper->fetch_var(e) == TheoryMapper::BV_VAR) {
+								log = yices_xor(y_ch.size(), arguments);
+								if(o == OpInst::LogXNor){
+									log = yices_not(log);
+								}
+							} else if (m_mapper->fetch_var(e) == TheoryMapper::BOOL_VAR) {
+								log = yices_xor(y_ch.size(), arguments);
+								if(o == OpInst::LogXNor){
+									log = yices_not(log);
+								}
+							} else {
+								assert(0);
+							}
+							interpreted = true;
+						}
+						break;
+						case OpInst::Eq:{
+							assert(y_ch.size() == 2);
+							if (m_mapper->fetch_var(e) == TheoryMapper::BV_VAR) {
+								log = yices_eq(*it, *it2);
+							} else if (m_mapper->fetch_var(e) == TheoryMapper::BOOL_VAR) {
+								log = yices_eq(*it, *it2);
+
+								assert(log);
+
+								//#ifdef INTERPRET_EX_CC
+								//          if (m_allow_ex_cc)
+								//          {
+								//            OpInst* op_t = OpInst::as(e);
+								//            assert(op_t);
+								//
+								//            Inst* simplified = op_t->t_simple;
+								//            if (e != simplified)
+								//            {
+								//              y2_expr_ptr a = simplified->y2_node.solv_var(get_vIdx());
+								//              add_constraint(yices_eq(log, a), "partial interpretation of == with Ex/Cc", e);
+								////              cout << "Asserting " << *e << " == " << *simplified << endl;
+								//            }
+								//          }
+								//#endif
+							} else {
+								assert(0);
+							}
+							interpreted = true;
+						}
+						break;
+						case OpInst::NotEq: {
+							assert(y_ch.size() == 2);
+							if (m_mapper->fetch_var(e) == TheoryMapper::BV_VAR) {
+								log = yices_neq(*it, *it2);
+							} else if (m_mapper->fetch_var(e) == TheoryMapper::BOOL_VAR) {
+								log = yices_neq(*it, *it2);
+
+								//#ifdef INTERPRET_EX_CC
+								//          if (m_allow_ex_cc)
+								//          {
+								//            OpInst* op_t = OpInst::as(e);
+								//            assert(op_t);
+								//
+								//            Inst* simplified = op_t->t_simple;
+								//            if (e != simplified)
+								//            {
+								//              y2_expr_ptr a = simplified->y2_node.solv_var(get_vIdx());
+								//              add_constraint(yices_eq(log, a), "partial interpretation of != with Ex/Cc", e);
+								////              cout << "Asserting " << *e << " == " << *simplified << endl;
+								//            }
+								//          }
+								//#endif
+							} else {
+								assert(0);
+							}
+							interpreted = true;
+						}
+						break;
+						case OpInst::ArrayConst: {
+							if (m_mapper->fetch_op(e) == TheoryMapper::BV_OP) {
+								y2_type functt = create_bv_sort(make_pair(e->get_size(), e->get_sort()));
+								y2_expr funct = yices_new_uninterpreted_term(functt);
+								log = funct;
+								//					cout << "constarray: " << print_term(log) << " of type " << print_type(yices_type_of_term(log)) << endl;
+
+								SORT* d = e->get_sort_domain();
+								SORT* r = e->get_sort_range();
+								assert(d->type == bvtype);
+								assert(r->type == bvtype);
+								int width = d->sz;
+								int size = r->sz;
+
+								Inst* init_val = e->get_children()->back();
+								assert(init_val->get_type() == Num);
+								string value = NumInst::as(init_val)->get_mpz()->get_str(2);
+								while (value.length() < e->get_size())
+									value = "0" + value;
+								int maxaddress = pow(2, width) - 1;
+								for (int i = 0; i <= maxaddress; i++) {
+									string v;
+									if (value.size() <= size) {
+										v = value;
+									} else if (value.size() > (i*size)) {
+										v = value.substr(i*size, size);
+									} else {
+										v = "0";
+									}
+									Inst* address = NumInst::create(maxaddress - i, width, SORT());
+									Inst* data = NumInst::create(v, size, 2, SORT());
+									y2_expr_ptr a = create_y2_number(NumInst::as(address));
+									y2_expr_ptr b = create_y2_number(NumInst::as(data));
 #ifndef Y2_ARRAY_ALLOW_BOOL
 						if (yices_term_is_bool(a))
 							a = yices_ite(a, m_v1, m_v0);
 						if (yices_term_is_bool(b))
 							b = yices_ite(b, m_v1, m_v0);
 #endif
-						log = yices_update1(log, a, b);
-					}
-//					cout << "updatearray: " << print_term(log) << endl;
-				} else if (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP) {
-					SORT* d = e->get_sort_domain();
-					SORT* r = e->get_sort_range();
-					assert(d->type == bvtype);
-					assert(r->type == bvtype);
-					int width = d->sz;
-					int size = r->sz;
+									log = yices_update1(log, a, b);
+								}
+								//					cout << "updatearray: " << print_term(log) << endl;
+							} else if (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP) {
+								SORT* d = e->get_sort_domain();
+								SORT* r = e->get_sort_range();
+								assert(d->type == bvtype);
+								assert(r->type == bvtype);
+								int width = d->sz;
+								int size = r->sz;
 
-					y2_type functt;
-					if (m_mapper->fetch_logic() == TheoryMapper::QF_UFBV && m_mapper->fetch_var(e) == TheoryMapper::BV_VAR) {
-						// operation is EUF but output is BV, i.e. input is EUF type, output is BV type
-						functt = create_int_sort(make_pair(e->get_size(), e->get_sort()), false, true);
-					}
-					else if (m_mapper->fetch_logic() == TheoryMapper::QF_UFBV && e->ab_interpret.input_concrete()) {
-						functt = create_int_sort(make_pair(e->get_size(), e->get_sort()), true, false);
-					}
-					else {
-						functt = create_int_sort(make_pair(e->get_size(), e->get_sort()));
-					}
+								y2_type functt;
+								if (m_mapper->fetch_logic() == TheoryMapper::QF_UFBV && m_mapper->fetch_var(e) == TheoryMapper::BV_VAR) {
+									// operation is EUF but output is BV, i.e. input is EUF type, output is BV type
+									functt = create_int_sort(make_pair(e->get_size(), e->get_sort()), false, true);
+								}
+								else if (m_mapper->fetch_logic() == TheoryMapper::QF_UFBV && e->ab_interpret.input_concrete()) {
+									functt = create_int_sort(make_pair(e->get_size(), e->get_sort()), true, false);
+								}
+								else {
+									functt = create_int_sort(make_pair(e->get_size(), e->get_sort()));
+								}
 
-					y2_expr funct = yices_new_uninterpreted_term(functt);
-					log = funct;
-//					cout << "constarray: " << print_term(log) << " of type " << print_type(yices_type_of_term(log)) << endl;
+								y2_expr funct = yices_new_uninterpreted_term(functt);
+								log = funct;
+								//					cout << "constarray: " << print_term(log) << " of type " << print_type(yices_type_of_term(log)) << endl;
 
-//					int width = e->get_sort_width();
-//					Inst* init_val = e->get_children()->back();
-//					assert(init_val->get_type() == Num);
-//					string value = NumInst::as(init_val)->get_mpz()->get_str(2);
-//					while (value.length() < e->get_size())
-//						value = "0" + value;
-//					int size = e->get_sort_size();
-//					int maxaddress = pow(2, width) - 1;
-//					for (int i = 0; i <= maxaddress; i++) {
-//						string v = value.substr(i*size, size);
-//						Inst* address = NumInst::create(maxaddress - i, width);
-//						Inst* data = NumInst::create(v, size, 2);
-//						inst2yices(address);
-//						inst2yices(data);
-//						y2_expr_ptr a = address->y2_node.solv_var(yIdx);
-//						y2_expr_ptr b = data->y2_node.solv_var(yIdx);
-//						log = yices_update1(log, a, b);
-//					}
-				} else {
-					assert(0);
-				}
-				assert(log);
-				interpreted = true;
-			}
-				break;
-			case OpInst::ArraySelect: {
-				y2_expr a = *it;
-				y2_expr b = *it2;
+								//					int width = e->get_sort_width();
+								//					Inst* init_val = e->get_children()->back();
+								//					assert(init_val->get_type() == Num);
+								//					string value = NumInst::as(init_val)->get_mpz()->get_str(2);
+								//					while (value.length() < e->get_size())
+								//						value = "0" + value;
+								//					int size = e->get_sort_size();
+								//					int maxaddress = pow(2, width) - 1;
+								//					for (int i = 0; i <= maxaddress; i++) {
+								//						string v = value.substr(i*size, size);
+								//						Inst* address = NumInst::create(maxaddress - i, width);
+								//						Inst* data = NumInst::create(v, size, 2);
+								//						inst2yices(address);
+								//						inst2yices(data);
+								//						y2_expr_ptr a = address->y2_node.solv_var(yIdx);
+								//						y2_expr_ptr b = data->y2_node.solv_var(yIdx);
+								//						log = yices_update1(log, a, b);
+								//					}
+							} else {
+								assert(0);
+							}
+							assert(log);
+							interpreted = true;
+						}
+						break;
+						case OpInst::ArraySelect: {
+							y2_expr a = *it;
+							y2_expr b = *it2;
 #ifndef Y2_ARRAY_ALLOW_BOOL
 				if (yices_term_is_bool(b))
 					b = yices_ite(b, m_v1, m_v0);
 #endif
-				log = yices_application1(a, b);
-				if (log == Y2_INVALID_EXPR) {
-					cout << "e: " << *e << endl;
-					cout << "a: " << print_term(a) << " of type " << print_type(yices_type_of_term(a)) << endl;
-					cout << "b: " << print_term(b) << " of type " << print_type(yices_type_of_term(b)) << endl;
+							log = yices_application1(a, b);
+							if (log == Y2_INVALID_EXPR) {
+								cout << "e: " << *e << endl;
+								cout << "a: " << print_term(a) << " of type " << print_type(yices_type_of_term(a)) << endl;
+								cout << "b: " << print_term(b) << " of type " << print_type(yices_type_of_term(b)) << endl;
 
-					yices_print_error(stdout);
-					assert(0);
-				}
-//				cout << "selectarray: " << print_term(log) << " of type " << print_type(yices_type_of_term(log)) << endl;
-				assert(log);
-				assert(log != Y2_INVALID_EXPR);
-				interpreted = true;
-			}
-				break;
-			case OpInst::ArrayStore: {
-				y2_expr a = *it;
-				y2_expr b = *it2;
-				it2++;
-				y2_expr c = *it2;
+								yices_print_error(stdout);
+								assert(0);
+							}
+							//				cout << "selectarray: " << print_term(log) << " of type " << print_type(yices_type_of_term(log)) << endl;
+							assert(log);
+							assert(log != Y2_INVALID_EXPR);
+							interpreted = true;
+						}
+						break;
+						case OpInst::ArrayStore: {
+							y2_expr a = *it;
+							y2_expr b = *it2;
+							it2++;
+							y2_expr c = *it2;
 #ifndef Y2_ARRAY_ALLOW_BOOL
 				if (yices_term_is_bool(b))
 					b = yices_ite(b, m_v1, m_v0);
 				if (yices_term_is_bool(c))
 					c = yices_ite(c, m_v1, m_v0);
 #endif
-				log = yices_update1(a, b, c);
-//				cout << "storearray: " << print_term(log) << " of type " << print_type(yices_type_of_term(log)) << endl;
-				assert(log);
-				interpreted = true;
-			}
-				break;
-			case OpInst::Gr:
-			case OpInst::SGr:
-			case OpInst::Le:
-			case OpInst::SLe:
-			case OpInst::GrEq:
-			case OpInst::SGrEq:
-			case OpInst::LeEq:
-			case OpInst::SLeEq:
-			case OpInst::IntLe:
-			case OpInst::IntLeEq:
-			case OpInst::IntGr:
-			case OpInst::IntGrEq:
-			{
-				if (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP) {
-					switch (o) {
-					case OpInst::Gr:
-						opstr = "Gr";
+							log = yices_update1(a, b, c);
+							//				cout << "storearray: " << print_term(log) << " of type " << print_type(yices_type_of_term(log)) << endl;
+							assert(log);
+							interpreted = true;
+						}
 						break;
-					case OpInst::SGr:
-						opstr = "SGr";
-						break;
-					case OpInst::Le:
-						opstr = "Le";
-						break;
-					case OpInst::SLe:
-						opstr = "SLe";
-						break;
-					case OpInst::GrEq:
-						opstr = "GrEq";
-						break;
-					case OpInst::SGrEq:
-						opstr = "SGrEq";
-						break;
-					case OpInst::LeEq:
-						opstr = "LeEq";
-						break;
-					case OpInst::SLeEq:
-						opstr = "SLeEq";
-						break;
-					case OpInst::IntLe:
-						opstr = "IntLe";
-						break;
-					case OpInst::IntLeEq:
-						opstr = "IntLeEq";
-						break;
-					case OpInst::IntGr:
-						opstr = "IntGr";
-						break;
-					case OpInst::IntGrEq:
-						opstr = "IntGrEq";
-						break;
-					default:
-						assert(0);
-					}
-				} else if (m_mapper->fetch_op(e) == TheoryMapper::CLU_OP) {
-					assert(0);
-				} else if (m_mapper->fetch_op(e) == TheoryMapper::BV_OP) {
-
-					y2_expr_ptr y1 = *it;
-					y2_expr_ptr y2 = *it2;
-					Inst* c1 = e->get_children()->front();
-					Inst* c2 = e->get_children()->back();
-					int c1Sz = c1->get_size();
-					int c2Sz = c2->get_size();
-
-					if (yices_term_is_bool(y1))
-						y1 = yices_ite(y1, m_v1, m_v0);
-					if (yices_term_is_bool(y2))
-						y2 = yices_ite(y2, m_v1, m_v0);
-
-					if (c1Sz < c2Sz)
-						y1 = yices_zero_extend(y1, (c2Sz - c1Sz));
-					if (c2Sz < c1Sz)
-						y2 = yices_zero_extend(y2, (c1Sz - c2Sz));
-
-					switch (o) {
-					case OpInst::Gr:
-						log = yices_bvgt_atom(y1, y2);
-						break;
-					case OpInst::SGr:
-						log = yices_bvsgt_atom(y1, y2);
-						break;
-					case OpInst::Le:
-						log = yices_bvlt_atom(y1, y2);
-						break;
-					case OpInst::SLe:
-						log = yices_bvslt_atom(y1, y2);
-						break;
-					case OpInst::GrEq:
-						log = yices_bvge_atom(y1, y2);
-						break;
-					case OpInst::SGrEq:
-						log = yices_bvsge_atom(y1, y2);
-						break;
-					case OpInst::LeEq:
-						log = yices_bvle_atom(y1, y2);
-						break;
-					case OpInst::SLeEq:
-						log = yices_bvsle_atom(y1, y2);
-						break;
-					case OpInst::IntLe:
-						log = yices_arith_lt_atom(y1, y2);
-						break;
-					case OpInst::IntLeEq:
-						log = yices_arith_leq_atom(y1, y2);
-						break;
-					case OpInst::IntGr:
-						log = yices_arith_gt_atom(y1, y2);
-						break;
-					case OpInst::IntGrEq:
-						log = yices_arith_geq_atom(y1, y2);
-						break;
-					default:
-						assert(0);
-					}
-					interpreted = true;
-				}
-			}
-				break;
-			default:
-				assert(0);
-			}
-			if (opstr != "") {
-//				add_yices_func(yvar, opstr, e->get_size() == 1, y_ch, s_sz, e, (m_mapper->fetch_var(e) == TheoryMapper::BV_VAR) ? e->get_size() : 0);
-			} else if (m_mapper->fetch_var(e) == TheoryMapper::BV_VAR) {
-				res = log;
-			} else if (interpreted) {
-				res = log;
-			} else
-				assert(0);
-		}
-			break;
-		case OpInst::Concat: {
-			if (m_mapper->fetch_op(e) == TheoryMapper::BV_OP) {
-//				assert(m_mapper->fetch_var(e) == TheoryMapper::BV_VAR);
-				if (y_ch.size() == 1) {
-					res = *it;
-				} else {
-					y2_expr arguments[y_ch.size()];
-					for (int j = (y_ch.size() - 1); j >= 0; j--, ++it) {
-						if (yices_term_is_bitvector(*it))
-							arguments[j] = *it;
-						else
+						case OpInst::Gr:
+						case OpInst::SGr:
+						case OpInst::Le:
+						case OpInst::SLe:
+						case OpInst::GrEq:
+						case OpInst::SGrEq:
+						case OpInst::LeEq:
+						case OpInst::SLeEq:
+						case OpInst::IntLe:
+						case OpInst::IntLeEq:
+						case OpInst::IntGr:
+						case OpInst::IntGrEq:
 						{
-	            assert (yices_term_is_bool(*it));
-              arguments[j] = yices_ite(*it, m_v1, m_v0);
+							if (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP) {
+								switch (o) {
+									case OpInst::Gr:
+										opstr = "Gr";
+										break;
+									case OpInst::SGr:
+										opstr = "SGr";
+										break;
+									case OpInst::Le:
+										opstr = "Le";
+										break;
+									case OpInst::SLe:
+										opstr = "SLe";
+										break;
+									case OpInst::GrEq:
+										opstr = "GrEq";
+										break;
+									case OpInst::SGrEq:
+										opstr = "SGrEq";
+										break;
+									case OpInst::LeEq:
+										opstr = "LeEq";
+										break;
+									case OpInst::SLeEq:
+										opstr = "SLeEq";
+										break;
+									case OpInst::IntLe:
+										opstr = "IntLe";
+										break;
+									case OpInst::IntLeEq:
+										opstr = "IntLeEq";
+										break;
+									case OpInst::IntGr:
+										opstr = "IntGr";
+										break;
+									case OpInst::IntGrEq:
+										opstr = "IntGrEq";
+										break;
+									default:
+										assert(0);
+								}
+							} else if (m_mapper->fetch_op(e) == TheoryMapper::CLU_OP) {
+								assert(0);
+							} else if (m_mapper->fetch_op(e) == TheoryMapper::BV_OP) {
+
+								y2_expr_ptr y1 = *it;
+								y2_expr_ptr y2 = *it2;
+								Inst* c1 = e->get_children()->front();
+								Inst* c2 = e->get_children()->back();
+								int c1Sz = c1->get_size();
+								int c2Sz = c2->get_size();
+
+								if (yices_term_is_bool(y1))
+									y1 = yices_ite(y1, m_v1, m_v0);
+								if (yices_term_is_bool(y2))
+									y2 = yices_ite(y2, m_v1, m_v0);
+
+								if (c1Sz < c2Sz)
+									y1 = yices_zero_extend(y1, (c2Sz - c1Sz));
+								if (c2Sz < c1Sz)
+									y2 = yices_zero_extend(y2, (c1Sz - c2Sz));
+
+								switch (o) {
+									case OpInst::Gr:
+										log = yices_bvgt_atom(y1, y2);
+										break;
+									case OpInst::SGr:
+										log = yices_bvsgt_atom(y1, y2);
+										break;
+									case OpInst::Le:
+										log = yices_bvlt_atom(y1, y2);
+										break;
+									case OpInst::SLe:
+										log = yices_bvslt_atom(y1, y2);
+										break;
+									case OpInst::GrEq:
+										log = yices_bvge_atom(y1, y2);
+										break;
+									case OpInst::SGrEq:
+										log = yices_bvsge_atom(y1, y2);
+										break;
+									case OpInst::LeEq:
+										log = yices_bvle_atom(y1, y2);
+										break;
+									case OpInst::SLeEq:
+										log = yices_bvsle_atom(y1, y2);
+										break;
+									case OpInst::IntLe:
+										log = yices_arith_lt_atom(y1, y2);
+										break;
+									case OpInst::IntLeEq:
+										log = yices_arith_leq_atom(y1, y2);
+										break;
+									case OpInst::IntGr:
+										log = yices_arith_gt_atom(y1, y2);
+										break;
+									case OpInst::IntGrEq:
+										log = yices_arith_geq_atom(y1, y2);
+										break;
+									default:
+										assert(0);
+								}
+								interpreted = true;
+							}
+						}
+						break;
+						default:
+							assert(0);
+					}
+					if (opstr != "") {
+						//				add_yices_func(yvar, opstr, e->get_size() == 1, y_ch, s_sz, e, (m_mapper->fetch_var(e) == TheoryMapper::BV_VAR) ? e->get_size() : 0);
+					} else if (m_mapper->fetch_var(e) == TheoryMapper::BV_VAR) {
+						res = log;
+					} else if (interpreted) {
+						res = log;
+					} else
+						assert(0);
+				}
+				break;
+				case OpInst::Concat: {
+					if (m_mapper->fetch_op(e) == TheoryMapper::BV_OP) {
+						//				assert(m_mapper->fetch_var(e) == TheoryMapper::BV_VAR);
+						if (y_ch.size() == 1) {
+							res = *it;
+						} else {
+							y2_expr arguments[y_ch.size()];
+							for (int j = (y_ch.size() - 1); j >= 0; j--, ++it) {
+								if (yices_term_is_bitvector(*it))
+									arguments[j] = *it;
+								else
+								{
+									assert (yices_term_is_bool(*it));
+									arguments[j] = yices_ite(*it, m_v1, m_v0);
+								}
+							}
+							res = yices_bvconcat(y_ch.size(), arguments);
 						}
 					}
-					res = yices_bvconcat(y_ch.size(), arguments);
+					else
+					{
+						opstr = "Concat";
+					}
 				}
-			}
-			else
-			{
-				opstr = "Concat";
-			}
-		}
-			break;
+				break;
 
-			// "datapath" operators
-		case OpInst::Minus:
-		case OpInst::Add:
-		case OpInst::AddC:
-		case OpInst::Sub:
-		case OpInst::Mult:
-		case OpInst::Div:
-		case OpInst::SDiv:
-		case OpInst::Rem:
-		case OpInst::SRem:
-		case OpInst::SMod:
-		case OpInst::BitWiseNot:
-		case OpInst::BitWiseAnd:
-		case OpInst::BitWiseNand:
-		case OpInst::BitWiseOr:
-		case OpInst::BitWiseNor:
-		case OpInst::BitWiseXor:
-		case OpInst::BitWiseXNor:
-		case OpInst::ReductionAnd:
-		case OpInst::ReductionOr:
-		case OpInst::ReductionXor:
-		case OpInst::ReductionXNor:
-		case OpInst::ReductionNand:
-		case OpInst::ReductionNor:
-		case OpInst::RotateL:
-		case OpInst::RotateR:
-		case OpInst::ShiftL:
-		case OpInst::ShiftR:
-		case OpInst::AShiftR:
-		case OpInst::AShiftL:
-		case OpInst::Sext:
-		case OpInst::Zext:
-		case OpInst::VShiftL:
-		case OpInst::VShiftR:
-		case OpInst::VAShiftL:
-		case OpInst::VAShiftR:
-		case OpInst::VRotateL:
-		case OpInst::VRotateR:
-		case OpInst::VEx:
-		case OpInst::IntAdd:
-		case OpInst::IntSub:
-		case OpInst::IntMult:
-		case OpInst::IntDiv:
-		case OpInst::IntMod:
-		case OpInst::IntFloor:
-		case OpInst::IntMinus:
-		{
-			if (m_mapper->fetch_op(e) == TheoryMapper::BV_OP) {
-				assert(m_mapper->fetch_var(e) == TheoryMapper::BV_VAR);
-
-				y2_expr_ptr a = (*it);
-				if (yices_term_is_bool(a))
-					a = yices_ite(a, m_v1, m_v0);
-				Inst* c1 = e->get_children()->front();
-				int outSz = e->get_size();
-				int c1Sz = c1->get_size();
-				if (c1Sz < outSz)
-					a = yices_zero_extend(a, (outSz - c1Sz));
-
-				switch (o) {
-				case OpInst::Minus: {
-					assert(y_ch.size() == 1);
-					res = yices_bvneg(a);
-				}
-					break;
-				case OpInst::BitWiseNot: {
-					assert(y_ch.size() == 1);
-					res = yices_bvnot(a);
-				}
-					break;
-				case OpInst::IntFloor: {
-					assert(y_ch.size() == 1);
-					res = yices_floor(a);
-				}
-					break;
-				case OpInst::IntMinus: {
-					assert(y_ch.size() == 1);
-					res = yices_neg(a);
-				}
-					break;
-
+				// "datapath" operators
+				case OpInst::Minus:
 				case OpInst::Add:
+				case OpInst::AddC:
 				case OpInst::Sub:
 				case OpInst::Mult:
 				case OpInst::Div:
@@ -6979,451 +6913,529 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 				case OpInst::Rem:
 				case OpInst::SRem:
 				case OpInst::SMod:
+				case OpInst::BitWiseNot:
 				case OpInst::BitWiseAnd:
 				case OpInst::BitWiseNand:
 				case OpInst::BitWiseOr:
 				case OpInst::BitWiseNor:
 				case OpInst::BitWiseXor:
 				case OpInst::BitWiseXNor:
+				case OpInst::ReductionAnd:
+				case OpInst::ReductionOr:
+				case OpInst::ReductionXor:
+				case OpInst::ReductionXNor:
+				case OpInst::ReductionNand:
+				case OpInst::ReductionNor:
+				case OpInst::RotateL:
+				case OpInst::RotateR:
 				case OpInst::ShiftL:
 				case OpInst::ShiftR:
 				case OpInst::AShiftR:
+				case OpInst::AShiftL:
 				case OpInst::Sext:
 				case OpInst::Zext:
+				case OpInst::VShiftL:
+				case OpInst::VShiftR:
+				case OpInst::VAShiftL:
+				case OpInst::VAShiftR:
+				case OpInst::VRotateL:
+				case OpInst::VRotateR:
+				case OpInst::VEx:
 				case OpInst::IntAdd:
 				case OpInst::IntSub:
 				case OpInst::IntMult:
 				case OpInst::IntDiv:
 				case OpInst::IntMod:
+				case OpInst::IntFloor:
+				case OpInst::IntMinus:
 				{
-					y2_expr_ptr b = (*it2);
-					if (yices_term_is_bool(b))
-						b = yices_ite(b, m_v1, m_v0);
+					if (m_mapper->fetch_op(e) == TheoryMapper::BV_OP) {
+						assert(m_mapper->fetch_var(e) == TheoryMapper::BV_VAR);
 
-					int outSz = e->get_size();
-					int maxSz = outSz;
-					if (e->get_sort_type() == bvtype) {
-						Inst* c2 = e->get_children()->back();
-						int c2Sz = c2->get_size();
-						if (maxSz < c1Sz)
-							maxSz = c1Sz;
-						if (maxSz < c2Sz)
-							maxSz = c2Sz;
+						y2_expr_ptr a = (*it);
+						if (yices_term_is_bool(a))
+							a = yices_ite(a, m_v1, m_v0);
+						Inst* c1 = e->get_children()->front();
+						int outSz = e->get_size();
+						int c1Sz = c1->get_size();
+						if (c1Sz < outSz)
+							a = yices_zero_extend(a, (outSz - c1Sz));
 
-						if (outSz < maxSz)
-						{
-							a = yices_zero_extend(a, (maxSz - outSz));
-						}
-						if (c2Sz < maxSz)
-						{
-							b = yices_zero_extend(b, (maxSz - c2Sz));
-						}
-					}
-
-					switch (o) {
-					case OpInst::Add:{
-						assert(y_ch.size() == 2);
-						res = yices_bvadd(a, b);
-					}break;
-					case OpInst::Sub: {
-						assert(y_ch.size() == 2);
-						res = yices_bvsub(a, b);
-					}
-						break;
-					case OpInst::Mult:{
-						assert(y_ch.size() == 2);
-						res = yices_bvmul(a, b);
-					}
-						break;
-					case OpInst::Div:{
-						assert(y_ch.size() == 2);
-						res = yices_bvdiv(a, b);
-					}
-						break;
-					case OpInst::SDiv:{
-						assert(y_ch.size() == 2);
-						res = yices_bvsdiv(a, b);
-					}
-						break;
-					case OpInst::Rem:{
-						assert(y_ch.size() == 2);
-						res = yices_bvrem(a, b);
-					}
-						break;
-					case OpInst::SRem:{
-						assert(y_ch.size() == 2);
-						res = yices_bvsrem(a, b);
-					}
-						break;
-					case OpInst::SMod:{
-						assert(y_ch.size() == 2);
-						res = yices_bvsmod(a, b);
-					}
-						break;
-					case OpInst::BitWiseAnd: {
-						assert(y_ch.size() == 2);
-						res = yices_bvand2(a, b);
-					}
-						break;
-					case OpInst::BitWiseNand: {
-						assert(y_ch.size() == 2);
-						res = yices_bvnand(a, b);
-					}
-						break;
-					case OpInst::BitWiseOr: {
-						assert(y_ch.size() == 2);
-						res = yices_bvor2(a, b);
-					}
-						break;
-					case OpInst::BitWiseNor: {
-						assert(y_ch.size() == 2);
-						res = yices_bvnor(a, b);
-					}
-						break;
-					case OpInst::BitWiseXor: {
-						assert(y_ch.size() == 2);
-						res = yices_bvxor2(a, b);
-					}
-						break;
-					case OpInst::BitWiseXNor: {
-						assert(y_ch.size() == 2);
-						res = yices_bvxnor(a, b);
-					}
-						break;
-					case OpInst::ShiftL:
-					case OpInst::ShiftR: {
-						assert(y_ch.size() == 2);
-						InstL::const_iterator ve_it = ch->begin(), ve_it2 = ch->begin();
-						ve_it2++;
-						if (o == OpInst::ShiftR)
-							res = yices_bvlshr(a, b);
-						else if (o == OpInst::ShiftL)
-							res = yices_bvshl(a, b);
-						else
-							assert(0);
-						assert(res != -1);
-					}
-						break;
-					case OpInst::AShiftR: {
-						assert(y_ch.size() == 2);
-						InstL::const_iterator ve_it = ch->begin(), ve_it2 = ch->begin();
-						ve_it2++;
-						res = yices_bvashr(a, b);
-						assert(res != -1);
-					}
-						break;
-					case OpInst::Sext:
-					case OpInst::Zext: {
-						y2_expr_ptr a2 = (*it);
-						if (yices_term_is_bool(a2))
-							a2 = yices_ite(a2, m_v1, m_v0);
-						assert(y_ch.size() == 2);
-						InstL::const_iterator ve_it = ch->begin();
-						int amount = e->get_size() - (*ve_it)->get_size();
-						assert(amount >= 0);
-						{
-							if (o == OpInst::Sext)
-							{
-								res = yices_sign_extend(a2, amount);
-							} else {
-								res = yices_zero_extend(a2, amount);
+						switch (o) {
+							case OpInst::Minus: {
+								assert(y_ch.size() == 1);
+								res = yices_bvneg(a);
 							}
-						}
-						assert(res != -1);
-					}
-						break;
-					case OpInst::IntAdd: {
-						assert(y_ch.size() == 2);
-						res = yices_add(a, b);
-					}
-						break;
-					case OpInst::IntSub: {
-						assert(y_ch.size() == 2);
-						res = yices_sub(a, b);
-					}
-						break;
-					case OpInst::IntMult: {
-						assert(y_ch.size() == 2);
-						res = yices_mul(a, b);
-					}
-						break;
-					case OpInst::IntDiv: {
-						assert(y_ch.size() == 2);
-						res = yices_idiv(a, b);
-					}
-						break;
-					case OpInst::IntMod: {
-						assert(y_ch.size() == 2);
-						res = yices_imod(a, b);
-					}
-						break;
-					default:
-						assert(0);
-					}
-					if (e->get_sort_type() == bvtype) {
-						if (outSz < maxSz)
-							res = yices_bvextract(res, 0, (outSz - 1));
-					}
-				}
-					break;
-
-				case OpInst::AddC:
-				case OpInst::AShiftL:
-					assert(0); // for now.
-
-				case OpInst::ReductionAnd:
-				case OpInst::ReductionNand: {
-					assert(y_ch.size() == 1);
-					res = yices_redand(a);
-					if (o == OpInst::ReductionNand)		res = yices_bvnot(res);
-				}
-					break;
-				case OpInst::ReductionOr:
-				case OpInst::ReductionNor: {
-					assert(y_ch.size() == 1);
-					res = yices_redor(a);
-					if (o == OpInst::ReductionNor)		res = yices_bvnot(res);
-				}
-					break;
-				case OpInst::ReductionXor:
-				case OpInst::ReductionXNor: {
-					assert(y_ch.size() == 1);
-					unsigned sz = (*(ch->begin()))->get_size();
-					assert(sz > 1);
-
-					y2_expr bit = yices_bvextract(a, 0, 0);
-					y2_expr bit2 = yices_bvextract(a, 1, 1);
-					bit = yices_bvxor2(bit, bit2);
-					for (unsigned i = 2; i < sz; i++)
-					{
-						bit = yices_bvxor2(bit, yices_bvextract(a, i, i));
-					}
-					if (o == OpInst::ReductionXNor)		bit = yices_bvnot(bit);
-					res = bit;
-				}
-					break;
-
-				case OpInst::RotateL:
-				case OpInst::RotateR: {
-					assert(y_ch.size() == 2);
-					InstL::const_iterator ve_it = ch->begin(), ve_it2 = ch->begin();
-					ve_it2++;
-					NumInst* num = NumInst::as(*ve_it2);
-					// cout << "Rotate: " << *e << endl;
-					if (num != 0)
-					{
-						int rotate_amount = num->get_mpz()->get_si() % e->get_size();
-						// cout << "rotate_amount: " << rotate_amount << endl;
-						if (rotate_amount != 0) {
-							if (o == OpInst::RotateL)
-							{
-								res = yices_rotate_left(a, rotate_amount);
-							} else {
-								res = yices_rotate_right(a, rotate_amount);
+							break;
+							case OpInst::BitWiseNot: {
+								assert(y_ch.size() == 1);
+								res = yices_bvnot(a);
 							}
-						} else {
-							res = a;
-						}
-					} else {
-						cout << "Expected second operand as number in " << *e << endl;
-						assert(0);
-					}
-					if (res == -1) {
-						cout << "e: " << *e << endl;
-						cout << yices_error_string() << endl;
-					}
-					assert(res != -1);
-				}
-					break;
-				case OpInst::VRotateR:{
-					const InstL* ch = e->get_children();
-					InstL::const_iterator ve_it = ch->begin();
-					Inst *ve_val = *ve_it;
-					++ve_it;
-					int amt_size = (*ve_it)->get_size();
-					int rotate_amount = (1 << amt_size) - 1;
-					int out_size = e->get_size();
+							break;
+							case OpInst::IntFloor: {
+								assert(y_ch.size() == 1);
+								res = yices_floor(a);
+							}
+							break;
+							case OpInst::IntMinus: {
+								assert(y_ch.size() == 1);
+								res = yices_neg(a);
+							}
+							break;
 
-					bool simp_to_zero = false;
-					if(ve_val == NumInst::create(0, ve_val->get_size(), SORT())){
-						simp_to_zero = true;
-					}else if((ve_val->get_type() == Op) && (OpInst::as(ve_val)->get_op() == OpInst::Concat)){
-						const InstL* chs = ve_val->get_children();
+							case OpInst::Add:
+							case OpInst::Sub:
+							case OpInst::Mult:
+							case OpInst::Div:
+							case OpInst::SDiv:
+							case OpInst::Rem:
+							case OpInst::SRem:
+							case OpInst::SMod:
+							case OpInst::BitWiseAnd:
+							case OpInst::BitWiseNand:
+							case OpInst::BitWiseOr:
+							case OpInst::BitWiseNor:
+							case OpInst::BitWiseXor:
+							case OpInst::BitWiseXNor:
+							case OpInst::ShiftL:
+							case OpInst::ShiftR:
+							case OpInst::AShiftR:
+							case OpInst::Sext:
+							case OpInst::Zext:
+							case OpInst::IntAdd:
+							case OpInst::IntSub:
+							case OpInst::IntMult:
+							case OpInst::IntDiv:
+							case OpInst::IntMod:
+							{
+								y2_expr_ptr b = (*it2);
+								if (yices_term_is_bool(b))
+									b = yices_ite(b, m_v1, m_v0);
 
-						if(chs && !chs->empty()){
-							for(InstL::const_iterator cit = chs->begin(); cit != chs->end(); ++cit){
-								Inst *tve = *cit;
-								if(tve != NumInst::create(0, tve->get_size(), SORT())){	// TODO check type and value
-									simp_to_zero = false;
-									break;
+								int outSz = e->get_size();
+								int maxSz = outSz;
+								if (e->get_sort_type() == bvtype) {
+									Inst* c2 = e->get_children()->back();
+									int c2Sz = c2->get_size();
+									if (maxSz < c1Sz)
+										maxSz = c1Sz;
+									if (maxSz < c2Sz)
+										maxSz = c2Sz;
+
+									if (outSz < maxSz)
+									{
+										a = yices_zero_extend(a, (maxSz - outSz));
+									}
+									if (c2Sz < maxSz)
+									{
+										b = yices_zero_extend(b, (maxSz - c2Sz));
+									}
 								}
-								simp_to_zero = true;
+
+								switch (o) {
+									case OpInst::Add:{
+										assert(y_ch.size() == 2);
+										res = yices_bvadd(a, b);
+									}break;
+									case OpInst::Sub: {
+										assert(y_ch.size() == 2);
+										res = yices_bvsub(a, b);
+									}
+									break;
+									case OpInst::Mult:{
+										assert(y_ch.size() == 2);
+										res = yices_bvmul(a, b);
+									}
+									break;
+									case OpInst::Div:{
+										assert(y_ch.size() == 2);
+										res = yices_bvdiv(a, b);
+									}
+									break;
+									case OpInst::SDiv:{
+										assert(y_ch.size() == 2);
+										res = yices_bvsdiv(a, b);
+									}
+									break;
+									case OpInst::Rem:{
+										assert(y_ch.size() == 2);
+										res = yices_bvrem(a, b);
+									}
+									break;
+									case OpInst::SRem:{
+										assert(y_ch.size() == 2);
+										res = yices_bvsrem(a, b);
+									}
+									break;
+									case OpInst::SMod:{
+										assert(y_ch.size() == 2);
+										res = yices_bvsmod(a, b);
+									}
+									break;
+									case OpInst::BitWiseAnd: {
+										assert(y_ch.size() == 2);
+										res = yices_bvand2(a, b);
+									}
+									break;
+									case OpInst::BitWiseNand: {
+										assert(y_ch.size() == 2);
+										res = yices_bvnand(a, b);
+									}
+									break;
+									case OpInst::BitWiseOr: {
+										assert(y_ch.size() == 2);
+										res = yices_bvor2(a, b);
+									}
+									break;
+									case OpInst::BitWiseNor: {
+										assert(y_ch.size() == 2);
+										res = yices_bvnor(a, b);
+									}
+									break;
+									case OpInst::BitWiseXor: {
+										assert(y_ch.size() == 2);
+										res = yices_bvxor2(a, b);
+									}
+									break;
+									case OpInst::BitWiseXNor: {
+										assert(y_ch.size() == 2);
+										res = yices_bvxnor(a, b);
+									}
+									break;
+									case OpInst::ShiftL:
+									case OpInst::ShiftR: {
+										assert(y_ch.size() == 2);
+										InstL::const_iterator ve_it = ch->begin(), ve_it2 = ch->begin();
+										ve_it2++;
+										if (o == OpInst::ShiftR)
+											res = yices_bvlshr(a, b);
+										else if (o == OpInst::ShiftL)
+											res = yices_bvshl(a, b);
+										else
+											assert(0);
+										assert(res != -1);
+									}
+									break;
+									case OpInst::AShiftR: {
+										assert(y_ch.size() == 2);
+										InstL::const_iterator ve_it = ch->begin(), ve_it2 = ch->begin();
+										ve_it2++;
+										res = yices_bvashr(a, b);
+										assert(res != -1);
+									}
+									break;
+									case OpInst::Sext:
+									case OpInst::Zext: {
+										y2_expr_ptr a2 = (*it);
+										if (yices_term_is_bool(a2))
+											a2 = yices_ite(a2, m_v1, m_v0);
+										assert(y_ch.size() == 2);
+										InstL::const_iterator ve_it = ch->begin();
+										int amount = e->get_size() - (*ve_it)->get_size();
+										assert(amount >= 0);
+										{
+											if (o == OpInst::Sext)
+											{
+												res = yices_sign_extend(a2, amount);
+											} else {
+												res = yices_zero_extend(a2, amount);
+											}
+										}
+										assert(res != -1);
+									}
+									break;
+									case OpInst::IntAdd: {
+										assert(y_ch.size() == 2);
+										res = yices_add(a, b);
+									}
+									break;
+									case OpInst::IntSub: {
+										assert(y_ch.size() == 2);
+										res = yices_sub(a, b);
+									}
+									break;
+									case OpInst::IntMult: {
+										assert(y_ch.size() == 2);
+										res = yices_mul(a, b);
+									}
+									break;
+									case OpInst::IntDiv: {
+										assert(y_ch.size() == 2);
+										res = yices_idiv(a, b);
+									}
+									break;
+									case OpInst::IntMod: {
+										assert(y_ch.size() == 2);
+										res = yices_imod(a, b);
+									}
+									break;
+									default:
+										assert(0);
+								}
+								if (e->get_sort_type() == bvtype) {
+									if (outSz < maxSz)
+										res = yices_bvextract(res, 0, (outSz - 1));
+								}
 							}
-						}
-					}
-					if(simp_to_zero == true){
-						//cout << "(simp_to_zero == true): e: " << *e << endl;
-						res = yices_bvconst_uint32(out_size, 0);
-					}else{
-						//cout << "(simp_to_zero == false): e: " << *e << endl;
-	//					int rotate_amount = 31;
-						y2_expr els = yices_bvconcat2(yices_bvextract(*it, 0, rotate_amount-1), yices_bvextract(*it, rotate_amount, out_size-1));	//right	31
-						rotate_amount--;
-						y2_expr thn = yices_bvconcat2(yices_bvextract(*it, 0, rotate_amount-1), yices_bvextract(*it, rotate_amount, out_size-1));	//right	30
+							break;
 
-						y2_expr num = yices_bvconst_uint32(amt_size, rotate_amount);
-						y2_expr cond = yices_eq(*it2, num);
-						res = yices_ite(cond, thn, els);	// (sel == 30) ? rotate_30 : rotate_31
+							case OpInst::AddC:
+							case OpInst::AShiftL:
+								assert(0); // for now.
 
-						for(; rotate_amount > 0; --rotate_amount){
-							thn = yices_bvconcat2(yices_bvextract(*it, 0, rotate_amount-1), yices_bvextract(*it, rotate_amount, out_size-1));
-							num = yices_bvconst_uint32(amt_size, rotate_amount);
-							cond = yices_eq(*it2, num);
-							res = yices_ite(cond, thn, res);
-						}
-						num = yices_bvconst_uint32(amt_size, 0);
-						cond = yices_eq(*it2, num);
-						res = yices_ite(cond, *it, res);
-						#ifdef YICES_BV_INPUT_DUMP_DERIVED
+							case OpInst::ReductionAnd:
+							case OpInst::ReductionNand: {
+								assert(y_ch.size() == 1);
+								res = yices_redand(a);
+								if (o == OpInst::ReductionNand)		res = yices_bvnot(res);
+							}
+							break;
+							case OpInst::ReductionOr:
+							case OpInst::ReductionNor: {
+								assert(y_ch.size() == 1);
+								res = yices_redor(a);
+								if (o == OpInst::ReductionNor)		res = yices_bvnot(res);
+							}
+							break;
+							case OpInst::ReductionXor:
+							case OpInst::ReductionXNor: {
+								assert(y_ch.size() == 1);
+								unsigned sz = (*(ch->begin()))->get_size();
+								assert(sz > 1);
+
+								y2_expr bit = yices_bvextract(a, 0, 0);
+								y2_expr bit2 = yices_bvextract(a, 1, 1);
+								bit = yices_bvxor2(bit, bit2);
+								for (unsigned i = 2; i < sz; i++)
+								{
+									bit = yices_bvxor2(bit, yices_bvextract(a, i, i));
+								}
+								if (o == OpInst::ReductionXNor)		bit = yices_bvnot(bit);
+								res = bit;
+							}
+							break;
+
+							case OpInst::RotateL:
+							case OpInst::RotateR: {
+								assert(y_ch.size() == 2);
+								InstL::const_iterator ve_it = ch->begin(), ve_it2 = ch->begin();
+								ve_it2++;
+								NumInst* num = NumInst::as(*ve_it2);
+								// cout << "Rotate: " << *e << endl;
+								if (num != 0)
+								{
+									int rotate_amount = num->get_mpz()->get_si() % e->get_size();
+									// cout << "rotate_amount: " << rotate_amount << endl;
+									if (rotate_amount != 0) {
+										if (o == OpInst::RotateL)
+										{
+											res = yices_rotate_left(a, rotate_amount);
+										} else {
+											res = yices_rotate_right(a, rotate_amount);
+										}
+									} else {
+										res = a;
+									}
+								} else {
+									cout << "Expected second operand as number in " << *e << endl;
+									assert(0);
+								}
+								if (res == -1) {
+									cout << "e: " << *e << endl;
+									cout << yices_error_string() << endl;
+								}
+								assert(res != -1);
+							}
+							break;
+							case OpInst::VRotateR:{
+								const InstL* ch = e->get_children();
+								InstL::const_iterator ve_it = ch->begin();
+								Inst *ve_val = *ve_it;
+								++ve_it;
+								int amt_size = (*ve_it)->get_size();
+								int rotate_amount = (1 << amt_size) - 1;
+								int out_size = e->get_size();
+
+								bool simp_to_zero = false;
+								if(ve_val == NumInst::create(0, ve_val->get_size(), SORT())){
+									simp_to_zero = true;
+								}else if((ve_val->get_type() == Op) && (OpInst::as(ve_val)->get_op() == OpInst::Concat)){
+									const InstL* chs = ve_val->get_children();
+
+									if(chs && !chs->empty()){
+										for(InstL::const_iterator cit = chs->begin(); cit != chs->end(); ++cit){
+											Inst *tve = *cit;
+											if(tve != NumInst::create(0, tve->get_size(), SORT())){	// TODO check type and value
+												simp_to_zero = false;
+												break;
+											}
+											simp_to_zero = true;
+										}
+									}
+								}
+								if(simp_to_zero == true){
+									//cout << "(simp_to_zero == true): e: " << *e << endl;
+									res = yices_bvconst_uint32(out_size, 0);
+								}else{
+									//cout << "(simp_to_zero == false): e: " << *e << endl;
+									//					int rotate_amount = 31;
+									y2_expr els = yices_bvconcat2(yices_bvextract(*it, 0, rotate_amount-1), yices_bvextract(*it, rotate_amount, out_size-1));	//right	31
+									rotate_amount--;
+									y2_expr thn = yices_bvconcat2(yices_bvextract(*it, 0, rotate_amount-1), yices_bvextract(*it, rotate_amount, out_size-1));	//right	30
+
+									y2_expr num = yices_bvconst_uint32(amt_size, rotate_amount);
+									y2_expr cond = yices_eq(*it2, num);
+									res = yices_ite(cond, thn, els);	// (sel == 30) ? rotate_30 : rotate_31
+
+									for(; rotate_amount > 0; --rotate_amount){
+										thn = yices_bvconcat2(yices_bvextract(*it, 0, rotate_amount-1), yices_bvextract(*it, rotate_amount, out_size-1));
+										num = yices_bvconst_uint32(amt_size, rotate_amount);
+										cond = yices_eq(*it2, num);
+										res = yices_ite(cond, thn, res);
+									}
+									num = yices_bvconst_uint32(amt_size, 0);
+									cond = yices_eq(*it2, num);
+									res = yices_ite(cond, *it, res);
+#ifdef YICES_BV_INPUT_DUMP_DERIVED
 							cout << this <<": ";
 							cout << "(derived ";
 							yices_pp_expr(res);
 							cout << endl;
-						#endif
-					}
-					break;
-					//yices_mk_bv_concat(m_ctx, yices_mk_bv_extract(m_ctx, out_size-1-rotate_amount, 0, *it), yices_mk_bv_extract(m_ctx, out_size-1, out_size-rotate_amount, *it))	//left
-				}
-				case OpInst::VRotateL:{
-					const InstL* ch = e->get_children();
-					InstL::const_iterator ve_it = ch->begin();
-					Inst *ve_val = *ve_it;
-					++ve_it;
-					int amt_size = (*ve_it)->get_size();
-					int rotate_amount = (1 << amt_size) - 1;
-					int out_size = e->get_size();
-
-					bool simp_to_zero = false;
-					if(ve_val == NumInst::create(0, ve_val->get_size(), SORT())){
-						simp_to_zero = true;
-					}else if((ve_val->get_type() == Op) && (OpInst::as(ve_val)->get_op() == OpInst::Concat)){
-						const InstL* chs = ve_val->get_children();
-
-						if(chs && !chs->empty()){
-							for(InstL::const_iterator cit = chs->begin(); cit != chs->end(); ++cit){
-								Inst *tve = *cit;
-								if(tve != NumInst::create(0, tve->get_size(), SORT())){	// TODO check type and value
-									simp_to_zero = false;
-									break;
+#endif
 								}
-								simp_to_zero = true;
+								break;
+								//yices_mk_bv_concat(m_ctx, yices_mk_bv_extract(m_ctx, out_size-1-rotate_amount, 0, *it), yices_mk_bv_extract(m_ctx, out_size-1, out_size-rotate_amount, *it))	//left
 							}
-						}
-					}
-					if(simp_to_zero == true){
-						//cout << "(simp_to_zero == true): e: " << *e << endl;
-						res = yices_bvconst_uint32(out_size, 0);
-					}else{
-						//cout << "(simp_to_zero == false): e: " << *e << endl;
-						//int rotate_amount = 31;
+							case OpInst::VRotateL:{
+								const InstL* ch = e->get_children();
+								InstL::const_iterator ve_it = ch->begin();
+								Inst *ve_val = *ve_it;
+								++ve_it;
+								int amt_size = (*ve_it)->get_size();
+								int rotate_amount = (1 << amt_size) - 1;
+								int out_size = e->get_size();
 
-						y2_expr els = yices_bvconcat2(yices_bvextract(*it, 0, out_size-rotate_amount-1), yices_bvextract(*it, out_size-rotate_amount, out_size-1));	//right	31
-						rotate_amount--;
-						y2_expr thn = yices_bvconcat2(yices_bvextract(*it, 0, out_size-rotate_amount-1), yices_bvextract(*it, out_size-rotate_amount, out_size-1));	//right	30
+								bool simp_to_zero = false;
+								if(ve_val == NumInst::create(0, ve_val->get_size(), SORT())){
+									simp_to_zero = true;
+								}else if((ve_val->get_type() == Op) && (OpInst::as(ve_val)->get_op() == OpInst::Concat)){
+									const InstL* chs = ve_val->get_children();
 
-						y2_expr num = yices_bvconst_uint32(amt_size, rotate_amount);
-						y2_expr cond = yices_eq(*it2, num);
-						res = yices_ite(cond, thn, els);	// (sel == 30) ? rotate_30 : rotate_31
+									if(chs && !chs->empty()){
+										for(InstL::const_iterator cit = chs->begin(); cit != chs->end(); ++cit){
+											Inst *tve = *cit;
+											if(tve != NumInst::create(0, tve->get_size(), SORT())){	// TODO check type and value
+												simp_to_zero = false;
+												break;
+											}
+											simp_to_zero = true;
+										}
+									}
+								}
+								if(simp_to_zero == true){
+									//cout << "(simp_to_zero == true): e: " << *e << endl;
+									res = yices_bvconst_uint32(out_size, 0);
+								}else{
+									//cout << "(simp_to_zero == false): e: " << *e << endl;
+									//int rotate_amount = 31;
 
-						for(; rotate_amount > 0; --rotate_amount){
-							thn = yices_bvconcat2(yices_bvextract(*it, 0, out_size-rotate_amount-1), yices_bvextract(*it, out_size-rotate_amount, out_size-1));
-							num = yices_bvconst_uint32(amt_size, rotate_amount);
-							cond = yices_eq(*it2, num);
-							res = yices_ite(cond, thn, res);
-						}
-						num = yices_bvconst_uint32(amt_size, 0);
-						cond = yices_eq(*it2, num);
-						res = yices_ite(cond, *it, res);
-						#ifdef YICES_BV_INPUT_DUMP_DERIVED
+									y2_expr els = yices_bvconcat2(yices_bvextract(*it, 0, out_size-rotate_amount-1), yices_bvextract(*it, out_size-rotate_amount, out_size-1));	//right	31
+									rotate_amount--;
+									y2_expr thn = yices_bvconcat2(yices_bvextract(*it, 0, out_size-rotate_amount-1), yices_bvextract(*it, out_size-rotate_amount, out_size-1));	//right	30
+
+									y2_expr num = yices_bvconst_uint32(amt_size, rotate_amount);
+									y2_expr cond = yices_eq(*it2, num);
+									res = yices_ite(cond, thn, els);	// (sel == 30) ? rotate_30 : rotate_31
+
+									for(; rotate_amount > 0; --rotate_amount){
+										thn = yices_bvconcat2(yices_bvextract(*it, 0, out_size-rotate_amount-1), yices_bvextract(*it, out_size-rotate_amount, out_size-1));
+										num = yices_bvconst_uint32(amt_size, rotate_amount);
+										cond = yices_eq(*it2, num);
+										res = yices_ite(cond, thn, res);
+									}
+									num = yices_bvconst_uint32(amt_size, 0);
+									cond = yices_eq(*it2, num);
+									res = yices_ite(cond, *it, res);
+#ifdef YICES_BV_INPUT_DUMP_DERIVED
 							cout << this <<": ";
 							cout << "(derived ";
 							yices_pp_expr(res);
 							cout << endl;
-						#endif
-					}
-					break;
-				}
-				case OpInst::VShiftL:	//TODO
-				case OpInst::VShiftR:
-				case OpInst::VAShiftL:
-				case OpInst::VAShiftR:
-				case OpInst::VEx:{
-					const InstL* ch = e->get_children();
-					InstL::const_iterator ve_it = ch->begin();
-					int ex_offset = (*ve_it)->get_size()-1;
-					++ve_it;
-					int idx_size = (*ve_it)->get_size();
+#endif
+								}
+								break;
+							}
+							case OpInst::VShiftL:	//TODO
+							case OpInst::VShiftR:
+							case OpInst::VAShiftL:
+							case OpInst::VAShiftR:
+							case OpInst::VEx:{
+								const InstL* ch = e->get_children();
+								InstL::const_iterator ve_it = ch->begin();
+								int ex_offset = (*ve_it)->get_size()-1;
+								++ve_it;
+								int idx_size = (*ve_it)->get_size();
 
-// 					cout << "ex_offset: " << ex_offset << endl;
-// 					cout << "idx_size: " << idx_size << endl;
+								// 					cout << "ex_offset: " << ex_offset << endl;
+								// 					cout << "idx_size: " << idx_size << endl;
 
-					y2_expr els = yices_bvextract(*it, ex_offset, ex_offset);
-					ex_offset--;
-					y2_expr thn = yices_bvextract(*it, ex_offset, ex_offset);
+								y2_expr els = yices_bvextract(*it, ex_offset, ex_offset);
+								ex_offset--;
+								y2_expr thn = yices_bvextract(*it, ex_offset, ex_offset);
 
-					y2_expr num = yices_bvconst_uint32(idx_size, ex_offset);
-					y2_expr cond = yices_eq(*it2, num);
-					res = yices_ite(cond, thn, els);	// (sel == 30) ? rotate_30 : rotate_31
+								y2_expr num = yices_bvconst_uint32(idx_size, ex_offset);
+								y2_expr cond = yices_eq(*it2, num);
+								res = yices_ite(cond, thn, els);	// (sel == 30) ? rotate_30 : rotate_31
 
-					for(; ex_offset >= 0; --ex_offset){
-						thn = yices_bvextract(*it, ex_offset, ex_offset);
-						num = yices_bvconst_uint32(idx_size, ex_offset);
-						cond = yices_eq(*it2, num);
-						res = yices_ite(cond, thn, res);
-					}
-					#ifdef YICES_BV_INPUT_DUMP_DERIVED
+								for(; ex_offset >= 0; --ex_offset){
+									thn = yices_bvextract(*it, ex_offset, ex_offset);
+									num = yices_bvconst_uint32(idx_size, ex_offset);
+									cond = yices_eq(*it2, num);
+									res = yices_ite(cond, thn, res);
+								}
+#ifdef YICES_BV_INPUT_DUMP_DERIVED
 						cout << this <<": ";
 						cout << "(derived ";
 						yices_pp_expr(res);
 						cout << endl;
-					#endif
-					break;
-				}
-				default:
-					cout << "Error converting expression to yices equivalent: " << *e << endl;
-					assert(0);
-				}
-			} else if (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP || m_mapper->fetch_op(e) == TheoryMapper::CLU_OP) {
-				switch (o) {
-				case OpInst::VShiftL:	//TODO
-					opstr = "VShiftL";
-					break;
-				case OpInst::VShiftR:
-					opstr = "VShiftR";
-					break;
-				case OpInst::VAShiftL:
-					opstr = "VAShiftL";
-					break;
-				case OpInst::VAShiftR:
-					opstr = "VAShiftR";
-					break;
-				case OpInst::VRotateL:
-					opstr = "VRotateL";
-					break;
-				case OpInst::VRotateR:
-					opstr = "VRotateR";
-					break;
-				case OpInst::VEx:
-					opstr = "VEx";
-					break;
-				case OpInst::Minus:
-					opstr = "Minus";
-					break;
-				case OpInst::AddC:
-					opstr = "AddC";
-					break;
-				case OpInst::Add:
-					if (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP) {
+#endif
+								break;
+							}
+							default:
+								cout << "Error converting expression to yices equivalent: " << *e << endl;
+								assert(0);
+						}
+					} else if (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP || m_mapper->fetch_op(e) == TheoryMapper::CLU_OP) {
+						switch (o) {
+							case OpInst::VShiftL:	//TODO
+								opstr = "VShiftL";
+								break;
+							case OpInst::VShiftR:
+								opstr = "VShiftR";
+								break;
+							case OpInst::VAShiftL:
+								opstr = "VAShiftL";
+								break;
+							case OpInst::VAShiftR:
+								opstr = "VAShiftR";
+								break;
+							case OpInst::VRotateL:
+								opstr = "VRotateL";
+								break;
+							case OpInst::VRotateR:
+								opstr = "VRotateR";
+								break;
+							case OpInst::VEx:
+								opstr = "VEx";
+								break;
+							case OpInst::Minus:
+								opstr = "Minus";
+								break;
+							case OpInst::AddC:
+								opstr = "AddC";
+								break;
+							case OpInst::Add:
+								if (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP) {
 #ifdef USE_INTERPRETED_ADD_SUB
 						yices_expr args[2];
 						args[0] = *it;
@@ -7446,44 +7458,44 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 							opstr = "Add";
 						}
 #else
-						opstr = "Add";
+									opstr = "Add";
 #endif
-					} else if (m_mapper->fetch_op(e) == TheoryMapper::CLU_OP) {
-						//TODO
-// 						if (config->get_arg(UBADD_ARG) == "1") {
-// 							yices_expr arguments[2];
-// 							arguments[0] = *it;
-// 							arguments[1] = *it2;
-// 							res = yices_mk_sum(m_ctx, arguments, 2);
-// 							interpreted = true;
-// 						} else {
-// 							InstL::const_iterator cit = ch->begin(), cit2;
-// 							cit2 = cit;
-// 							cit2++;
-// 							if ((*cit2)->get_type() == Num) {
-// 								NumInst* num = NumInst::as(*cit2);
-// 								assert(num != 0);
-// 								yices_expr arguments[2];
-// 								arguments[0] = *it;
-// 								arguments[1] = yices_mk_num(m_ctx, num->get_mpz());
-// 								res = yices_mk_sum(m_ctx, arguments, 2);
-// 								interpreted = true;
-// 							} else if ((*cit)->get_type() == Num) {
-// 								NumInst* num = NumInst::as(*cit);
-// 								assert(num != 0);
-// 								yices_expr arguments[2];
-// 								arguments[1] = *it;
-// 								arguments[0] = yices_mk_num(m_ctx, num->get_mpz());
-// 								res = yices_mk_sum(m_ctx, arguments, 2);
-// 								interpreted = true;
-// 							} else
-// 								opstr = "Add";
-// 						}
-					} else
-						assert(0);
-					break;
-				case OpInst::Sub:
-					if (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP) {
+								} else if (m_mapper->fetch_op(e) == TheoryMapper::CLU_OP) {
+									//TODO
+									// 						if (config->get_arg(UBADD_ARG) == "1") {
+									// 							yices_expr arguments[2];
+									// 							arguments[0] = *it;
+									// 							arguments[1] = *it2;
+									// 							res = yices_mk_sum(m_ctx, arguments, 2);
+									// 							interpreted = true;
+									// 						} else {
+									// 							InstL::const_iterator cit = ch->begin(), cit2;
+									// 							cit2 = cit;
+									// 							cit2++;
+									// 							if ((*cit2)->get_type() == Num) {
+									// 								NumInst* num = NumInst::as(*cit2);
+									// 								assert(num != 0);
+									// 								yices_expr arguments[2];
+									// 								arguments[0] = *it;
+									// 								arguments[1] = yices_mk_num(m_ctx, num->get_mpz());
+									// 								res = yices_mk_sum(m_ctx, arguments, 2);
+									// 								interpreted = true;
+									// 							} else if ((*cit)->get_type() == Num) {
+									// 								NumInst* num = NumInst::as(*cit);
+									// 								assert(num != 0);
+									// 								yices_expr arguments[2];
+									// 								arguments[1] = *it;
+									// 								arguments[0] = yices_mk_num(m_ctx, num->get_mpz());
+									// 								res = yices_mk_sum(m_ctx, arguments, 2);
+									// 								interpreted = true;
+									// 							} else
+									// 								opstr = "Add";
+									// 						}
+								} else
+									assert(0);
+								break;
+							case OpInst::Sub:
+								if (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP) {
 #ifdef USE_INTERPRETED_ADD_SUB
 						yices_expr args[2];
 						args[0] = *it;
@@ -7506,225 +7518,225 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 							opstr = "Sub";
 						}
 #else
-						opstr = "Sub";
+									opstr = "Sub";
 #endif
-					} else if (m_mapper->fetch_op(e) == TheoryMapper::CLU_OP)
-					{
-						assert(0);
-//						InstL::const_iterator cit2 = ch->begin();
-//						cit2++;
-//						if ((*cit2)->get_type() == Num) {
-//							NumInst* num = NumInst::as(*cit2);
-//							assert(num != 0);
-//							yices_expr arguments[2];
-//							arguments[0] = *it;
-//							arguments[1] = yices_mk_num(m_ctx, num->get_mpz()->get_si());
-//							res = yices_mk_sub(m_ctx, arguments, 2);
-//							interpreted = true;
-//						} else
-//							opstr = "Sub";
-					} else
-						assert(0);
-					break;
-				case OpInst::Mult:
-					opstr = "Mult";
-					break;
-				case OpInst::Div:
-					opstr = "Div";
-					break;
-				case OpInst::SDiv:
-					opstr = "SDiv";
-					break;
-				case OpInst::Rem:
-					opstr = "Rem";
-					break;
-				case OpInst::SRem:
-					opstr = "SRem";
-					break;
-				case OpInst::SMod:
-					opstr = "SMod";
-					break;
-				case OpInst::BitWiseAnd:
-					opstr = "BitWiseAnd";
-					break;
-				case OpInst::BitWiseOr:
-					opstr = "BitWiseOr";
-					break;
-				case OpInst::BitWiseNot:
-					opstr = "BitWiseNot";
-					break;
-				case OpInst::BitWiseXor:
-					opstr = "BitWiseXor";
-					break;
-				case OpInst::BitWiseXNor:
-					opstr = "BitWiseXNor";
-					break;
-				case OpInst::BitWiseNor:
-					opstr = "BitWiseNor";
-					break;
-				case OpInst::BitWiseNand:
-					opstr = "BitWiseNand";
-					break;
-				case OpInst::ReductionAnd:
-					opstr = "ReductionAnd";
-					break;
-				case OpInst::ReductionOr:
-					opstr = "ReductionOr";
-					break;
-				case OpInst::ReductionXor:
-					opstr = "ReductionXor";
-					break;
-				case OpInst::ReductionXNor:
-					opstr = "ReductionXNor";
-					break;
-				case OpInst::ReductionNand:
-					opstr = "ReductionNand";
-					break;
-				case OpInst::ReductionNor:
-					opstr = "ReductionNor";
-					break;
-				case OpInst::RotateL:
-					opstr = "RotateL";
-					break;
-				case OpInst::RotateR:
-					opstr = "RotateR";
-					break;
-				case OpInst::ShiftL:
-					opstr = "ShiftL";
-					break;
-				case OpInst::ShiftR:
-					opstr = "ShiftR";
-					break;
-				case OpInst::AShiftR:
-					opstr = "AShiftR";
-					break;
-				case OpInst::AShiftL:
-					opstr = "AShiftL";
-					break;
-				case OpInst::Sext:
-					opstr = "Sext";
-					break;
-				case OpInst::Zext:
-					opstr = "Zext";
-					break;
-//				case OpInst::ArrayConst:
-//					opstr = "ArrayConst";
-//					break;
-//				case OpInst::ArraySelect:
-//					opstr = "ArraySelect";
-//					break;
-//				case OpInst::ArrayStore:
-//					opstr = "ArrayStore";
-//					break;
-				case OpInst::IntAdd:
-					opstr = "IntAdd";
-					break;
-				case OpInst::IntSub:
-					opstr = "IntSub";
-					break;
-				case OpInst::IntMult:
-					opstr = "IntMult";
-					break;
-				case OpInst::IntDiv:
-					opstr = "IntDiv";
-					break;
-				case OpInst::IntMod:
-					opstr = "IntMod";
-					break;
-				case OpInst::IntFloor:
-					opstr = "IntFloor";
-					break;
-				case OpInst::IntMinus:
-					opstr = "IntMinus";
-					break;
+								} else if (m_mapper->fetch_op(e) == TheoryMapper::CLU_OP)
+								{
+									assert(0);
+									//						InstL::const_iterator cit2 = ch->begin();
+									//						cit2++;
+									//						if ((*cit2)->get_type() == Num) {
+									//							NumInst* num = NumInst::as(*cit2);
+									//							assert(num != 0);
+									//							yices_expr arguments[2];
+									//							arguments[0] = *it;
+									//							arguments[1] = yices_mk_num(m_ctx, num->get_mpz()->get_si());
+									//							res = yices_mk_sub(m_ctx, arguments, 2);
+									//							interpreted = true;
+									//						} else
+									//							opstr = "Sub";
+								} else
+									assert(0);
+								break;
+							case OpInst::Mult:
+								opstr = "Mult";
+								break;
+							case OpInst::Div:
+								opstr = "Div";
+								break;
+							case OpInst::SDiv:
+								opstr = "SDiv";
+								break;
+							case OpInst::Rem:
+								opstr = "Rem";
+								break;
+							case OpInst::SRem:
+								opstr = "SRem";
+								break;
+							case OpInst::SMod:
+								opstr = "SMod";
+								break;
+							case OpInst::BitWiseAnd:
+								opstr = "BitWiseAnd";
+								break;
+							case OpInst::BitWiseOr:
+								opstr = "BitWiseOr";
+								break;
+							case OpInst::BitWiseNot:
+								opstr = "BitWiseNot";
+								break;
+							case OpInst::BitWiseXor:
+								opstr = "BitWiseXor";
+								break;
+							case OpInst::BitWiseXNor:
+								opstr = "BitWiseXNor";
+								break;
+							case OpInst::BitWiseNor:
+								opstr = "BitWiseNor";
+								break;
+							case OpInst::BitWiseNand:
+								opstr = "BitWiseNand";
+								break;
+							case OpInst::ReductionAnd:
+								opstr = "ReductionAnd";
+								break;
+							case OpInst::ReductionOr:
+								opstr = "ReductionOr";
+								break;
+							case OpInst::ReductionXor:
+								opstr = "ReductionXor";
+								break;
+							case OpInst::ReductionXNor:
+								opstr = "ReductionXNor";
+								break;
+							case OpInst::ReductionNand:
+								opstr = "ReductionNand";
+								break;
+							case OpInst::ReductionNor:
+								opstr = "ReductionNor";
+								break;
+							case OpInst::RotateL:
+								opstr = "RotateL";
+								break;
+							case OpInst::RotateR:
+								opstr = "RotateR";
+								break;
+							case OpInst::ShiftL:
+								opstr = "ShiftL";
+								break;
+							case OpInst::ShiftR:
+								opstr = "ShiftR";
+								break;
+							case OpInst::AShiftR:
+								opstr = "AShiftR";
+								break;
+							case OpInst::AShiftL:
+								opstr = "AShiftL";
+								break;
+							case OpInst::Sext:
+								opstr = "Sext";
+								break;
+							case OpInst::Zext:
+								opstr = "Zext";
+								break;
+							//				case OpInst::ArrayConst:
+							//					opstr = "ArrayConst";
+							//					break;
+							//				case OpInst::ArraySelect:
+							//					opstr = "ArraySelect";
+							//					break;
+							//				case OpInst::ArrayStore:
+							//					opstr = "ArrayStore";
+							//					break;
+							case OpInst::IntAdd:
+								opstr = "IntAdd";
+								break;
+							case OpInst::IntSub:
+								opstr = "IntSub";
+								break;
+							case OpInst::IntMult:
+								opstr = "IntMult";
+								break;
+							case OpInst::IntDiv:
+								opstr = "IntDiv";
+								break;
+							case OpInst::IntMod:
+								opstr = "IntMod";
+								break;
+							case OpInst::IntFloor:
+								opstr = "IntFloor";
+								break;
+							case OpInst::IntMinus:
+								opstr = "IntMinus";
+								break;
+							default:
+								assert(0);
+						}
+					}
+				}
+				break;
+				case OpInst::Ternary: {
+					//		  for (auto& c: y_ch) {
+					//		    cout << print_term(c) << endl;
+					//		  }
+					//		  cout << y_ch.size() << endl;
+
+					assert(y_ch.size() == 3);
+					y2_expr_list::iterator it3 = it2;
+					it3++;
+					y2_expr_ptr cond = (*it);
+					y2_expr_ptr y1 = (*it2);
+					y2_expr_ptr y2 = (*it3);
+
+					if (yices_term_is_bitvector(cond))
+						cond = yices_eq(cond, m_v1);
+
+					res = yices_ite(cond, y1, y2);
+					//      conds.push_back(cond);
+
+					interpreted = true;
+
+					//			cout << *e << " " << print_term(y1) << " of type " << print_type(yices_type_of_term(y1)) << endl;
+					//			cout << *e << " " << print_term(y2) << " of type " << print_type(yices_type_of_term(y2)) << endl;
+					//			cout << *e << " " << print_term(cond) << " of type " << print_type(yices_type_of_term(cond)) << endl;
+					//			cout << *e << " " << print_term(yvar) << " of type " << print_type(yices_type_of_term(yvar)) << endl;
+
+					assert(res);
+
+					//#ifdef INTERPRET_EX_CC
+					//			if (m_allow_ex_cc)
+					//			{
+					//				OpInst* op_t = OpInst::as(e);
+					//				assert(op_t);
+					//				assert(op_t->get_op() == OpInst::Ternary);
+					//
+					//				Inst* simplified = op_t->t_simple;
+					//				if (e != simplified)
+					//				{
+					//					y2_expr_ptr a = simplified->y2_node.solv_var(get_vIdx());
+					//					add_constraint(yices_eq(res, a), "partial interpretation of ternary with Ex/Cc", e);
+					////						cout << "Asserting " << *e << " == " << *simplified << endl;
+					//				}
+					//			}
+					//#endif
+				}
+				break;
 				default:
+					AVR_COUT << o << endl;
 					assert(0);
-				}
 			}
-		}
-			break;
-		case OpInst::Ternary: {
-//		  for (auto& c: y_ch) {
-//		    cout << print_term(c) << endl;
-//		  }
-//		  cout << y_ch.size() << endl;
-
-		  assert(y_ch.size() == 3);
-			y2_expr_list::iterator it3 = it2;
-			it3++;
-			y2_expr_ptr cond = (*it);
-			y2_expr_ptr y1 = (*it2);
-			y2_expr_ptr y2 = (*it3);
-
-			if (yices_term_is_bitvector(cond))
-			  cond = yices_eq(cond, m_v1);
-
-      res = yices_ite(cond, y1, y2);
-//      conds.push_back(cond);
-
-			interpreted = true;
-
-//			cout << *e << " " << print_term(y1) << " of type " << print_type(yices_type_of_term(y1)) << endl;
-//			cout << *e << " " << print_term(y2) << " of type " << print_type(yices_type_of_term(y2)) << endl;
-//			cout << *e << " " << print_term(cond) << " of type " << print_type(yices_type_of_term(cond)) << endl;
-//			cout << *e << " " << print_term(yvar) << " of type " << print_type(yices_type_of_term(yvar)) << endl;
-
-			assert(res);
-
-//#ifdef INTERPRET_EX_CC
-//			if (m_allow_ex_cc)
-//			{
-//				OpInst* op_t = OpInst::as(e);
-//				assert(op_t);
-//				assert(op_t->get_op() == OpInst::Ternary);
-//
-//				Inst* simplified = op_t->t_simple;
-//				if (e != simplified)
-//				{
-//					y2_expr_ptr a = simplified->y2_node.solv_var(get_vIdx());
-//					add_constraint(yices_eq(res, a), "partial interpretation of ternary with Ex/Cc", e);
-////						cout << "Asserting " << *e << " == " << *simplified << endl;
-//				}
-//			}
-//#endif
-		}
-			break;
-		default:
-			AVR_COUT << o << endl;
-			assert(0);
-		}
-		if (m_mapper->fetch_op(e) == TheoryMapper::BV_OP) {
-			assert(res);
-			add_gate_constraint(yvar, res, "result of a bv op", e, false, true);
-		}
-		else if (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP || m_mapper->fetch_op(e) == TheoryMapper::CLU_OP) {
-			if (interpreted) {
+			if (m_mapper->fetch_op(e) == TheoryMapper::BV_OP) {
 				assert(res);
-				add_gate_constraint(yvar, res, "interpreted operator constraint for EUF", e, false, true);
+				add_gate_constraint(yvar, res, "result of a bv op", e, false, true);
 			}
-			else {
-				if (opstr == "") {
-					cout << OpInst::op2str(o) << endl;
-					assert(0);
+			else if (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP || m_mapper->fetch_op(e) == TheoryMapper::CLU_OP) {
+				if (interpreted) {
+					assert(res);
+					add_gate_constraint(yvar, res, "interpreted operator constraint for EUF", e, false, true);
 				}
-				add_yices_func(yvar, opstr, e->get_size() == 1, y_ch, s_sz, e);
+				else {
+					if (opstr == "") {
+						cout << OpInst::op2str(o) << endl;
+						assert(0);
+					}
+					add_yices_func(yvar, opstr, e->get_size() == 1, y_ch, s_sz, e);
 
-//#ifdef INTERPRET_EX_CC
-//				if (m_allow_ex_cc)
-//				{
-//					OpInst* op_cc = OpInst::as(e);
-//					assert(op_cc);
-////					if (op_cc->get_op() == OpInst::Concat)
-//					{
-//						Inst* simplified = op_cc->t_simple;
-//						if (e != simplified)
-//						{
-//							add_constraint(yices_eq(yvar, simplified->y2_node.solv_var(get_vIdx())), "partial interpretation of Cc", e);
-////							cout << "Asserting " << *e << " == " << *simplified << endl;
-//						}
-//
-//						/// Test
-////						const InstL* ch = op_cc->get_children();
+					//#ifdef INTERPRET_EX_CC
+					//				if (m_allow_ex_cc)
+					//				{
+					//					OpInst* op_cc = OpInst::as(e);
+					//					assert(op_cc);
+					////					if (op_cc->get_op() == OpInst::Concat)
+					//					{
+					//						Inst* simplified = op_cc->t_simple;
+					//						if (e != simplified)
+					//						{
+					//							add_constraint(yices_eq(yvar, simplified->y2_node.solv_var(get_vIdx())), "partial interpretation of Cc", e);
+					////							cout << "Asserting " << *e << " == " << *simplified << endl;
+					//						}
+					//
+					//						/// Test
+					////						const InstL* ch = op_cc->get_children();
 ////						if (ch)
 ////						{
 ////							unsigned s_loc = 0, e_loc = 0;
@@ -7741,62 +7753,62 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 ////								add_constraint(yices_eq(tve->y_var[ABSTRACT], ex_tve->y_var[ABSTRACT]), "partial interpretation of Cc", e);
 ////							}
 ////						}
-//					}
-//				}
-//#endif
+					//					}
+					//				}
+					//#endif
+				}
+			} else {
+				assert(0);
 			}
-		} else {
-			assert(0);
 		}
-	}
 		break;
-	case Ex: {
-		ExInst* ex = ExInst::as(e);
-		assert(ex != 0);
-		if (m_mapper->fetch_op(e) == TheoryMapper::BV_OP) {
+		case Ex: {
+			ExInst* ex = ExInst::as(e);
+			assert(ex != 0);
+			if (m_mapper->fetch_op(e) == TheoryMapper::BV_OP) {
 
-			y2_expr_ptr res = yices_bvextract(y_ch.front(), ex->get_lo(), ex->get_hi());
-      assert(res);
+				y2_expr_ptr res = yices_bvextract(y_ch.front(), ex->get_lo(), ex->get_hi());
+				assert(res);
 
-			add_gate_constraint(yvar, res, "result of a bv EX", e, false, true);
+				add_gate_constraint(yvar, res, "result of a bv EX", e, false, true);
 
-		} else if (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP || m_mapper->fetch_op(e) == TheoryMapper::CLU_OP) {
-			assert(y_ch.size() == 1);
-			s_sz.clear();
-			s_sz.push_back(ex->get_hi());
-			s_sz.push_back(ex->get_lo());
-			s_sz.push_back((*(ch->begin()))->get_size());
-			add_yices_func(yvar, "Extract", e->get_size() == 1, y_ch, s_sz, e);
+			} else if (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP || m_mapper->fetch_op(e) == TheoryMapper::CLU_OP) {
+				assert(y_ch.size() == 1);
+				s_sz.clear();
+				s_sz.push_back(ex->get_hi());
+				s_sz.push_back(ex->get_lo());
+				s_sz.push_back((*(ch->begin()))->get_size());
+				add_yices_func(yvar, "Extract", e->get_size() == 1, y_ch, s_sz, e);
 
-//#ifdef INTERPRET_EX_CC
-//			if (m_allow_ex_cc)
-//			{
-//				ExInst* ex = ExInst::as(e);
-//				Inst* simplified = ex->t_simple;
-//				if (e != simplified)
-//				{
-//					add_constraint(yices_eq(yvar, simplified->y2_node.solv_var(get_vIdx())), "partial interpretation of Ex", e);
-//	//				cout << "Asserting " << *e << " == " << *simplified << endl;
-//				}
-//			}
-//#endif
-		} else
-			assert(0);
-	}
+				//#ifdef INTERPRET_EX_CC
+				//			if (m_allow_ex_cc)
+				//			{
+				//				ExInst* ex = ExInst::as(e);
+				//				Inst* simplified = ex->t_simple;
+				//				if (e != simplified)
+				//				{
+				//					add_constraint(yices_eq(yvar, simplified->y2_node.solv_var(get_vIdx())), "partial interpretation of Ex", e);
+				//	//				cout << "Asserting " << *e << " == " << *simplified << endl;
+				//				}
+				//			}
+				//#endif
+			} else
+				assert(0);
+		}
 		break;
-	case UF: {
-		UFInst* uf = UFInst::as(e);
-		assert(uf != 0);
-		assert(ch != 0);
-		assert(ch->size() > 0);
-		//    unsigned ch_sz = (*(ch->begin()))->get_size();
+		case UF: {
+			UFInst* uf = UFInst::as(e);
+			assert(uf != 0);
+			assert(ch != 0);
+			assert(ch->size() > 0);
+			//    unsigned ch_sz = (*(ch->begin()))->get_size();
 
-		//    cout<<"uf->get_name = "<<uf->get_name()<<endl;
-		//    cout<<"clean: "<<clean_str(uf->get_name())<<endl;
+			//    cout<<"uf->get_name = "<<uf->get_name()<<endl;
+			//    cout<<"clean: "<<clean_str(uf->get_name())<<endl;
 
-		add_yices_func(yvar, clean_str(uf->get_name()), e->get_size() == 1, y_ch, s_sz, e);
+			add_yices_func(yvar, clean_str(uf->get_name()), e->get_size() == 1, y_ch, s_sz, e);
 
-		/*    if(m_mapper->fetch_op(e)==TheoryMapper::BV_OP){
+			/*    if(m_mapper->fetch_op(e)==TheoryMapper::BV_OP){
 		 yices_type domains[ch->size()];
 		 for(unsigned i = 0 ; i < ch->size(); i++)
 		 domains[i] = yices_mk_bitvector_type(m_ctx,ch_sz);
@@ -7809,23 +7821,23 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 		 s_sz.clear();
 		 add_yices_func(yvar,clean_str(uf->get_name()),e->get_size()==1,y_ch,s_sz,e,(m_mapper->fetch_var(e)==TheoryMapper::BV_VAR)?e->get_size():0);
 		 } else assert(0);*/
-	}
+		}
 		break;
-	case Mem:
-	default:
-		AVR_COUT << e->get_type() << endl;
-		assert(0);
+		case Mem:
+		default:
+			AVR_COUT << e->get_type() << endl;
+			assert(0);
 	}
 
 #ifdef INTERPRET_EX_CC
 	if (m_allow_ex_cc)
 	{
 		if (Config::g_uf_heavy_only || (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP) ||
-				(m_mapper->fetch_op(e->t_simple) == TheoryMapper::EUF_OP)) {
+		    (m_mapper->fetch_op(e->t_simple) == TheoryMapper::EUF_OP)) {
 			Inst* simplified = e->t_simple;
 			if (e != simplified)
 			{
-	#ifdef INTERPRET_UF_NUM
+#ifdef INTERPRET_UF_NUM
 				{
 					NumInst* num = NumInst::as(e);
 					if (num) {
@@ -7850,9 +7862,9 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 						}
 					}
 				}
-	#endif
+#endif
 
-	#ifdef INTERPRET_UF_SIG
+#ifdef INTERPRET_UF_SIG
 				{
 					SigInst* sig = SigInst::as(e);
 					if (sig) {
@@ -7877,7 +7889,7 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 						}
 					}
 				}
-	#endif
+#endif
 
 				{
 					y2_expr_ptr a = simplified->y2_node.solv_var(get_vIdx());
@@ -7893,23 +7905,8 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 	}
 	assert(yvar != Y2_INVALID_EXPR);
 
-//	cout << "[I2Y]\t" << *e << " --> " << print_term(yvar) << endl;
+	//	cout << "[I2Y]\t" << *e << " --> " << print_term(yvar) << endl;
 }
-
-void y2_API::increase_cond_activity() {
-//  for (auto& cond: conds) {
-//    double act1 = -1;
-//    y2_get_activity(m_ctx, cond, &act1);
-//    y2_increase_activity(m_ctx, cond);
-//    double act2 = -1;
-//    y2_get_activity(m_ctx, cond, &act2);
-////    cout << print_term(cond) << " : " << act1 << " -> " << act2 << endl;
-////    assert(0);
-//  }
-}
-
-
-
 };
 
 #endif
