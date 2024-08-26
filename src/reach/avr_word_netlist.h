@@ -2558,8 +2558,8 @@ public:
 
 #ifdef INTERPRET_EX_UF
   int get_simple_version();
-  bool is_unordered_uf();
 #endif
+void propagate_uf();
 bool is_heavy_uf();
 
 protected:
