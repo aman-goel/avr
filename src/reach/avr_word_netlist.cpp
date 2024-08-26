@@ -1915,7 +1915,7 @@ void OpInst::propagate_uf() {
   			if (NumInst::as(lhs) && NumInst::as(lhs)->get_num() == 0) {
   				// 0 % rhs = 0
   				t_simple = NumInst::create(0, get_size(), get_sort());
-  			} else if (NumInst::as(rhs) && NumInst::as(lhs)->get_num() == 1) {
+  			} else if (NumInst::as(rhs) && NumInst::as(rhs)->get_num() == 1) {
   				// lhs % 1 = 0
   				t_simple = NumInst::create(0, get_size(), get_sort());
   			} else if (lhs == rhs) {
