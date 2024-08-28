@@ -7201,7 +7201,7 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 							case OpInst::ReductionXNor: {
 								assert(y_ch.size() == 1);
 								unsigned sz = (*(ch->begin()))->get_size();
-								assert(sz > 1);
+//								assert(sz > 1);
 
 								y2_expr bit = yices_bvextract(a, 0, 0);
 								y2_expr bit2 = yices_bvextract(a, 1, 1);

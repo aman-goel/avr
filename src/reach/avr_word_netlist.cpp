@@ -1894,7 +1894,9 @@ void OpInst::propagate_uf() {
   			Inst* lhs = (*cit)->get_simple();
   			cit++;
   			Inst* rhs = (*cit)->get_simple();
-  			if (NumInst::as(lhs) && NumInst::as(lhs)->get_num() == 0) {
+  			if (NumInst::as(rhs) && NumInst::as(rhs)->get_num() == 0) {
+  				// divide by 0, do nothing
+  			} else if (NumInst::as(lhs) && NumInst::as(lhs)->get_num() == 0) {
   				// 0 / rhs = 0
   				t_simple = NumInst::create(0, get_size(), get_sort());
   			} else if (lhs == rhs) {
@@ -1912,11 +1914,13 @@ void OpInst::propagate_uf() {
   			Inst* lhs = (*cit)->get_simple();
   			cit++;
   			Inst* rhs = (*cit)->get_simple();
-  			if (NumInst::as(lhs) && NumInst::as(lhs)->get_num() == 0) {
+  			if (NumInst::as(rhs) && NumInst::as(rhs)->get_num() == 0) {
+  				// modulo by 0, do nothing
+  			} else if (NumInst::as(lhs) && NumInst::as(lhs)->get_num() == 0) {
   				// 0 % rhs = 0
   				t_simple = NumInst::create(0, get_size(), get_sort());
-  			} else if (NumInst::as(rhs) && NumInst::as(rhs)->get_num() == 1) {
-  				// lhs % 1 = 0
+  			} else if (NumInst::as(rhs) && NumInst::as(rhs)->get_num() == 1 && get_size() > 1) {
+  				// lhs % 1 = 0 (if not boolean)
   				t_simple = NumInst::create(0, get_size(), get_sort());
   			} else if (lhs == rhs) {
   				// x % x = 0
@@ -2135,9 +2139,9 @@ void OpInst::propagate_uf() {
       ;
   }
 
-  if (this != this->get_simple()) {
-	cout << "uf_prop: " << *this << " -> " << *(this->t_simple) << endl;
-  }
+ //  if (this != this->get_simple()) {
+	// cout << "uf_prop: " << *this << " -> " << *(this->t_simple) << endl;
+ //  }
 }
 
 bool OpInst::is_heavy_uf() {

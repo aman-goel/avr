@@ -27,30 +27,45 @@
 /// Note: Only one of the below flag should be enabled
 
 // #define BACKEND_Y2		// Yices 2 for all queries
-// #define BACKEND_BT		// Yices 2 for abstract, Boolector for bv queries
-// #define BACKEND_M5		// Yices 2 for abstract, MathSAT 5 for bv queries
+// #define BACKEND_BT		// Boolector for all queries
+// #define BACKEND_Y2BT	// Yices 2 for abstract, Boolector for bv queries
 
 // Use Y2 backend for all abstract queries
-#define SOLVER_CTI		  y2_API		// Solver for checking SAT_abstract ? [ F[top] ^ P ^ T ^ !P+ ]
-#define SOLVER_REACH	  y2_API		// Solver for checking SAT_abstract ? [ F[k-1] ^ P ^ T ^ C+ ] and for Fast-forward check
-#define SOLVER_CONTAIN	  y2_API		// Solver for checking if frame restriction global
-#define SOLVER_AB		  y2_API		// Solver for all other abstract queries: Basis check, Lemma redundancy check
-#define SOLVER_CORE       y2_API		// Solver for getting unsat core
-#define SOLVER_MUS		  y2_API		// Solver for getting minimal unsat core
 
 /// Config: BACKEND_Y2
 #ifdef BACKEND_Y2
+	#define SOLVER_CTI		  y2_API		// Solver for checking SAT_abstract ? [ F[top] ^ P ^ T ^ !P+ ]
+	#define SOLVER_REACH	  y2_API		// Solver for checking SAT_abstract ? [ F[k-1] ^ P ^ T ^ C+ ] and for Fast-forward check
+	#define SOLVER_CONTAIN	  y2_API		// Solver for checking if frame restriction global
+	#define SOLVER_AB		  y2_API		// Solver for all other abstract queries: Basis check, Lemma redundancy check
+	#define SOLVER_CORE       y2_API		// Solver for getting unsat core
+	#define SOLVER_MUS		  y2_API		// Solver for getting minimal unsat core
+
 	#define SOLVER_BV         y2_API	// Solver for concrete / bit-vector queries
 #endif
 
 /// Config: BACKEND_BT
 #ifdef BACKEND_BT
-    #define SOLVER_BV         bt_API	// Solver for concrete / bit-vector queries
+	#define SOLVER_CTI		  bt_API		// Solver for checking SAT_abstract ? [ F[top] ^ P ^ T ^ !P+ ]
+	#define SOLVER_REACH	  bt_API		// Solver for checking SAT_abstract ? [ F[k-1] ^ P ^ T ^ C+ ] and for Fast-forward check
+	#define SOLVER_CONTAIN	  bt_API		// Solver for checking if frame restriction global
+	#define SOLVER_AB		  bt_API		// Solver for all other abstract queries: Basis check, Lemma redundancy check
+	#define SOLVER_CORE       bt_API		// Solver for getting unsat core
+	#define SOLVER_MUS		  bt_API		// Solver for getting minimal unsat core
+
+	#define SOLVER_BV         bt_API	// Solver for concrete / bit-vector queries
 #endif
 
-/// Config: BACKEND_M5
-#ifdef BACKEND_M5
-    #define SOLVER_BV         m5_API	// Solver for concrete / bit-vector queries
+/// Config: BACKEND_Y2BT
+#ifdef BACKEND_Y2BT
+	#define SOLVER_CTI		  y2_API		// Solver for checking SAT_abstract ? [ F[top] ^ P ^ T ^ !P+ ]
+	#define SOLVER_REACH	  y2_API		// Solver for checking SAT_abstract ? [ F[k-1] ^ P ^ T ^ C+ ] and for Fast-forward check
+	#define SOLVER_CONTAIN	  y2_API		// Solver for checking if frame restriction global
+	#define SOLVER_AB		  y2_API		// Solver for all other abstract queries: Basis check, Lemma redundancy check
+	#define SOLVER_CORE       y2_API		// Solver for getting unsat core
+	#define SOLVER_MUS		  y2_API		// Solver for getting minimal unsat core
+
+	#define SOLVER_BV         bt_API	// Solver for concrete / bit-vector queries
 #endif
 
 

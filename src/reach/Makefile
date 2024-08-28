@@ -43,18 +43,18 @@ ifeq ($(ENABLE_M5), 1)
 	LINKLIBS += $(MSAT_LIB)
 	CFLAGS += -D_M5
 endif
-ifeq ($(CONFIG_M5), 1)
-  CFLAGS += -DBACKEND_M5
-  REACH_SUFFIX = m5
-endif
 
 ifeq ($(ENABLE_Z3), 1)
   Z3_DIR = $(DEPS)/z3
   Z3_LIB = $(Z3_DIR)/build/lib/libz3.a
   INCLUDE += -I$(Z3_DIR)/build/include
   LINKLIBS += $(Z3_LIB)
-  CFLAGS += -D_Z3 -DBACKEND_Z3
-  REACH_SUFFIX = z3
+  CFLAGS += -D_Z3
+endif
+
+ifeq ($(CONFIG_Y2BT), 1)
+  CFLAGS += -DBACKEND_Y2BT
+  REACH_SUFFIX = y2bt
 endif
 
 DEPDIR := .d

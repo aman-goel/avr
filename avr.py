@@ -23,7 +23,7 @@ version=2.1
 
 DEFAULT_TOP="-"
 DEFAULT_BIN="build/bin"
-DEFAULT_BACKEND="y2"
+DEFAULT_BACKEND="y2bt"
 DEFAULT_NAME="test"
 DEFAULT_PROP_SELECT="-"
 DEFAULT_INIT_FILE="-"
@@ -65,7 +65,7 @@ def getopts(header):
 	p.add_argument('-n', '--name',      help='<test-name> (default: %s)' % DEFAULT_NAME, type=str, default=DEFAULT_NAME)
 	p.add_argument('-o', '--out',       help='<output-path> (default: %s)' % DEFAULT_OUT, type=str, default=DEFAULT_OUT)
 	p.add_argument('-b', '--bin',       help='binary path (default: %s)' % DEFAULT_BIN, type=str, default=DEFAULT_BIN)
-	p.add_argument('--backend',         help='backend to use: y2, bt, m5 (default: %s)' % DEFAULT_BACKEND, type=str, default=DEFAULT_BACKEND)
+	p.add_argument('--backend',         help='backend to use: y2, bt, y2bt (default: %s)' % DEFAULT_BACKEND, type=str, default=DEFAULT_BACKEND)
 	p.add_argument('-y', '--yosys',     help='path to yosys installation (default: %s)' % DEFAULT_YOSYS, type=str, default=DEFAULT_YOSYS)
 	p.add_argument('--vmt',             help='toggles using vmt frontend (default: %s)' % DEFAULT_EN_VMT, action="count", default=0)
 	p.add_argument('-j', '--jg',        help='toggles using jg frontend (default: %s)' % DEFAULT_EN_JG, action="count", default=0)

@@ -26,7 +26,7 @@ int Config::g_forward_check = 0;
 int Config::g_fineness = 0;
 int Config::g_lazy_assume = 0;
 
-bool Config::g_uf_propagate = true;
+bool Config::g_uf_propagate = false;
 bool Config::g_uf_heavy_only = false;
 bool Config::g_uf_no_bitwise = false;
 bool Config::g_uf_no_sext = false;
