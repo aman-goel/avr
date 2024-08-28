@@ -5,9 +5,9 @@ VWN_LOC = vwn
 all:
 	$(MAKE) vw
 	$(MAKE) da
+	CONFIG_Y2BT=1 $(MAKE) re
 	CONFIG_Y2=1 $(MAKE) re
 	CONFIG_BT=1 $(MAKE) re
-	CONFIG_M5=1 $(MAKE) re
 
 clean:
 	$(MAKE) vwc

@@ -508,16 +508,16 @@ void Btor2Frontend::get_node(NODE_INFO& info, InstL& args) {
 	} break;
 	case BTOR2_TAG_constd: {
 		string snum(t.constant);
-		if (sz == 1 && snum != "1") {
-			snum = "0";
-		}
-		node = NumInst::create(snum, sz, 10, sort);
-//		{
-//			string numstr = NumInst::as(node)->get_mpz()->get_str(10);
-//			if (numstr != snum) {
-//				btor2_loge("number error: gave " << snum << ", got " << numstr);
-//			}
-//		}
+		std::string binary = std::bitset<8>(strtol(snum.c_str(), NULL, 10)).to_string();
+		// cout << "snum: " << snum << " binary: " << binary << endl;
+		string snum2 = binary.substr(0, sz);
+		node = NumInst::create(snum2, sz, 2, sort);
+		// {
+		// 	string numstr = NumInst::as(node)->get_mpz()->get_str(10);
+		// 	if (numstr != snum) {
+		// 		btor2_loge("number error: gave " << snum << ", got " << numstr);
+		// 	}
+		// }
 		constants.insert(node);
 		done = true;
 	} break;

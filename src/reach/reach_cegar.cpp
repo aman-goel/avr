@@ -3480,10 +3480,6 @@ void Reach::generalize_unsat_query(BR_QUERY& q, InstLL& muses) {
 void Reach::generalize_unsat_query(BR_QUERY& q, InstLL& muses) {
   bool en_y2_core = true;
 
-#ifdef BACKEND_Z3
-  en_y2_core = false;
-#endif
-
 #ifdef USE_Z3_CORE
   en_y2_core = false;
 #endif
@@ -4851,10 +4847,6 @@ int Reach::ccext_block() {
 
 			Solver* mus_solver  = y_solver.solver_main;
 			Solver* core_solver = y_solver.solver_main;
-
-#ifdef BACKEND_Z3
-			core_solver = mus_solver;
-#endif
 
 //			generalize_unsat_query(brQuery, muses);
       generalize_unsat_query(brQuery, muses, core_solver, mus_solver);

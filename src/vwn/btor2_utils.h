@@ -36,7 +36,7 @@ extern "C"
 
 #include <list>
 #include <inttypes.h>   /* strtoimax, PRIdMAX, SCNdMAX */
-
+#include <bitset>
 
 
 #endif /* SRC_VWN_BTOR2_UTILS_H_ */

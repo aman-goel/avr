@@ -260,24 +260,16 @@ void Reach::init_solv()
 
 	string s = "";
 
-#ifdef BACKEND_HYBRID
-	s += "y2+bt";
-#endif
-
 #ifdef BACKEND_Y2
 	s += "+y2";
 #endif
 
-#ifdef BACKEND_Z3
-	s += "+z3";
-#endif
-
-#ifdef BACKEND_M5
-	s += "+m5";
-#endif
-
 #ifdef BACKEND_BT
 	s += "+bt";
+#endif
+
+#ifdef BACKEND_Y2BT
+	s += "y2+bt";
 #endif
 
 	_resFile << s << endl;
