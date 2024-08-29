@@ -1554,6 +1554,7 @@ private:
 	InstL _assume_wires;
 	InstS _assume_regNext;
 	InstToBoolM _assume_T;
+	Inst* _ve_assume_T;
 
 	InstL _assume_Twires;
 

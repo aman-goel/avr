@@ -175,7 +175,7 @@
 #define NAME_SABV   "sa"
 #define NAME_EXCC   "ec"
 
-#define NAME_UF_PROPAGATE   "+propagate"
+#define NAME_UF_NO_PROPAGATE   "+nopropagate"
 #define NAME_UF_HEAVY_ONLY   "+heavy"
 #define NAME_UF_NO_BITWISE  "+nobitwise"
 #define NAME_UF_NO_SEXT     "+nosignex"
@@ -263,7 +263,7 @@ public:
 	static int g_forward_check;
 	static int g_fineness;
 	static int g_lazy_assume;
-	static bool g_uf_propagate;
+	static bool g_uf_no_propagate;
 	static bool g_uf_heavy_only;
 	static bool g_uf_no_bitwise;
 	static bool g_uf_no_sext;

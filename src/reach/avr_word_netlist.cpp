@@ -3680,7 +3680,7 @@ Inst* OpInst::create(OpInst::OpType op, InstL exps, int o_size, bool to_simplify
 //					return e->t_simple;
 					// do nothing, done
 				}
-				else if (Config::g_uf_propagate) {
+				else if (!Config::g_uf_no_propagate) {
 					e->propagate_uf();
 				}
 			}
