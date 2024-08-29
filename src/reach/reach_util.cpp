@@ -7415,8 +7415,8 @@ void Reach::collect_system() {
 				assumeT.push_back(coneT);
 			}
 			if (!assumeT.empty()) {
-				Inst* tveAssume = OpInst::create(OpInst::LogAnd, assumeT);
-				add_all_wires(tveAssume, _assume_Twires, true);
+				_ve_assume_T = OpInst::create(OpInst::LogAnd, assumeT);
+				add_all_wires(_ve_assume_T, _assume_Twires, true);
 	  		if (Config::g_lazy_assume >= LAZY_ASSUME_L1) {
 					for (auto& v: assumeT) {
 							_assume_T.insert(make_pair(v, false));
@@ -7424,8 +7424,8 @@ void Reach::collect_system() {
 	  		}
 				else {
 					numAssumeLemmas++;
-					_negated_refs.push_back(tveAssume);
-					_assume_T.insert(make_pair(tveAssume, true));
+					_negated_refs.push_back(_ve_assume_T);
+					_assume_T.insert(make_pair(_ve_assume_T, true));
 				}
 			}
   	}

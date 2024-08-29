@@ -539,11 +539,13 @@ void Reach::refine(InstL& hardConstraints, ABSTRACT_CUBE& abCube, Inst *top_wo_r
 				else
 					hardConstraints.push_back(v.first);
 			}
-			for (auto& v: _assume_T) {
-				if (Config::g_lazy_assume > LAZY_ASSUME_NONE)
-					viol.push_back(v.first);
-				else
-					hardConstraints.push_back(v.first);
+			if (_frame_idx != 0) {
+				for (auto& v: _assume_T) {
+					if (Config::g_lazy_assume > LAZY_ASSUME_NONE)
+						viol.push_back(v.first);
+					else
+						hardConstraints.push_back(v.first);
+				}
 			}
 			if (!hardConstraints.empty()) {
 				viol.push_back(OpInst::create(OpInst::LogAnd, hardConstraints));
@@ -6120,14 +6122,13 @@ int Reach::verify() {
 						conjunct_prop.push_back(_ve_prop_eq_0);
 						conjunct_prop.push_back(_ve_model);
 						InstL conjunct_prop_wo_ref = conjunct_prop;
-						for (InstL::iterator it3 = _negated_refs.begin(); it3 != _negated_refs.end(); ++it3)
+						for (InstL::iterator it3 = _negated_refs.begin(); it3 != _negated_refs.end(); ++it3) {
+							if (*it3 == _ve_assume_T)
+								continue;
 							conjunct_prop.push_back(*it3);
+						}
 						if (Config::g_lazy_assume >= LAZY_ASSUME_L2)
 							conjunct_prop.push_back(_ve_assume);
-						if (Config::g_lazy_assume >= LAZY_ASSUME_L1) {
-							for (auto& v: _assume_T)
-								conjunct_prop.push_back(v.first);
-						}
 
 						ve_prop = OpInst::create(OpInst::LogAnd, conjunct_prop);
 						AVR_LOG(15, 0, "[Basis Step]:" << endl);

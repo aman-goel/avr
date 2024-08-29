@@ -26,7 +26,7 @@ int Config::g_forward_check = 0;
 int Config::g_fineness = 0;
 int Config::g_lazy_assume = 0;
 
-bool Config::g_uf_propagate = false;
+bool Config::g_uf_no_propagate = false;
 bool Config::g_uf_heavy_only = false;
 bool Config::g_uf_no_bitwise = false;
 bool Config::g_uf_no_sext = false;
@@ -247,8 +247,8 @@ void Config::set_abstraction(string& name) {
 	g_ab_interpret_excc = LEVEL_EXCC_DEFAULT;
 
 	{
-		if (name.find(NAME_UF_PROPAGATE) != string::npos)
-			g_uf_propagate = !g_uf_propagate;
+		if (name.find(NAME_UF_NO_PROPAGATE) != string::npos)
+			g_uf_no_propagate = !g_uf_no_propagate;
 		if (name.find(NAME_UF_HEAVY_ONLY) != string::npos)
 			g_uf_heavy_only = !g_uf_heavy_only;
 		if (name.find(NAME_UF_NO_BITWISE) != string::npos)
@@ -298,7 +298,7 @@ void Config::set_abstraction(string& name) {
 														 << (g_ab_interpret_limit == 0?"":to_string(g_ab_interpret_limit))
 														 << ((g_ab_interpret_excc != LEVEL_EXCC_DEFAULT)?"+ec"+to_string(g_ab_interpret_excc):"")
 														 << (g_fineness != FINENESS_DEFAULT?"+l"+to_string(g_fineness):"")
-														 << (g_uf_propagate?"+propagate":"")
+														 << (g_uf_no_propagate?"+nopropagate":"")
 														 << (g_uf_heavy_only?"+heavy":"")
 														 << (g_uf_no_bitwise?"+nobitwise":"")
 														 << (g_uf_no_sext?"+nosignex":"")
