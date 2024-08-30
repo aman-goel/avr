@@ -492,13 +492,16 @@ void Btor2Frontend::get_node(NODE_INFO& info, InstL& args) {
 	} break;
 	case BTOR2_TAG_const: {
 		string snum(t.constant);
+		if (snum[0] == '-') {
+			btor2_loge("negative boolean number isn't allowed: found in BTOR2_TAG_const " << snum);
+		}
 		node = NumInst::create(snum, sz, 2, sort);
-//		{
-//			string numstr = NumInst::as(node)->get_mpz()->get_str(2);
-//			if (numstr != snum) {
-//				btor2_loge("number error: gave " << snum << ", got " << numstr);
-//			}
-//		}
+		{
+			string numstr = NumInst::as(node)->get_mpz()->get_str(2);
+			if (numstr != snum) {
+				btor2_loge("number error: gave " << snum << ", got " << numstr);
+			}
+		}
 		constants.insert(node);
 		done = true;
 	} break;
@@ -508,28 +511,39 @@ void Btor2Frontend::get_node(NODE_INFO& info, InstL& args) {
 	} break;
 	case BTOR2_TAG_constd: {
 		string snum(t.constant);
-		std::string binary = std::bitset<8>(strtol(snum.c_str(), NULL, 10)).to_string();
-		// cout << "snum: " << snum << " binary: " << binary << endl;
-		string snum2 = binary.substr(0, sz);
-		node = NumInst::create(snum2, sz, 2, sort);
-		// {
-		// 	string numstr = NumInst::as(node)->get_mpz()->get_str(10);
-		// 	if (numstr != snum) {
-		// 		btor2_loge("number error: gave " << snum << ", got " << numstr);
-		// 	}
-		// }
+		if (snum[0] == '-') {
+			if (sz == 1) {
+				//boolean negative means 1 (since sign bit has to be 1)
+				node = NumInst::create(1, sz);
+			} else {
+				mpz_t mpz_mask;
+				mpz_init(mpz_mask);
+				mpz_set_si(mpz_mask, strtol(snum.c_str(), NULL, 10));
+				mpz_class t_mpzc(mpz_mask);
+				node = NumInst::create(t_mpzc, sz);
+			}
+		} else {
+			node = NumInst::create(snum, sz, 10, sort);
+		}
+		if (sz != 1)
+		{
+			string numstr = NumInst::as(node)->get_mpz()->get_str(10);
+			if (numstr != snum) {
+				btor2_loge("number error: gave " << snum << ", got " << numstr);
+			}
+		}
 		constants.insert(node);
 		done = true;
 	} break;
 	case BTOR2_TAG_consth: {
 		string snum(t.constant);
 		node = NumInst::create(snum, sz, 16, sort);
-//		{
-//			string numstr = NumInst::as(node)->get_mpz()->get_str(16);
-//			if (numstr != snum) {
-//				btor2_loge("number error: gave " << snum << ", got " << numstr);
-//			}
-//		}
+		{
+			string numstr = NumInst::as(node)->get_mpz()->get_str(16);
+			if (numstr != snum) {
+				btor2_loge("number error: gave " << snum << ", got " << numstr);
+			}
+		}
 		constants.insert(node);
 		done = true;
 	} break;
