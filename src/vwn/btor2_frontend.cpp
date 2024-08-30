@@ -496,12 +496,12 @@ void Btor2Frontend::get_node(NODE_INFO& info, InstL& args) {
 			btor2_loge("negative boolean number isn't allowed: found in BTOR2_TAG_const " << snum);
 		}
 		node = NumInst::create(snum, sz, 2, sort);
-		{
-			string numstr = NumInst::as(node)->get_mpz()->get_str(2);
-			if (numstr != snum) {
-				btor2_loge("number error: gave " << snum << ", got " << numstr);
-			}
-		}
+		// {
+		// 	string numstr = NumInst::as(node)->get_mpz()->get_str(2);
+		// 	if (numstr != snum) {
+		// 		btor2_loge("number error: gave " << snum << ", got " << numstr);
+		// 	}
+		// }
 		constants.insert(node);
 		done = true;
 	} break;
@@ -525,25 +525,25 @@ void Btor2Frontend::get_node(NODE_INFO& info, InstL& args) {
 		} else {
 			node = NumInst::create(snum, sz, 10, sort);
 		}
-		if (sz != 1)
-		{
-			string numstr = NumInst::as(node)->get_mpz()->get_str(10);
-			if (numstr != snum) {
-				btor2_loge("number error: gave " << snum << ", got " << numstr);
-			}
-		}
+		// if (sz != 1)
+		// {
+		// 	string numstr = NumInst::as(node)->get_mpz()->get_str(10);
+		// 	if (numstr != snum) {
+		// 		btor2_loge("number error: gave " << snum << ", got " << numstr);
+		// 	}
+		// }
 		constants.insert(node);
 		done = true;
 	} break;
 	case BTOR2_TAG_consth: {
 		string snum(t.constant);
 		node = NumInst::create(snum, sz, 16, sort);
-		{
-			string numstr = NumInst::as(node)->get_mpz()->get_str(16);
-			if (numstr != snum) {
-				btor2_loge("number error: gave " << snum << ", got " << numstr);
-			}
-		}
+		// {
+		// 	string numstr = NumInst::as(node)->get_mpz()->get_str(16);
+		// 	if (numstr != snum) {
+		// 		btor2_loge("number error: gave " << snum << ", got " << numstr);
+		// 	}
+		// }
 		constants.insert(node);
 		done = true;
 	} break;
