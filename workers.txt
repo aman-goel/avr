@@ -1,16 +1,16 @@
-python3 avr.py --split
+python3 avr.py --backend y2 --split
 python3 avr.py --kind --abstract sa --backend bt
-python3 avr.py --kind --abstract sa --split
-python3 avr.py --abstract sa --backend bt
+python3 avr.py --kind --abstract sa --backend y2 --split
 python3 avr.py --abstract sa
-python3 avr.py
 python3 avr.py --bmc --abstract sa --backend bt --split
-python3 avr.py --bmc --abstract sa+heavy
-python3 avr.py --abstract sa8 --level 5 --granularity 3 --interpol 1 --forward 1
-python3 avr.py --abstract sa4 --split --forward 1 --interpol 1
-python3 avr.py --abstract sa+heavy --backend bt --split
+python3 avr.py
+python3 avr.py --abstract sa8 --level 5 --granularity 3 --forward 1 --interpol 1
+python3 avr.py --abstract sa4 --backend y2 --split --forward 1 --interpol 1
+python3 avr.py --split --level 0
+python3 avr.py --abstract sa8 --backend y2 --split --interpol 1
 python3 avr.py --kind --abstract sa --backend bt --split
-python3 avr.py --abstract sa8 --split --interpol 1
-python3 avr.py --abstract sa16 --split --forward 1 --backend bt
-python3 avr.py --abstract sa32 --backend bt --level 0 --granularity 3
-python3 avr.py --abstract sa8 --level 5 --granularity 3 --interpol 1 --forward 1
+python3 avr.py --bmc --abstract sa --backend y2
+python3 avr.py --abstract sa --backend bt
+python3 avr.py --abstract sa+heavy
+python3 avr.py --bmc --abstract sa+heavy --backend bt
+python3 avr.py --kind --abstract sa+heavy --backend bt

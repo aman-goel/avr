@@ -1,10 +1,10 @@
 include ../makefile.include
 
-CFLAGS += -Werror -Wreturn-type -Wunknown-pragmas -Wunused-value -Wunused-label
+CFLAGS += -fPIC -Werror -Wreturn-type -Wunknown-pragmas -Wunused-value -Wunused-label
 
 ifeq ($(STATIC_REA), 1)
   CXX += -static-libstdc++ -static-libgcc -static
-  LINK_FLAGS += -L/usr/lib/x86_64-redhat-linux6E/lib64
+#  LINK_FLAGS += -L/usr/lib/x86_64-redhat-linux6E/lib64
   LINK_FLAGS += $(STATIC_GMPXX) $(STATIC_GMP) -pthread -Wl,--whole-archive -lpthread -Wl,--no-whole-archive
 else
   LINK_FLAGS += -pthread -lgmpxx -lgmp -lrt -ldl
@@ -12,7 +12,7 @@ endif
 
 ifeq ($(ENABLE_Y2), 1)
 	Y2_DIR = $(DEPS)/yices2
-	Y2_LIB = $(Y2_DIR)/build/x86_64-pc-linux-gnu-release/dist/lib/libyices.a
+	Y2_LIB = $(Y2_DIR)/build/x86_64-pc-linux-gnu-release/dist/lib/libyices.a  $(STATIC_GMPXX) $(STATIC_GMP)
 	INCLUDE += -I$(Y2_DIR)/build/x86_64-pc-linux-gnu-release/dist/include
 	LINKLIBS += $(Y2_LIB)
 	CFLAGS += -D_Y2
@@ -38,10 +38,14 @@ endif
 
 ifeq ($(ENABLE_M5), 1)
 	MSAT_DIR = $(DEPS)/mathsat
-	MSAT_LIB = $(MSAT_DIR)/lib/libmathsat.a # $(STATIC_GMPXX) $(STATIC_GMP)
+	MSAT_LIB = $(MSAT_DIR)/lib/libmathsat.a $(STATIC_GMPXX) $(STATIC_GMP)
 	INCLUDE += -I$(MSAT_DIR)/include
 	LINKLIBS += $(MSAT_LIB)
 	CFLAGS += -D_M5
+endif
+ifeq ($(CONFIG_M5), 1)
+  CFLAGS += -DBACKEND_M5
+  REACH_SUFFIX = m5
 endif
 
 ifeq ($(ENABLE_Z3), 1)
