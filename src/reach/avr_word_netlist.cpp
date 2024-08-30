@@ -1897,11 +1897,14 @@ void OpInst::propagate_uf() {
   			if (NumInst::as(rhs) && NumInst::as(rhs)->get_num() == 0) {
   				// divide by 0, do nothing
   			} else if (NumInst::as(lhs) && NumInst::as(lhs)->get_num() == 0) {
-  				// 0 / rhs = 0
-  				t_simple = NumInst::create(0, get_size(), get_sort());
+  				// 0 / rhs = ? (since rhs can be 0)
+  				// t_simple = NumInst::create(0, get_size(), get_sort());
+  			} else if (NumInst::as(rhs) && NumInst::as(rhs)->get_num() == 1 && get_size() > 1) {
+  				// lhs / 1 = lhs (if not boolean)
+  				t_simple = lhs;
   			} else if (lhs == rhs) {
-  				// x / x = 1
-  				t_simple = NumInst::create(1, get_size(), get_sort());
+  				// x / x = ? (since x can be 0)
+  				// t_simple = NumInst::create(1, get_size(), get_sort());
   			}
   		}
   	} break;
@@ -1917,14 +1920,14 @@ void OpInst::propagate_uf() {
   			if (NumInst::as(rhs) && NumInst::as(rhs)->get_num() == 0) {
   				// modulo by 0, do nothing
   			} else if (NumInst::as(lhs) && NumInst::as(lhs)->get_num() == 0) {
-  				// 0 % rhs = 0
-  				t_simple = NumInst::create(0, get_size(), get_sort());
+  				// 0 % rhs = ? (since rhs can be 0)
+  				// t_simple = NumInst::create(0, get_size(), get_sort());
   			} else if (NumInst::as(rhs) && NumInst::as(rhs)->get_num() == 1 && get_size() > 1) {
   				// lhs % 1 = 0 (if not boolean)
   				t_simple = NumInst::create(0, get_size(), get_sort());
   			} else if (lhs == rhs) {
-  				// x % x = 0
-  				t_simple = NumInst::create(0, get_size(), get_sort());
+  				// x % x = ? (since x can be 0)
+  				// t_simple = NumInst::create(0, get_size(), get_sort());
   			}
   		}
   	} break;
