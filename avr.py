@@ -9,17 +9,13 @@
 # Author: Aman Goel (amangoel@umich.edu), University of Michigan
 ######################################################################################
 
-import os, sys
+import os
 import subprocess
 import argparse
-import tempfile
-import shutil
 import ntpath
-from distutils import spawn
-import re
 from distutils.spawn import find_executable
 
-version=2.1
+version=2.2
 
 DEFAULT_TOP="-"
 DEFAULT_BIN="build/bin"

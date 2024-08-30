@@ -8,11 +8,11 @@
 ######################################################################################
 
 
-import os, sys, datetime, time, resource, argparse, shutil, signal
-from subprocess import Popen, PIPE, DEVNULL, STDOUT
+import os, sys, time, argparse, shutil, signal
+from subprocess import Popen, PIPE
 from enum import Enum
 
-version=2.1
+version=2.2
 start_time = time.time()
 
 cmdSuffix = ""
