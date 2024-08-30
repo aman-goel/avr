@@ -2,7 +2,7 @@
 
 # AVR -- **A**bstractly **V**erifying **R**eachability
 
-<p align="center">(also known as Averroes v2.0)
+<p align="center">(also known as Averroes v2)
 </p>
 
 
