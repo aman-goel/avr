@@ -8,7 +8,7 @@ LINKLIBS =
 
 ifeq ($(STATIC_VWN), 1)
   CXX += -static-libstdc++ -static-libgcc -static
-  LINK_FLAGS += -L/usr/lib/x86_64-redhat-linux6E/lib64
+#  LINK_FLAGS += -L/usr/lib/x86_64-redhat-linux6E/lib64
   LINK_FLAGS += -static -pthread -Wl,--whole-archive -lpthread -Wl,--no-whole-archive
   LINKLIBS += $(STATIC_GMPXX) $(STATIC_GMP)
 else

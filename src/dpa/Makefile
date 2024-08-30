@@ -2,7 +2,7 @@ include ../makefile.include
 
 ifeq ($(STATIC_DPA), 1)
   CXX += -static-libstdc++ -static-libgcc -static
-  LINK_FLAGS += -L/usr/lib/x86_64-redhat-linux6E/lib64
+#  LINK_FLAGS += -L/usr/lib/x86_64-redhat-linux6E/lib64
   LINK_FLAGS += $(STATIC_GMPXX) $(STATIC_GMP) -static -pthread -Wl,--whole-archive -lpthread -Wl,--no-whole-archive
 else
   LINK_FLAGS += -pthread -lgmpxx -lgmp -lrt -ldl

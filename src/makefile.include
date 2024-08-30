@@ -50,7 +50,8 @@ endif
 GPP=g++ -std=c++17
 
 ####	flags
-CFLAG_OPT = -g -O3
+#CFLAG_OPT = -g -O3
+CFLAG_OPT = -O3
 
 #### includes
 INCLUDE_DIRS = 
@@ -59,7 +60,8 @@ CFLAGS_INC = $(INCLUDE_DIRS)
 CFLAGS = -c $(CFLAGS_INC) $(CFLAG_OPT)
 
 #### optional flags
-FLAG_PG = -pg
+#FLAG_PG = -pg
+FLAG_PG = 
 
 #### link flags
 LINK_FLAGS = $(CFLAG_OPT)
