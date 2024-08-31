@@ -2131,6 +2131,26 @@ public:
 		return m_mpz.get_si();
 	}
 
+	int num_cmp(NumInst* rhs, bool sign) {
+		assert (get_sort_type() == bvtype);
+		if (!sign) {
+			return mpz_cmp(get_mpz()->get_mpz_t(), rhs->get_mpz()->get_mpz_t());
+		} else {
+			assert(get_size() > 1);
+			string str_lhs = get_mpz()->get_str(2);
+			string str_rhs = rhs->get_mpz()->get_str(2);
+			if (str_lhs[0] == '0' && str_rhs[0] == '0') {
+				return mpz_cmp(get_mpz()->get_mpz_t(), rhs->get_mpz()->get_mpz_t());
+			} else if (str_lhs[0] == '0' && str_rhs[0] == '1') {
+				return 1;
+			} else if (str_lhs[0] == '1' && str_rhs[0] == '0') {
+				return -1;
+			} else {
+				return (-1)*mpz_cmpabs(get_mpz()->get_mpz_t(), rhs->get_mpz()->get_mpz_t());
+			}
+		}
+	}
+
 	static Inst *read_bin();
 	virtual void write_bin();
 

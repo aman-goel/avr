@@ -511,21 +511,49 @@ void Btor2Frontend::get_node(NODE_INFO& info, InstL& args) {
 	} break;
 	case BTOR2_TAG_constd: {
 		string snum(t.constant);
+
+		mpz_t mpz_mask;
+		mpz_init(mpz_mask);
+		mpz_set_si(mpz_mask, strtol(snum.c_str(), NULL, 10));
+		mpz_class t_mpzc(mpz_mask);
+		string str_num = t_mpzc.get_str(2);
+
+		char bv_val[sz];
+		string str_bv = "";
 		if (snum[0] == '-') {
-			if (sz == 1) {
-				//boolean negative means 1 (since sign bit has to be 1)
-				node = NumInst::create(1, sz);
-			} else {
-				mpz_t mpz_mask;
-				mpz_init(mpz_mask);
-				mpz_set_si(mpz_mask, strtol(snum.c_str(), NULL, 10));
-				mpz_class t_mpzc(mpz_mask);
-				node = NumInst::create(t_mpzc, sz);
+			assert (str_num[0] == '-');
+
+			int i = 0;
+			int j = str_num.length() - 1;
+			for(; i < int(str_num.length() - 1); ++i, --j){
+				bv_val[i] = (str_num[j] == '0') ? '1' : '0';
+			}
+			for(; i < sz; ++i){
+				bv_val[i] = '1';
+			}
+			// plus one
+			for(i=0; i < sz; ++i){
+				if(bv_val[i] == '1'){
+					bv_val[i] = '0';
+				}else{
+					bv_val[i] = '1';
+					break;
+				}
 			}
 		} else {
-			node = NumInst::create(snum, sz, 10, sort);
+			int i = 0;
+			int j = str_num.length() - 1;
+			for(; i < int(str_num.length()); ++i, --j){
+				bv_val[i] = str_num[j];
+			}
+			for(; i < sz; ++i){
+				bv_val[i] = '0';
+			}
 		}
-		// if (sz != 1)
+		for(int i=0; i < sz; ++i){
+			str_bv = bv_val[i] + str_bv;
+		}
+		node = NumInst::create(str_bv, sz, 2, sort);
 		// {
 		// 	string numstr = NumInst::as(node)->get_mpz()->get_str(10);
 		// 	if (numstr != snum) {
