@@ -1822,6 +1822,17 @@ int OpInst::get_simple_version() {
 
 void OpInst::propagate_uf() {
   switch (m_op) {
+  	case Minus: {
+  		const InstL* ch = get_children();
+  		if (ch->size() == 1) {
+  			InstL::const_iterator cit = ch->begin();
+  			Inst* lhs = (*cit)->get_simple();
+  			if (NumInst::as(lhs) && NumInst::as(lhs)->get_num() == 0) {
+  				// -0 = 0
+  				t_simple = lhs;
+  			}
+  		}
+  	} break;
   	case Add: {
   		const InstL* ch = get_children();
   		if (ch->size() == 2) {
@@ -1944,6 +1955,13 @@ void OpInst::propagate_uf() {
   		} else if (lhs == rhs) {
   			// x > x = false
   			t_simple = NumInst::create(0, 1, SORT());
+  		} else if (NumInst::as(lhs) && NumInst::as(rhs)) {
+  			// both are numbers
+  			if (NumInst::as(lhs)->num_cmp(NumInst::as(rhs), false) > 0) {
+  				t_simple = NumInst::create(1, 1, SORT());
+  			} else {
+  				t_simple = NumInst::create(0, 1, SORT());
+  			}
   		}
   	} break;
   	case SGr: {
@@ -1956,6 +1974,15 @@ void OpInst::propagate_uf() {
   		if (lhs == rhs) {
   			// x >s x = false
   			t_simple = NumInst::create(0, 1, SORT());
+  		} else if (NumInst::as(lhs) && NumInst::as(rhs)) {
+  			// both are numbers
+  			if (get_size() > 1) {
+  				if (NumInst::as(lhs)->num_cmp(NumInst::as(rhs), true) > 0) {
+  					t_simple = NumInst::create(1, 1, SORT());
+  				} else {
+  					t_simple = NumInst::create(0, 1, SORT());
+  				}
+  			}
   		}
   	} break;
   	case Le: {
@@ -1971,6 +1998,13 @@ void OpInst::propagate_uf() {
   		} else if (lhs == rhs) {
   			// x < x = false
   			t_simple = NumInst::create(0, 1, SORT());
+  		} else if (NumInst::as(lhs) && NumInst::as(rhs)) {
+  			// both are numbers
+  			if (NumInst::as(lhs)->num_cmp(NumInst::as(rhs), false) < 0) {
+  				t_simple = NumInst::create(1, 1, SORT());
+  			} else {
+  				t_simple = NumInst::create(0, 1, SORT());
+  			}
   		}
   	} break;
   	case SLe: {
@@ -1983,6 +2017,15 @@ void OpInst::propagate_uf() {
   		if (lhs == rhs) {
   			// x <s x = false
   			t_simple = NumInst::create(0, 1, SORT());
+  		} else if (NumInst::as(lhs) && NumInst::as(rhs)) {
+  			// both are numbers
+  			if (get_size() > 1) {
+  				if (NumInst::as(lhs)->num_cmp(NumInst::as(rhs), true) < 0) {
+  					t_simple = NumInst::create(1, 1, SORT());
+  				} else {
+  					t_simple = NumInst::create(0, 1, SORT());
+  				}
+  			}
   		}
   	} break;
   	case GrEq: {
@@ -1998,6 +2041,13 @@ void OpInst::propagate_uf() {
   		} else if (lhs == rhs) {
   			// x >= x = true
   			t_simple = NumInst::create(1, 1, SORT());
+  		} else if (NumInst::as(lhs) && NumInst::as(rhs)) {
+  			// both are numbers
+  			if (NumInst::as(lhs)->num_cmp(NumInst::as(rhs), false) >= 0) {
+  				t_simple = NumInst::create(1, 1, SORT());
+  			} else {
+  				t_simple = NumInst::create(0, 1, SORT());
+  			}
   		}
   	} break;
   	case SGrEq: {
@@ -2010,6 +2060,15 @@ void OpInst::propagate_uf() {
   		if (lhs == rhs) {
   			// x >=s x = true
   			t_simple = NumInst::create(1, 1, SORT());
+  		} else if (NumInst::as(lhs) && NumInst::as(rhs)) {
+  			// both are numbers
+  			if (get_size() > 1) {
+  				if (NumInst::as(lhs)->num_cmp(NumInst::as(rhs), true) >= 0) {
+  					t_simple = NumInst::create(1, 1, SORT());
+  				} else {
+  					t_simple = NumInst::create(0, 1, SORT());
+  				}
+  			}
   		}
   	} break;
   	case LeEq: {
@@ -2025,6 +2084,13 @@ void OpInst::propagate_uf() {
   		} else if (lhs == rhs) {
   			// x <= x = true
   			t_simple = NumInst::create(1, 1, SORT());
+  		} else if (NumInst::as(lhs) && NumInst::as(rhs)) {
+  			// both are numbers
+  			if (NumInst::as(lhs)->num_cmp(NumInst::as(rhs), false) <= 0) {
+  				t_simple = NumInst::create(1, 1, SORT());
+  			} else {
+  				t_simple = NumInst::create(0, 1, SORT());
+  			}
   		}
   	} break;
   	case SLeEq: {
@@ -2037,7 +2103,16 @@ void OpInst::propagate_uf() {
 		if (lhs == rhs) {
   			// x <=s x = true
   			t_simple = NumInst::create(1, 1, SORT());
-  		}
+		} else if (NumInst::as(lhs) && NumInst::as(rhs)) {
+			// both are numbers
+  			if (get_size() > 1) {
+  				if (NumInst::as(lhs)->num_cmp(NumInst::as(rhs), true) <= 0) {
+  					t_simple = NumInst::create(1, 1, SORT());
+  				} else {
+  					t_simple = NumInst::create(0, 1, SORT());
+  				}
+  			}
+		}
   	} break;
   	case BitWiseAnd: {
   		const InstL* ch = get_children();
@@ -2142,9 +2217,9 @@ void OpInst::propagate_uf() {
       ;
   }
 
- //  if (this != this->get_simple()) {
-	// cout << "uf_prop: " << *this << " -> " << *(this->t_simple) << endl;
- //  }
+  if (this != this->get_simple()) {
+	cout << "uf_prop: " << *this << " -> " << *(this->t_simple) << endl;
+  }
 }
 
 bool OpInst::is_heavy_uf() {
