@@ -514,7 +514,7 @@ void Btor2Frontend::get_node(NODE_INFO& info, InstL& args) {
 
 		mpz_t mpz_mask;
 		mpz_init(mpz_mask);
-		mpz_set_si(mpz_mask, strtol(snum.c_str(), NULL, 10));
+		mpz_set_str(mpz_mask, snum.c_str(), 10);
 		mpz_class t_mpzc(mpz_mask);
 		string str_num = t_mpzc.get_str(2);
 
