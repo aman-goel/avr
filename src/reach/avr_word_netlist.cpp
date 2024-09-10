@@ -2217,9 +2217,9 @@ void OpInst::propagate_uf() {
       ;
   }
 
-  if (this != this->get_simple()) {
-	cout << "uf_prop: " << *this << " -> " << *(this->t_simple) << endl;
-  }
+//   if (this != this->get_simple()) {
+// 	cout << "uf_prop: " << *this << " -> " << *(this->t_simple) << endl;
+//   }
 }
 
 bool OpInst::is_heavy_uf() {

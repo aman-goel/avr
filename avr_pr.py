@@ -12,7 +12,7 @@ import os, sys, time, argparse, shutil, signal
 from subprocess import Popen, PIPE
 from enum import Enum
 
-version=2.2
+version="2.2.3"
 start_time = time.time()
 
 cmdSuffix = ""
