@@ -431,8 +431,11 @@ def terminate_ps(pid_s):
 	valid, pid = is_valid_pid(pid_s)
 	if (valid):
 		if (check_pid(pid)):
-			os.kill(pid, signal.SIGTERM)
-			os.kill(pid, signal.SIGKILL)
+			try:
+				os.kill(pid, signal.SIGTERM)
+				os.kill(pid, signal.SIGKILL)
+			except ProcessLookupError:
+				pass
 	#else:
 		#assert(0)
 
