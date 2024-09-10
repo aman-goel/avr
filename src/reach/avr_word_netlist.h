@@ -2131,6 +2131,16 @@ public:
 		return m_mpz.get_si();
 	}
 
+	bool num_is_zero() {
+		assert (get_sort_type() == bvtype);
+		return mpz_sgn(get_mpz()->get_mpz_t()) == 0;
+	}
+
+	bool num_is_one() {
+		assert (get_sort_type() == bvtype);
+		return mpz_cmp_ui(get_mpz()->get_mpz_t(), 1) == 0;
+	}
+
 	int num_cmp(NumInst* rhs, bool sign) {
 		assert (get_sort_type() == bvtype);
 		if (!sign) {

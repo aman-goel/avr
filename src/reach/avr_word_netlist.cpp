@@ -1827,7 +1827,7 @@ void OpInst::propagate_uf() {
   		if (ch->size() == 1) {
   			InstL::const_iterator cit = ch->begin();
   			Inst* lhs = (*cit)->get_simple();
-  			if (NumInst::as(lhs) && NumInst::as(lhs)->get_num() == 0) {
+  			if (NumInst::as(lhs) && NumInst::as(lhs)->num_is_zero()) {
   				// -0 = 0
   				t_simple = lhs;
   			}
@@ -1840,10 +1840,10 @@ void OpInst::propagate_uf() {
   			Inst* lhs = (*cit)->get_simple();
   			cit++;
   			Inst* rhs = (*cit)->get_simple();
-  			if (NumInst::as(lhs) && NumInst::as(lhs)->get_num() == 0) {
+  			if (NumInst::as(lhs) && NumInst::as(lhs)->num_is_zero()) {
   				// 0 + rhs = rhs
   				t_simple = rhs;
-  			} else if (NumInst::as(rhs) && NumInst::as(rhs)->get_num() == 0) {
+  			} else if (NumInst::as(rhs) && NumInst::as(rhs)->num_is_zero()) {
   				// lhs + 0 = lhs
   				t_simple = lhs;
   			} else {
@@ -1861,7 +1861,7 @@ void OpInst::propagate_uf() {
   			Inst* lhs = (*cit)->get_simple();
   			cit++;
   			Inst* rhs = (*cit)->get_simple();
-  			if (NumInst::as(rhs) && NumInst::as(rhs)->get_num() == 0) {
+  			if (NumInst::as(rhs) && NumInst::as(rhs)->num_is_zero()) {
   				// lhs - 0 = lhs
   				t_simple = lhs;
   			} else if (lhs == rhs) {
@@ -1877,16 +1877,16 @@ void OpInst::propagate_uf() {
   			Inst* lhs = (*cit)->get_simple();
   			cit++;
   			Inst* rhs = (*cit)->get_simple();
-  			if (NumInst::as(lhs) && NumInst::as(lhs)->get_num() == 0) {
+  			if (NumInst::as(lhs) && NumInst::as(lhs)->num_is_zero()) {
   				// 0 * rhs = 0
   				t_simple = NumInst::create(0, get_size(), get_sort());
-  			} else if (NumInst::as(rhs) && NumInst::as(rhs)->get_num() == 0) {
+  			} else if (NumInst::as(rhs) && NumInst::as(rhs)->num_is_zero()) {
   				// lhs * 0 = 0
   				t_simple = NumInst::create(0, get_size(), get_sort());
-  			} else if (NumInst::as(lhs) && NumInst::as(lhs)->get_num() == 1) {
+  			} else if (NumInst::as(lhs) && NumInst::as(lhs)->num_is_one()) {
   				// 1 * rhs = rhs
   				t_simple = rhs;
-  			} else if (NumInst::as(rhs) && NumInst::as(rhs)->get_num() == 1) {
+  			} else if (NumInst::as(rhs) && NumInst::as(rhs)->num_is_one()) {
   				// lhs * 1 = lhs
   				t_simple = lhs;
   			} else {
@@ -1905,12 +1905,12 @@ void OpInst::propagate_uf() {
   			Inst* lhs = (*cit)->get_simple();
   			cit++;
   			Inst* rhs = (*cit)->get_simple();
-  			if (NumInst::as(rhs) && NumInst::as(rhs)->get_num() == 0) {
+  			if (NumInst::as(rhs) && NumInst::as(rhs)->num_is_zero()) {
   				// divide by 0, do nothing
-  			} else if (NumInst::as(lhs) && NumInst::as(lhs)->get_num() == 0) {
+  			} else if (NumInst::as(lhs) && NumInst::as(lhs)->num_is_zero()) {
   				// 0 / rhs = ? (since rhs can be 0)
   				// t_simple = NumInst::create(0, get_size(), get_sort());
-  			} else if (NumInst::as(rhs) && NumInst::as(rhs)->get_num() == 1 && get_size() > 1) {
+  			} else if (get_size() > 1 && NumInst::as(rhs) && NumInst::as(rhs)->num_is_one()) {
   				// lhs / 1 = lhs (if not boolean)
   				t_simple = lhs;
   			} else if (lhs == rhs) {
@@ -1928,12 +1928,12 @@ void OpInst::propagate_uf() {
   			Inst* lhs = (*cit)->get_simple();
   			cit++;
   			Inst* rhs = (*cit)->get_simple();
-  			if (NumInst::as(rhs) && NumInst::as(rhs)->get_num() == 0) {
+  			if (NumInst::as(rhs) && NumInst::as(rhs)->num_is_zero()) {
   				// modulo by 0, do nothing
-  			} else if (NumInst::as(lhs) && NumInst::as(lhs)->get_num() == 0) {
+  			} else if (NumInst::as(lhs) && NumInst::as(lhs)->num_is_zero()) {
   				// 0 % rhs = ? (since rhs can be 0)
   				// t_simple = NumInst::create(0, get_size(), get_sort());
-  			} else if (NumInst::as(rhs) && NumInst::as(rhs)->get_num() == 1 && get_size() > 1) {
+  			} else if (get_size() > 1 && NumInst::as(rhs) && NumInst::as(rhs)->num_is_one()) {
   				// lhs % 1 = 0 (if not boolean)
   				t_simple = NumInst::create(0, get_size(), get_sort());
   			} else if (lhs == rhs) {
@@ -1949,7 +1949,7 @@ void OpInst::propagate_uf() {
   		Inst* lhs = (*cit)->get_simple();
   		cit++;
   		Inst* rhs = (*cit)->get_simple();
-  		if (NumInst::as(lhs) && NumInst::as(lhs)->get_num() == 0) {
+  		if (NumInst::as(lhs) && NumInst::as(lhs)->num_is_zero()) {
   			// 0 > x = false
   			t_simple = NumInst::create(0, 1, SORT());
   		} else if (lhs == rhs) {
@@ -1992,7 +1992,7 @@ void OpInst::propagate_uf() {
   		Inst* lhs = (*cit)->get_simple();
   		cit++;
   		Inst* rhs = (*cit)->get_simple();
-  		if (NumInst::as(rhs) && NumInst::as(rhs)->get_num() == 0) {
+  		if (NumInst::as(rhs) && NumInst::as(rhs)->num_is_zero()) {
   			// x < 0 = false
   			t_simple = NumInst::create(0, 1, SORT());
   		} else if (lhs == rhs) {
@@ -2035,7 +2035,7 @@ void OpInst::propagate_uf() {
   		Inst* lhs = (*cit)->get_simple();
   		cit++;
   		Inst* rhs = (*cit)->get_simple();
-  		if (NumInst::as(rhs) && NumInst::as(rhs)->get_num() == 0) {
+  		if (NumInst::as(rhs) && NumInst::as(rhs)->num_is_zero()) {
   			// x >= 0 = true
   			t_simple = NumInst::create(1, 1, SORT());
   		} else if (lhs == rhs) {
@@ -2078,7 +2078,7 @@ void OpInst::propagate_uf() {
   		Inst* lhs = (*cit)->get_simple();
   		cit++;
   		Inst* rhs = (*cit)->get_simple();
-  		if (NumInst::as(lhs) && NumInst::as(lhs)->get_num() == 0) {
+  		if (NumInst::as(lhs) && NumInst::as(lhs)->num_is_zero()) {
   			// 0 <= x = true
   			t_simple = NumInst::create(1, 1, SORT());
   		} else if (lhs == rhs) {
@@ -2121,10 +2121,10 @@ void OpInst::propagate_uf() {
   			Inst* lhs = (*cit)->get_simple();
   			cit++;
   			Inst* rhs = (*cit)->get_simple();
-  			if (NumInst::as(lhs) && NumInst::as(lhs)->get_num() == 0) {
+  			if (NumInst::as(lhs) && NumInst::as(lhs)->num_is_zero()) {
   				// 0 & rhs = 0
   				t_simple = NumInst::create(0, get_size(), get_sort());
-  			} else if (NumInst::as(rhs) && NumInst::as(rhs)->get_num() == 0) {
+  			} else if (NumInst::as(rhs) && NumInst::as(rhs)->num_is_zero()) {
   				// lhs & 0 = 0
   				t_simple = NumInst::create(0, get_size(), get_sort());
   			} else if (lhs == rhs) {
@@ -2145,10 +2145,10 @@ void OpInst::propagate_uf() {
   			Inst* lhs = (*cit)->get_simple();
   			cit++;
   			Inst* rhs = (*cit)->get_simple();
-  			if (NumInst::as(lhs) && NumInst::as(lhs)->get_num() == 0) {
+  			if (NumInst::as(lhs) && NumInst::as(lhs)->num_is_zero()) {
   				// 0 | rhs = rhs
   				t_simple = rhs;
-  			} else if (NumInst::as(rhs) && NumInst::as(rhs)->get_num() == 0) {
+  			} else if (NumInst::as(rhs) && NumInst::as(rhs)->num_is_zero()) {
   				// lhs | 0 = lhs
   				t_simple = lhs;
   			} else if (lhs == rhs) {
@@ -2205,10 +2205,10 @@ void OpInst::propagate_uf() {
   		Inst* lhs = (*cit)->get_simple();
   		cit++;
   		Inst* rhs = (*cit)->get_simple();
-  		if (NumInst::as(lhs) && NumInst::as(lhs)->get_num() == 0) {
+  		if (NumInst::as(lhs) && NumInst::as(lhs)->num_is_zero()) {
   			// 0 shift rhs = 0
   			t_simple = NumInst::create(0, get_size(), get_sort());
-  		} else if (NumInst::as(rhs) && NumInst::as(rhs)->get_num() == 0) {
+  		} else if (NumInst::as(rhs) && NumInst::as(rhs)->num_is_zero()) {
   			// lhs shift 0 = lhs
   			t_simple = lhs;
   		}
@@ -2217,9 +2217,9 @@ void OpInst::propagate_uf() {
       ;
   }
 
- //  if (this != this->get_simple()) {
-	// cout << "uf_prop: " << *this << " -> " << *(this->t_simple) << endl;
- //  }
+  if (this != this->get_simple()) {
+	cout << "uf_prop: " << *this << " -> " << *(this->t_simple) << endl;
+  }
 }
 
 bool OpInst::is_heavy_uf() {
