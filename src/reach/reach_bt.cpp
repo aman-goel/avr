@@ -16,7 +16,7 @@
  */
 
 #include "reach_bt.h"
-
+#include "reach_random.h"
 #ifdef _BT
 
 #include <cstdlib>
@@ -749,7 +749,7 @@ int bt_API::s_check(long timeout_value, bool getModel) {
 	BT_SET_TIMEOUT(g_ctx);
 	TIME_S(start_time);
   boolector_reset_assumptions(g_ctx);
-  random_shuffle(m_assertions.begin(), m_assertions.end());
+  avr_rand::shuffle(m_assertions.begin(), m_assertions.end());
   for (auto& v: m_assertions)
 		boolector_assume(g_ctx, v);
 	for (auto& v: m_assertions_retract)
@@ -796,8 +796,8 @@ bt_result bt_API::s_check_mus(long timeout_value, bt_expr_vec& assumptions, bt_e
   BT_SET_TIMEOUT(g_ctx);
   TIME_S(start_time);
   boolector_reset_assumptions(g_ctx);
-  random_shuffle(m_assertions.begin(), m_assertions.end());
-  random_shuffle(assumptions.begin(), assumptions.end());
+  avr_rand::shuffle(m_assertions.begin(), m_assertions.end());
+  avr_rand::shuffle(assumptions.begin(), assumptions.end());
 	for (auto& v: m_assertions)
 		boolector_assume(g_ctx, v);
 	for (auto& v: m_assertions_retract)

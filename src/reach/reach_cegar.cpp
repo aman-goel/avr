@@ -9,6 +9,7 @@
 
 
 #include "reach_core.h"
+#include "reach_random.h"
 #include <execinfo.h>	// to dump call stacks (backtrace, backtrace_symbols)
 
 namespace reach
@@ -3692,7 +3693,7 @@ void Reach::generalize_unsat_query(BR_QUERY& q, InstLL& muses, Solver* coreSolve
 
   if ((_numFrameRes % 50) == 0) {
   	InstV temp(softAnd.begin(), softAnd.end());
-  	random_shuffle(temp.begin(), temp.end());
+	avr_rand::shuffle(temp.begin(), temp.end());
   	copy(temp.begin(), temp.end(), softAnd.begin());
   }
   else
