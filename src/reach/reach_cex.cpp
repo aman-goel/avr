@@ -44,6 +44,7 @@ void CEX::print (ofstream& out, int length, InstL& propList) {
 	out << "sat" << "\n";
 	out << "b" << get_bad_id(propList) << "\n";
 	for (auto& c: cex) {
+		// out << c.to_string() << endl;
 		int idx = c.step;
 		if (backward)
 			idx = (length - c.step - 1);
@@ -243,18 +244,14 @@ void CEX::str_extend (string& s, int sz) {
 }
 
 bool CEX::is_input(Inst* v) {
-	SigInst* sig = SigInst::as(v);
-	if (sig) {
-		string name = sig->get_name();
-		if (name.length() > 3) {
-			std::regex pattern("_i\\d+_\\w+");
-			if (std::regex_match(name, pattern)) {
-				return true;
-			}
+	ostringstream tmp;
+	tmp << *(v);
+	string name = tmp.str();
+	if (name.length() > 3) {
+		std::regex pattern("_i\\d+_\\w+");
+		if (std::regex_match(name, pattern)) {
+			return true;
 		}
-		// if (Inst::_s_inp.find(sig) != Inst::_s_inp.end()) {
-		// 	return true;
-		// }
 	}
 	return false;
 }

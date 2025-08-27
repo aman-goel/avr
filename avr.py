@@ -13,18 +13,20 @@ import os
 import subprocess
 import argparse
 import ntpath
-from distutils.spawn import find_executable
+from shutil import which
 
-version=2.2
+version="2.3.0"
+avrPath = os.path.dirname(os.path.abspath(__file__))
+
 
 DEFAULT_TOP="-"
-DEFAULT_BIN="build/bin"
+DEFAULT_BIN=f"{avrPath}/build/bin"
 DEFAULT_BACKEND="y2bt"
 DEFAULT_NAME="test"
 DEFAULT_PROP_SELECT="-"
 DEFAULT_INIT_FILE="-"
 DEFAULT_OUT="output"
-DEFAULT_YOSYS="deps/yosys"
+DEFAULT_YOSYS=f"{avrPath}/deps/yosys"
 DEFAULT_CLK="clk"
 DEFAULT_TIMEOUT=3590
 DEFAULT_MEMOUT=118000
@@ -121,8 +123,8 @@ def split_path(name):
 def main():
 	known, opts = getopts(header)
 	print(short_header)
-	if not os.path.isfile("avr"):
-		raise Exception("avr: main shell script not found")
+	if not os.path.isfile(opts.bin + "/../../avr"):
+		raise Exception(f"avr: main shell script not found in {opts.bin}/../../avr")
 	if not os.path.isfile(opts.bin + "/vwn"):
 		raise Exception(f"avr: vwn binary not found in {opts.bin}")
 	if not os.path.isfile(opts.bin + "/dpa"):
@@ -173,8 +175,8 @@ def main():
 	else:
 		print("\t(frontend: yosys)")
 		if not os.path.isfile(opts.yosys + "/yosys"):
-			ys_path = find_executable('yosys')
-			if not ys_path:
+			ys_path = which('yosys')
+			if ys_path is None:
 				if not os.path.isfile("/usr/local/bin/yosys"):
 					raise Exception("Please install yosys (check deps/build_deps.sh)")
 				else:
@@ -185,7 +187,7 @@ def main():
 				opts.yosys = ys_path
 			print("\t(found yosys in %s)" % opts.yosys)
 	
-	command = "./avr"
+	command = f"{opts.bin}/../../avr"
 	command = command + " " + f
 	command = command + " " + str(opts.top)
 	command = command + " " + path

@@ -803,11 +803,12 @@ void Reach::refine(InstL& hardConstraints, ABSTRACT_CUBE& abCube, Inst *top_wo_r
 
 			if (res == 0) {
 				// the given formula is SAT
-//				Solver* mdl_solver = (new_conc_solver(false, AVR_BV_IDX, mdl));
-//				mdl_solver->s_assert(viol);
-//				int resNew = mdl_solver->s_check(BV_QUERY_TIMEOUT, true);
-//				assert(resNew == AVR_QSAT);
-//				retrieve_cex_val(viol, mdl_solver, false, true);
+				Solver* mdl_solver = (new_conc_solver(false, AVR_BV_IDX, mdl));
+				Inst* ve_viol = OpInst::create(OpInst::LogAnd, viol);
+				mdl_solver->s_assert(ve_viol);
+				int resNew = mdl_solver->s_check(BV_QUERY_TIMEOUT, true);
+				assert(resNew == AVR_QSAT);
+				retrieve_cex_val(ve_viol, mdl_solver, false, true);
 //	      collect_values(viol, mdl_solver, false, true);
 //				print_concrete_min_term();
 

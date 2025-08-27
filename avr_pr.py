@@ -12,7 +12,7 @@ import os, sys, time, argparse, shutil, signal
 from subprocess import Popen, PIPE
 from enum import Enum
 
-version="2.2.3"
+version="2.3.0"
 start_time = time.time()
 
 cmdSuffix = ""
@@ -25,21 +25,25 @@ disableNew = False
 numW = 0
 processes = {}
 
+avrPath = os.path.dirname(os.path.abspath(__file__))
+
 DEFAULT_TOP="-"
-DEFAULT_OUT="output"
+DEFAULT_OUT=f"output"
 DEFAULT_NAME="test"
-DEFAULT_WORKERS="workers.txt"
+DEFAULT_WORKERS=f"{avrPath}/workers.txt"
 #DEFAULT_BIN="bin"
 DEFAULT_TIMEOUT=3590
 DEFAULT_MEMOUT=118000
 DEFAULT_PRINT_SMT2=False
 DEFAULT_PRINT_WITNESS=True
+DEFAULT_WITNESS_FILE=f"{DEFAULT_OUT}/cex.witness"
 
 maxTimeSec = DEFAULT_TIMEOUT
 maxMemMB = DEFAULT_MEMOUT
 maxInitW = 16
 resultW = 0
 out_path = DEFAULT_OUT + "/" + DEFAULT_NAME
+witness_path = DEFAULT_OUT + "/cex.witness"
 
 header="""
 -----------------
@@ -72,6 +76,7 @@ def getopts(header):
 	p.add_argument('--memout',          help='memory limit in mega bytes (default: %s)' % DEFAULT_MEMOUT, type=int, default=DEFAULT_MEMOUT)
 	p.add_argument('--smt2',     		help='toggles printing system in smt2 format (default: %r)' % DEFAULT_PRINT_SMT2, action="count", default=0)
 	p.add_argument('--witness',         help='toggles printing witness (default: %r)' % DEFAULT_PRINT_WITNESS, action="count", default=0)
+	p.add_argument('--witness-file',    help='<output-path-for-witness-file> (default: %s)' % DEFAULT_WITNESS_FILE, type=str, default=DEFAULT_WITNESS_FILE)
 	args, leftovers = p.parse_known_args()
 	return args, p.parse_args()
 
@@ -81,6 +86,7 @@ def setup():
 	global maxTimeSec
 	global maxMemMB
 	global out_path
+	global witness_path
 	known, opts = getopts(header)
 	print(short_header)
 	#if not os.path.isfile(opts.bin + "/avr"):
@@ -97,9 +103,11 @@ def setup():
 	if os.path.exists(out_path):
 		shutil.rmtree(out_path)
 	os.makedirs(out_path)
+	print(f"Out path: {out_path}")
 
 	if not os.path.isfile(opts.file):
 		raise Exception("Unable to find top file: %s" % opts.file)
+	witness_path = opts.witness_file
 
 	print(time_str(), "(starting avr proof race)")
 	print(time_str(), "(output dir: %s)" % out_path)
@@ -160,7 +168,7 @@ def run_command_all():
 			if (maxWorkers < 0 or len(commands) < maxWorkers):
 				cmd = x.strip()
 				if not cmd.startswith('#'):
-					commands.append(x.strip())
+					commands.append(f"python3 {avrPath}/{x.strip()}")
 	print (time_str(), "(max %d workers)" % len(commands))
 
 def run_command(idx):
@@ -381,6 +389,7 @@ def post_compile(retval):
 		#elif filename.endswith('result.pr') or filename.endswith('design.smt2') or filename.startswith('inv.') or filename.startswith('cex.witness'):
 		elif filename.endswith('proof.smt2') or filename.endswith('design.smt2') or filename.startswith('inv.') or filename.startswith('cex.witness'):
 			shutil.copy(res_path + filename, out_path)
+			shutil.copy(res_path + filename, witness_path)
 		elif filename.endswith('btormc.out'):
 			shutil.copy(res_path + filename, out_path+ "/cex.witness")
 	print(time_str(), "(copied results from worker %d in %s)" % (resultW, out_path))

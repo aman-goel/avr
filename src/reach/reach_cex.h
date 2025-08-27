@@ -37,6 +37,16 @@ public:
 		constant = NULL;
 		isinput = false;
 	}
+
+	// A helper method for printing the content to a string.
+    std::string to_string() const {
+        std::stringstream ss;
+        ss << "CEX_NODE {step: " << step 
+           << ", input: " << *input
+           << ", constant: " << *constant
+           << ", isinput: " << (isinput ? "true" : "false") << "}";
+        return ss.str();
+    }
 };
 
 class CEX {
