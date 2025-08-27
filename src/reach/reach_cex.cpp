@@ -16,6 +16,7 @@
  */
 
 #include "reach_cex.h"
+#include <regex>
 
 namespace reach
 {
@@ -219,7 +220,18 @@ void CEX::process_step(ofstream& out, InstToMpzM& inMap, int idx, bool isinput) 
 
 string CEX::get_string (Inst* lhs, mpz_class& val) {
 	string s = val.get_str(2);
-	str_extend(s, lhs->get_size());
+	if (lhs->get_sort_type() == arraytype) {
+		SORT* d = lhs->get_sort_domain();
+		SORT* r = lhs->get_sort_range();
+		assert(d->type == bvtype);
+		assert(r->type == bvtype);
+		int width = d->sz;
+		int size = r->sz;
+		int maxaddress = pow(2, width) - 1;
+		str_extend(s, (maxaddress+1) * size);
+	} else {
+		str_extend(s, lhs->get_size());
+	}
 	return s;
 }
 
@@ -235,13 +247,14 @@ bool CEX::is_input(Inst* v) {
 	if (sig) {
 		string name = sig->get_name();
 		if (name.length() > 3) {
-			if (name[0] == '_' && name[1] == 'i') {
+			std::regex pattern("_i\\d+_\\w+");
+			if (std::regex_match(name, pattern)) {
 				return true;
 			}
 		}
-		if (Inst::_s_inp.find(sig) != Inst::_s_inp.end()) {
-			return true;
-		}
+		// if (Inst::_s_inp.find(sig) != Inst::_s_inp.end()) {
+		// 	return true;
+		// }
 	}
 	return false;
 }
