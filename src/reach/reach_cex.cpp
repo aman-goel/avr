@@ -50,7 +50,7 @@ void CEX::print (ofstream& out, int length, InstL& propList) {
 			idx = (length - c.step - 1);
 		assert(idx >= 0);
 		assert(idx <= length);
-		c.isinput &= is_input(c.input);
+		c.isinput = is_input(c.input);
 
 		InstToMpzM::iterator mit;
 		if (c.isinput) {
@@ -247,9 +247,11 @@ bool CEX::is_input(Inst* v) {
 	ostringstream tmp;
 	tmp << *(v);
 	string name = tmp.str();
+
 	if (name.length() > 3) {
-		std::regex pattern("_i\\d+_\\w+");
-		if (std::regex_match(name, pattern)) {
+		int id = get_id(v);
+		string prefix = "_i" + to_string(id);
+		if (name.rfind(prefix, 0) == 0) {
 			return true;
 		}
 	}
