@@ -161,12 +161,11 @@ void CEX::process_step(ofstream& out, InstToMpzM& inMap, int idx, bool isinput) 
 	for (auto& m: idMap) {
 		int id = m.first;
 		list < pair < string, string > >& rhs = m.second;
-		if (id < 0 || rhs.size() == 1) {
+		if (id < 0) {
 			for (auto& entry: rhs)
 				out << id << " " << entry.second << " |" << entry.first << "|" << label << idx << "\n";
 		}
 		else {
-			assert (rhs.size() > 1);
 			string name = rhs.front().first;
 			int sz = -1;
 
@@ -180,7 +179,12 @@ void CEX::process_step(ofstream& out, InstToMpzM& inMap, int idx, bool isinput) 
 			string prefix = name.substr(0, pos - 1);
 
 			pos = prefix.find_last_of("$");
-			assert (pos != string::npos);
+			if (pos == string::npos) {
+				for (auto& entry: rhs)
+					out << id << " " << entry.second << " |" << entry.first << "|" << label << idx << "\n";
+				continue;
+			}
+
 			sz = stoi(prefix.substr(pos+1));
 			string signame = prefix.substr(0, pos);
 			assert(sz > 0);
