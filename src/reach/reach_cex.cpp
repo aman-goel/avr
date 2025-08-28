@@ -250,7 +250,7 @@ bool CEX::is_input(Inst* v) {
 
 	if (name.length() > 3) {
 		int id = get_id(v);
-		string prefix = "_i" + to_string(id);
+		string prefix = "_i" + to_string(id) + "_";
 		if (name.rfind(prefix, 0) == 0) {
 			return true;
 		}
