@@ -1511,7 +1511,7 @@ void z3_API::get_value_arr(bool abstract, SORT& sort, z3_expr_ptr decl, string& 
 					cout << "me: is true" << endl;
 #endif
 					assert(d.type == bvtype);
-			    for (int i = pow(2, d.sz) - 1; i >= 0; i--) {
+			    for (long i = pow(2, d.sz) - 1; i >= 0; i--) {
 			    	string addrstr = val_to_str(i, d.sz, false);
 			    	if (vMap.find(addrstr) == vMap.end()) {
 			    		vMap[addrstr] = negated ? "0" : "1";
@@ -1526,7 +1526,7 @@ void z3_API::get_value_arr(bool abstract, SORT& sort, z3_expr_ptr decl, string& 
 					cout << "me: is false" << endl;
 #endif
 					assert(d.type == bvtype);
-			    for (int i = pow(2, d.sz) - 1; i >= 0; i--) {
+			    for (long i = pow(2, d.sz) - 1; i >= 0; i--) {
 			    	string addrstr = val_to_str(i, d.sz, false);
 			    	if (vMap.find(addrstr) == vMap.end()) {
 			    		vMap[addrstr] = negated ? "1" : "0";
@@ -1551,7 +1551,7 @@ void z3_API::get_value_arr(bool abstract, SORT& sort, z3_expr_ptr decl, string& 
 					for (int i = 0; i < rhsstr.size(); i++)
 						assert(isdigit(rhsstr[i]));
 
-			    for (int i = pow(2, d.sz) - 1; i >= 0; i--) {
+			    for (long i = pow(2, d.sz) - 1; i >= 0; i--) {
 			    	string addrstr = val_to_str(i, d.sz, false);
 			    	if (vMap.find(addrstr) == vMap.end()) {
 			    		vMap[addrstr] = (addrstr == rhsstr) ? (negated ? "0" : "1") : (negated ? "1" : "0");
@@ -1577,7 +1577,7 @@ void z3_API::get_value_arr(bool abstract, SORT& sort, z3_expr_ptr decl, string& 
 				assert(Z3_get_index_value(*g_ctx, me) == 0);
 				assert(d.type == bvtype);
 
-		    for (int i = pow(2, d.sz) - 1; i >= 0; i--) {
+		    for (long i = pow(2, d.sz) - 1; i >= 0; i--) {
 		    	string addrstr = val_to_str(i, d.sz, false);
 		    	if (vMap.find(addrstr) == vMap.end()) {
 		    		vMap[addrstr] = val_to_str((negated ? !i : i), r.sz, false);
@@ -1647,7 +1647,7 @@ void z3_API::get_value_arr(bool abstract, SORT& sort, z3_expr_ptr decl, string& 
 				else if (defvalue.is_var()) {
 					assert(Z3_get_index_value(*g_ctx, defvalue) == 0);
 					assert(r.type == bvtype);
-					for (int i = pow(2, d.sz) - 1; i >= 0; i--) {
+					for (long i = pow(2, d.sz) - 1; i >= 0; i--) {
 						string addrstr = val_to_str(i, d.sz, false);
 						if (vMap.find(addrstr) == vMap.end()) {
 							vMap[addrstr] = addrstr;
@@ -4752,9 +4752,9 @@ void z3_API::inst2yices(Inst*e, bool bvAllConstraints)
 					string value = NumInst::as(init_val)->get_mpz()->get_str(2);
 					while (value.length() < e->get_size())
 						value = "0" + value;
-					int maxaddress = pow(2, width) - 1;
+					long maxaddress = pow(2, width) - 1;
 					Inst* defval;
-					for (int i = 0; i <= maxaddress; i++) {
+					for (long i = 0; i <= maxaddress; i++) {
 						string v = value.substr(i*size, size);
 						Inst* data = NumInst::create(v, size, 2, SORT());
 						if (i == 0) {

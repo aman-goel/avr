@@ -365,7 +365,7 @@ int Reach::kind_run(int kmax) {
 }
 
 Inst* Reach::unroll_to(Inst* top, int u, int v, bool add_to_cex) {
-	//	cout << "top: " << *top << endl;
+		// cout << "top: " << *top << endl;
   if (top->get_visit3()) {
   	return top->acex_coi;
   }

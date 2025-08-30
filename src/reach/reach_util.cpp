@@ -7450,7 +7450,7 @@ void Reach::collect_system() {
 
 //  for (int i = 1; i <= 4; i++) {
 ////  for (int i = 1; i <= INTERPRET_UF_NUM_LIMIT; i++) {
-//    for (int j = 0; j < pow(2, i); j++) {
+//    for (long j = 0; j < pow(2, i); j++) {
 ////    	cout << "creating " << i << "'d" << j << endl;
 //    	NumInst::create(j, i);
 //    }

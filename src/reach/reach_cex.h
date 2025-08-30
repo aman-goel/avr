@@ -61,7 +61,7 @@ public:
 	void print (ofstream& out, int length, InstL& propList);
 	void process_step (ofstream& out, InstToMpzM& m, int idx, bool isinput);
 	string get_string (Inst* lhs, mpz_class& val);
-	void str_extend (string& s, int sz);
+	void str_extend (string& s, long sz);
 	int get_id(Inst* v);
 	bool is_input(Inst* v);
 	int get_bad_id(InstL& propList);

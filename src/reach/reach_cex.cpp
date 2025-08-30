@@ -44,13 +44,13 @@ void CEX::print (ofstream& out, int length, InstL& propList) {
 	out << "sat" << "\n";
 	out << "b" << get_bad_id(propList) << "\n";
 	for (auto& c: cex) {
-		// out << c.to_string() << endl;
 		int idx = c.step;
 		if (backward)
 			idx = (length - c.step - 1);
 		assert(idx >= 0);
 		assert(idx <= length);
 		c.isinput = is_input(c.input);
+		AVR_LOG(8, 1, c.to_string() << endl);
 
 		InstToMpzM::iterator mit;
 		if (c.isinput) {
@@ -75,6 +75,7 @@ void CEX::print (ofstream& out, int length, InstL& propList) {
 
 		if (c.constant->get_size() != 1) {
 			mpz_class* val = c.constant->get_ival();
+			AVR_LOG(8, 1, "Value for " << *c.input << " with constant " << *c.constant << " is " << *val << endl);
 			if (val != INVALID_SMPZ) {
 				if (c.isinput)
 					statev[idx].first[c.input] = *val;
@@ -87,6 +88,7 @@ void CEX::print (ofstream& out, int length, InstL& propList) {
 		}
 		else {
 			int val = c.constant->get_bval();
+			AVR_LOG(8, 1, "Value for " << *c.input << " with constant " << *c.constant << " is " << val << endl);
 			if (val == 1) {
 				if (c.isinput)
 					statev[idx].first[c.input] =  mpz_class("1", 10);
@@ -145,8 +147,8 @@ void CEX::process_step(ofstream& out, InstToMpzM& inMap, int idx, bool isinput) 
 			assert(r->type == bvtype);
 			int width = d->sz;
 			int size = r->sz;
-			int maxaddress = pow(2, width) - 1;
-			for (int i = maxaddress; i >= 0; i--) {
+			long maxaddress = pow(2, width) - 1;
+			for (long i = maxaddress; i >= 0; i--) {
 				string data_str = val.substr(i*size, size);
 				Inst* address = NumInst::create(maxaddress - i, width, SORT());
 				mpz_class* valn = NumInst::as(address)->get_mpz();
@@ -232,7 +234,7 @@ string CEX::get_string (Inst* lhs, mpz_class& val) {
 		assert(r->type == bvtype);
 		int width = d->sz;
 		int size = r->sz;
-		int maxaddress = pow(2, width) - 1;
+		long maxaddress = pow(2, width) - 1;
 		str_extend(s, (maxaddress+1) * size);
 	} else {
 		str_extend(s, lhs->get_size());
@@ -240,9 +242,9 @@ string CEX::get_string (Inst* lhs, mpz_class& val) {
 	return s;
 }
 
-void CEX::str_extend (string& s, int sz) {
-	int insz = s.length();
-	for (int i = insz; i < sz; i++) {
+void CEX::str_extend (string& s, long sz) {
+	long insz = s.length();
+	for (long i = insz; i < sz; i++) {
 		s = "0" + s;
 	}
 }

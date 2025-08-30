@@ -1027,7 +1027,7 @@ void bt_API::get_value_arr(bool abstract, SORT& sort, bt_expr_ptr decl, string& 
 //  if (false && !abstract && d.type == bvtype) {
   if (!abstract && d.type == bvtype && r.type == bvtype) {
     sval = "";
-    for (int i = pow(2, d.sz) - 1; i >= 0; i--) {
+    for (long i = pow(2, d.sz) - 1; i >= 0; i--) {
     	map < string, string >::iterator mit = vMap.find(val_to_str(i, d.sz, false));
     	if (mit != vMap.end())
     		sval += (*mit).second;
@@ -1890,9 +1890,9 @@ void bt_API::inst2yices(Inst*e, bool bvAllConstraints) {
 					string value = NumInst::as(init_val)->get_mpz()->get_str(2);
 					while (value.length() < e->get_size())
 						value = "0" + value;
-					int maxaddress = pow(2, width) - 1;
+					long maxaddress = pow(2, width) - 1;
 					bool initialized = false;
-					for (int i = 0; i <= maxaddress; i++) {
+					for (long i = 0; i <= maxaddress; i++) {
 						string v;
 						if (value.size() <= size) {
 							v = value;

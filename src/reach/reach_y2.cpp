@@ -5732,7 +5732,7 @@ void y2_API::get_value_arr(bool abstract, SORT& sort, y2_val* decl, string& sval
   //  if (false && !abstract && d.type == bvtype) {
 	if (!abstract && d.type == bvtype && r.type == bvtype) {
     sval = "";
-    for (int i = pow(2, d.sz) - 1; i >= 0; i--) {
+    for (long i = pow(2, d.sz) - 1; i >= 0; i--) {
     	map < string, string >::iterator mit = vMap.find(val_to_str(i, d.sz, false));
     	if (mit != vMap.end())
     		sval += (*mit).second;
@@ -6633,8 +6633,8 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 								string value = NumInst::as(init_val)->get_mpz()->get_str(2);
 								while (value.length() < e->get_size())
 									value = "0" + value;
-								int maxaddress = pow(2, width) - 1;
-								for (int i = 0; i <= maxaddress; i++) {
+								long maxaddress = pow(2, width) - 1;
+								for (long i = 0; i <= maxaddress; i++) {
 									string v;
 									if (value.size() <= size) {
 										v = value;

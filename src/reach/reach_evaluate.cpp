@@ -3099,7 +3099,7 @@ void Reach::evaluate_simulation_relation(int mode, Inst*e, SIMULATION_POSITION& 
 //							if (val != 0)
 //							{
 //								string sval = Solver::val_to_str(val, num->get_size());
-//								for (int i = 0; i < pow(2, width); i++) {
+//								for (long i = 0; i < pow(2, width); i++) {
 //									string segment = sval.substr(0, size);
 //									sval.erase(0, size);
 //									Inst* valInst = NumInst::create(segment, size, 2);
