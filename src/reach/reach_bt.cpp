@@ -1007,7 +1007,7 @@ void bt_API::get_value_arr(bool abstract, SORT& sort, bt_expr_ptr decl, string& 
   SORT& d = sort.args.front();
   SORT& r = sort.args.back();
 
-  string defstr = "";
+  string defstr = "0";
 	map < string, string > vMap;
 	for (int i = 0; i < size; i++) {
 		string addrstr = (indices)[i];
@@ -1026,14 +1026,12 @@ void bt_API::get_value_arr(bool abstract, SORT& sort, bt_expr_ptr decl, string& 
 
 //  if (false && !abstract && d.type == bvtype) {
   if (!abstract && d.type == bvtype && r.type == bvtype) {
-    sval = "";
-    for (long i = pow(2, d.sz) - 1; i >= 0; i--) {
-    	map < string, string >::iterator mit = vMap.find(val_to_str(i, d.sz, false));
-    	if (mit != vMap.end())
-    		sval += (*mit).second;
-    	else
-    		sval += defstr;
-    }
+    sval = "1";
+	for (const auto& pair : vMap) {
+		sval += d.cast(pair.first);
+		sval += r.cast(pair.second);
+	}
+	sval += r.cast(defstr);
   }
   else {
     sval = "a" + defstr + "b";
@@ -1888,33 +1886,20 @@ void bt_API::inst2yices(Inst*e, bool bvAllConstraints) {
 					Inst* init_val = e->get_children()->back();
 					assert(init_val->get_type() == Num);
 					string value = NumInst::as(init_val)->get_mpz()->get_str(2);
-					while (value.length() < e->get_size())
-						value = "0" + value;
-					long maxaddress = pow(2, width) - 1;
-					bool initialized = false;
-					for (long i = 0; i <= maxaddress; i++) {
-						string v;
-						if (value.size() <= size) {
-							v = value;
-						} else if (value.size() > (i*size)) {
-							v = value.substr(i*size, size);
-						} else {
-							v = "0";
-						}
-						Inst* address = NumInst::create(maxaddress - i, width, SORT());
-						Inst* data = NumInst::create(v, size, 2, SORT());
+					string defstr = "0";
+					map < string, string > vMap;
+					e->get_sort().read_array_value(value, defstr, vMap);
+
+					Inst* data = NumInst::create(defstr, size, 2, SORT());
+					bt_expr_ptr b = create_bt_number(NumInst::as(data));
+					log = boolector_const_array(g_ctx, functt, b);
+					for (const auto& pair : vMap) {
+						Inst* address = NumInst::create(pair.first, width, 2, SORT());
+						Inst* data = NumInst::create(pair.second, size, 2, SORT());
+						bt_expr_ptr a = create_bt_number(NumInst::as(address));
 						bt_expr_ptr b = create_bt_number(NumInst::as(data));
-						if (i == 0) {
-							initialized = true;
-							log = boolector_const_array(g_ctx, functt, b);
-//							cout << "constarray: " << print_term(log) << endl;
-						}
-						else {
-							bt_expr_ptr a = create_bt_number(NumInst::as(address));
-							log = boolector_write(g_ctx, log, a, b);
-						}
+						log = boolector_write(g_ctx, log, a, b);
 					}
-					assert(initialized);
 //					cout << "updatearray: " << print_term(log) << endl;
 				} else if (m_mapper->fetch_var(e) == TheoryMapper::EUF_VAR) {
 					bt_loge("unsupported");

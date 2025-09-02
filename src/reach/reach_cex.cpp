@@ -135,7 +135,7 @@ void CEX::process_step(ofstream& out, InstToMpzM& inMap, int idx, bool isinput) 
 	map < int, list < pair < string, string > > > idMap;
 	for (auto& m: inMap) {
 		int id = get_id(m.first);
-		string val = get_string(m.first, m.second);
+		string val = m.second.get_str(2);
 		ostringstream tmp;
 		tmp << *(m.first);
 		string name = tmp.str();
@@ -147,18 +147,41 @@ void CEX::process_step(ofstream& out, InstToMpzM& inMap, int idx, bool isinput) 
 			assert(r->type == bvtype);
 			int width = d->sz;
 			int size = r->sz;
-			long maxaddress = pow(2, width) - 1;
-			for (long i = maxaddress; i >= 0; i--) {
-				string data_str = val.substr(i*size, size);
-				Inst* address = NumInst::create(maxaddress - i, width, SORT());
-				mpz_class* valn = NumInst::as(address)->get_mpz();
-				string addr_str = get_string(address, *valn);
 
-				idMap[id].push_back(make_pair(name, "[" + addr_str + "] " + data_str));
+			string defstr = "0";
+			map < string, string > vMap;
+			(m.first)->get_sort().read_array_value(val, defstr, vMap);
+			bool isDefZero = true;
+			for (char c : defstr) {
+				if (c != '0') {
+					isDefZero = false;
+					break;
+				}
+			}
+			if (isDefZero) {
+				for (const auto& pair : vMap) {
+					string addr_str = pair.first;
+					string data_str = pair.second;
+					idMap[id].push_back(make_pair(name, "[" + addr_str + "] " + data_str));
+				}
+			} else {
+				long maxaddress = pow(2, width) - 1;
+				for (long i = maxaddress; i >= 0; i--) {
+					Inst* address = NumInst::create(maxaddress - i, width, SORT());
+					string addr_str = d->cast(NumInst::as(address)->get_mpz()->get_str(2));
+					string data_str = defstr;
+					auto it = vMap.find(addr_str);
+					if (it != vMap.end()) {
+						data_str = it->second;
+					}
+					idMap[id].push_back(make_pair(name, "[" + addr_str + "] " + data_str));
+				}
 			}
 		}
-		else
+		else {
+			val = m.first->get_sort().cast(val);
 			idMap[id].push_back(make_pair(name, val));
+		}
 	}
 	for (auto& m: idMap) {
 		int id = m.first;

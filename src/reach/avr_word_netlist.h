@@ -944,6 +944,19 @@ struct SORT {
 		return (this->type != rhs.type) ||
 				 ((this->type == bvtype) ? (this->sz != rhs.sz) : (this->args != rhs.args));
 	}
+	string cast(string s) {
+		switch(type) {
+		case bvtype: {
+			long insz = s.length();
+			for (long i = insz; i < sz; i++) {
+				s = "0" + s;
+			}
+		}
+			return s.substr(0, sz);
+		default:
+			return s;
+		}
+	}
 	string sort2str() {
 		switch(type) {
 		case bvtype:
@@ -972,6 +985,32 @@ struct SORT {
 			return "unknown";
 		}
 		return "unknown";
+	}
+	void read_array_value(string value, string& defval, map< string, string>& vMap) {
+		assert(args.size() == 2);
+		SORT* d = &args.front();
+		SORT* r = &args.back();
+		assert(d->type == bvtype);
+		assert(r->type == bvtype);
+
+		int insz = value.length();
+		if (insz <= r->sz) {
+			defval = r->cast(value);
+		} else {
+			string sval = value;
+			assert(sval[0] == '1');
+			sval.erase(0, 1);
+			while (sval.length() > (d->sz + r->sz)) {
+				string address = sval.substr(0, d->sz);
+				sval.erase(0, d->sz);
+				string data = sval.substr(0, r->sz);
+				sval.erase(0, r->sz);
+
+				vMap[address] = data;
+			}
+			defval = r->cast(sval);
+		}
+		
 	}
 };
 inline std::ostream &operator<<(std::ostream &out, SORT &s) {

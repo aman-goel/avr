@@ -83,9 +83,9 @@ int Reach::bmc_run(int kmax) {
 			_cext_idx.push_back(step);
 			Inst::init_visit3();
 
+			conjunct_per.push_back(unroll_to(_ve_assume_orig, step, step + 1));
 			bm.dest = unroll_to(_ve_model, step, step + 1);
 			conjunct_per.push_back(bm.dest);
-			conjunct_per.push_back(unroll_to(_ve_assume_orig, step, step + 1));
 			bm.solv_c->s_assert(conjunct_per);
 #ifdef BMC_ABSTRACT
 		  if (bm.use_abstract) {
@@ -215,12 +215,10 @@ int Reach::kind_run(int kmax) {
 
 	InstL conjunct_initC;
 	Inst* tve_init;
-	Inst* tve;
 
 	tve_init = unroll_to(_ve_init, step, step + 1);
 
-	tve = unroll_to(_ve_assume_orig, step, step + 1);
-	conjunct_initC.push_back(tve);
+	conjunct_initC.push_back(unroll_to(_ve_assume_orig, step, step + 1));
 
 	bm.dest = unroll_to(_ve_model, step, step + 1);
 	conjunct_initC.push_back(bm.dest);
@@ -232,34 +230,29 @@ int Reach::kind_run(int kmax) {
 		InstL conjunct_stepC, conjunct_stepA, conjunct_perC, conjunct_perA;
 		if (first) {
 			AVR_LOG(20, 5, "(init: asserting !P" << step << ")\n");
-			tve = unroll_to(_ve_prop_eq_0, step, step + 1);
-			conjunct_stepC.push_back(tve);
+			conjunct_stepC.push_back(unroll_to(_ve_prop_eq_0, step, step + 1));
 		}
 		else {
 			AVR_LOG(20, 5, "(conc: asserting P" << step << ")\n");
-			tve = unroll_to(_ve_prop_eq_1, step, step + 1);
-			conjunct_perC.push_back(tve);
+			conjunct_perC.push_back(unroll_to(_ve_prop_eq_1, step, step + 1));
 
 			AVR_LOG(20, 5, "(asserting T" << step << ")\n");
-			tve = unroll_to(_ve_model_nsf, step, step + 1);
-			conjunct_perC.push_back(tve);
+			conjunct_perC.push_back(unroll_to(_ve_model_nsf, step, step + 1));
 
 			step++;
 			_cext_idx.push_back(step);
 			Inst::init_visit3();
 
+			conjunct_perC.push_back(unroll_to(_ve_assume_orig, step, step + 1));
+
 			bm.dest = unroll_to(_ve_model, step, step + 1);
 			conjunct_perC.push_back(bm.dest);
-
-			tve = unroll_to(_ve_assume_orig, step, step + 1);
-			conjunct_perC.push_back(tve);
 
 			bm.solv_c->s_assert(conjunct_perC);
 			AVR_LOG(20, 8, "asserting: " << conjunct_perC << endl);
 
 			AVR_LOG(20, 5, "(asserting !P" << step << ")\n");
-			tve = unroll_to(_ve_prop_eq_0, step, step + 1);
-			conjunct_stepC.push_back(tve);
+			conjunct_stepC.push_back(unroll_to(_ve_prop_eq_0, step, step + 1));
 		}
 
 	  {

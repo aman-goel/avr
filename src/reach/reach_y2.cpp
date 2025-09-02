@@ -5731,14 +5731,12 @@ void y2_API::get_value_arr(bool abstract, SORT& sort, y2_val* decl, string& sval
 
   //  if (false && !abstract && d.type == bvtype) {
 	if (!abstract && d.type == bvtype && r.type == bvtype) {
-    sval = "";
-    for (long i = pow(2, d.sz) - 1; i >= 0; i--) {
-    	map < string, string >::iterator mit = vMap.find(val_to_str(i, d.sz, false));
-    	if (mit != vMap.end())
-    		sval += (*mit).second;
-    	else
-    		sval += defstr;
-    }
+    sval = "1";
+	for (const auto& pair : vMap) {
+		sval += d.cast(pair.first);
+		sval += r.cast(pair.second);
+	}
+	sval += r.cast(defstr);
   }
   else {
     sval = "a" + defstr + "b";
@@ -6631,19 +6629,19 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 								Inst* init_val = e->get_children()->back();
 								assert(init_val->get_type() == Num);
 								string value = NumInst::as(init_val)->get_mpz()->get_str(2);
-								while (value.length() < e->get_size())
-									value = "0" + value;
+								string defstr = "0";
+								map < string, string > vMap;
+								e->get_sort().read_array_value(value, defstr, vMap);
+								
 								long maxaddress = pow(2, width) - 1;
 								for (long i = 0; i <= maxaddress; i++) {
-									string v;
-									if (value.size() <= size) {
-										v = value;
-									} else if (value.size() > (i*size)) {
-										v = value.substr(i*size, size);
-									} else {
-										v = "0";
-									}
 									Inst* address = NumInst::create(maxaddress - i, width, SORT());
+									string address_str = NumInst::as(address)->get_mpz()->get_str(2);
+									string v = defstr;
+									auto it = vMap.find(address_str);
+									if (it != vMap.end()) {
+										v = it->second;
+									}
 									Inst* data = NumInst::create(v, size, 2, SORT());
 									y2_expr_ptr a = create_y2_number(NumInst::as(address));
 									y2_expr_ptr b = create_y2_number(NumInst::as(data));
