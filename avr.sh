@@ -15,6 +15,8 @@ benchmarkName="${benchmarkFileName%.*}"
 outFile="${outRoot}/${benchmarkName}.out"
 errFile="${outRoot}/${benchmarkName}.err"
 
+rm -rf ${outRoot}/pr_${benchmarkName}
+
 CMD="python3 ${avrPath}/avr_pr.py ${benchmarkFile} --witness-file ${witnessFile} --out ${outRoot} --name ${benchmarkName}"
 echo "Running `$CMD`"
 $CMD  > ${outFile} 2> ${errFile}
