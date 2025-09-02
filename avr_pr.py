@@ -16,7 +16,7 @@ version="2.3.0"
 start_time = time.time()
 
 cmdSuffix = ""
-maxWorkers = 16
+maxWorkers = 32
 
 optSuffix = " "
 commands = []
@@ -32,15 +32,15 @@ DEFAULT_OUT=f"output"
 DEFAULT_NAME="test"
 DEFAULT_WORKERS=f"{avrPath}/workers.txt"
 #DEFAULT_BIN="bin"
-DEFAULT_TIMEOUT=3590
-DEFAULT_MEMOUT=118000
+DEFAULT_TIMEOUT=3595
+DEFAULT_MEMOUT=115000
 DEFAULT_PRINT_SMT2=False
 DEFAULT_PRINT_WITNESS=True
 DEFAULT_WITNESS_FILE=f"{DEFAULT_OUT}/cex.witness"
 
 maxTimeSec = DEFAULT_TIMEOUT
 maxMemMB = DEFAULT_MEMOUT
-maxInitW = 16
+maxInitW = 25
 resultW = 0
 out_path = DEFAULT_OUT + "/" + DEFAULT_NAME
 witness_path = DEFAULT_OUT + "/cex.witness"
@@ -222,7 +222,7 @@ def run_commands_new(maxW):
 		print (time_str(), "(total %d workers using %.0f MB)" % (numW, mem_usage_all()))
 	
 def kill_allowed(mem_usage):
-	if mem_usage >= (0.9*maxMemMB):
+	if mem_usage >= (0.8*maxMemMB):
 		return True
 	#print("kill not allowed since %f < %f" % (mem_usage, 0.98*maxMemMB))
 	return False

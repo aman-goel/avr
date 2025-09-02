@@ -6,7 +6,7 @@ if [ "$#" -ne 2 ]; then
   exit 1 # Exit with a non-zero status to indicate an error
 fi
 
-outRoot="/home/hwmcc/test_job/tmp"
+outRoot="/tmp"
 avrPath=$(dirname "$0")
 benchmarkFile=$1
 witnessFile=$2
@@ -25,3 +25,5 @@ elif grep -q "proof race finished with answer safe" ${outFile}; then
 else
   echo "unknown"
 fi
+
+rm -rf ${outRoot}/pr_${benchmarkName}
