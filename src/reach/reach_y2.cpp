@@ -2168,10 +2168,10 @@ y2_result y2_API::query_non_inc(long timeout_value, bool getModel)
 //				cout << print_term(c) << endl;
 //				ni_solver2->s_assert_constraint(c);
 //				res2 = ni_solver2->s_check_inc(timeout_value);
-//				if (res2 == STATUS_UNSAT)
+//				if (res2 == YICES_STATUS_UNSAT)
 //					break;
 //			}
-//			if (res2 == STATUS_UNSAT)
+//			if (res2 == YICES_STATUS_UNSAT)
 //				break;
 //		}
 //		cout << "n2inc: " << res2 << endl;
@@ -2255,7 +2255,7 @@ int y2_API::get_mus(long timeout_value, InstL& vel, InstL& mus, int& numSat, int
 	for (InstL::iterator sit = queue.begin(); sit != queue.end(); sit++)
 	{
 		smt_status_t result = yices_context_status(m_ctx);
-		if (result == STATUS_UNSAT)
+		if (result == YICES_STATUS_UNSAT)
 		{
 			AVR_LOG(17, 5, "\t\t(breaking before " << print_term(inst_to_y[*sit].first) << ")" << endl);
 			break;
@@ -2277,7 +2277,7 @@ int y2_API::get_mus(long timeout_value, InstL& vel, InstL& mus, int& numSat, int
   AVR_LOG(17, 5, "\t\t(initial-check) " << initial_res << endl);
 
 	InstL satBucket;
-	if (initial_res == STATUS_UNSAT)
+	if (initial_res == YICES_STATUS_UNSAT)
 	{
 		numUnsat++;
 		if (recordTime)
@@ -2324,10 +2324,10 @@ int y2_API::get_mus(long timeout_value, InstL& vel, InstL& mus, int& numSat, int
 		  TIME_E(start_time, end_time, time_res);
 			AVR_LOG(17, 5, "status_check: " << result << endl);
 
-			if (result == STATUS_UNSAT)
+			if (result == YICES_STATUS_UNSAT)
 			{
 				numUnsat++;
-				assert(result == STATUS_UNSAT);
+				assert(result == YICES_STATUS_UNSAT);
 		    if (recordTime)
 		    {
 		      time_unsat_min_muses_reach += time_diff;
@@ -2337,7 +2337,7 @@ int y2_API::get_mus(long timeout_value, InstL& vel, InstL& mus, int& numSat, int
 			}
 			else
 			{
-				if (result != STATUS_SAT)
+				if (result != YICES_STATUS_SAT)
 				{
 					assert(result == STATUS_INTERRUPTED);
 					cout << "Timeout while deriving MUS_a" << endl;
@@ -2382,7 +2382,7 @@ int y2_API::get_mus(long timeout_value, InstL& vel, InstL& mus, int& numSat, int
 //			yices_print_model(stdout, m_model);
 
 		numSat++;
-		assert(initial_res == STATUS_SAT);
+		assert(initial_res == YICES_STATUS_SAT);
     if (recordTime)
     {
       time_sat_min_muses_reach += time_diff;
@@ -2492,7 +2492,7 @@ int y2_API::find_unsat_core(long timeout_value, InstL& hardQ, InstL& vel, InstLL
   for (list<y2_expr>::iterator sit = queue.begin(); sit != queue.end(); sit++)
   {
     smt_status_t result = yices_context_status(m_ctx);
-    if (result == STATUS_UNSAT)
+    if (result == YICES_STATUS_UNSAT)
     {
       AVR_LOG(17, 5, "\t\t(breaking before " << print_term(*sit) << ")" << endl);
       break;
@@ -2510,7 +2510,7 @@ int y2_API::find_unsat_core(long timeout_value, InstL& hardQ, InstL& vel, InstLL
   AVR_LOG(17, 5, "\t\t(initial-check) " << initial_res << endl);
 
   InstL satBucket;
-  if (initial_res == STATUS_UNSAT)
+  if (initial_res == YICES_STATUS_UNSAT)
   {
     numUnsat++;
     time_unsat_core_muses_reach += time_diff;
@@ -2576,7 +2576,7 @@ int y2_API::find_unsat_core(long timeout_value, InstL& hardQ, InstL& vel, InstLL
   else
   {
     numSat++;
-    assert(initial_res == STATUS_SAT);
+    assert(initial_res == YICES_STATUS_SAT);
     time_sat_core_muses_reach += time_diff;
     if (time_diff > time_max_sat_core_muses_reach)
       time_max_sat_core_muses_reach = time_diff;
@@ -2616,7 +2616,7 @@ int y2_API::find_unsat_core(long timeout_value, InstL& hardQ, InstL& vel, InstLL
 
       set <y2_expr> minCore;
       int itCount = 0;
-      while (result == STATUS_SAT) {
+      while (result == YICES_STATUS_SAT) {
         num_scalls_sat_core2_muses_reach++;
         time_sat_core2_muses_reach += time_diff;
         if (time_diff > time_max_sat_core2_muses_reach)
@@ -2739,7 +2739,7 @@ int y2_API::find_unsat_core(long timeout_value, InstL& hardQ, InstL& vel, InstLL
         if (itCount > 5)
           break;
       }
-      if (result == STATUS_UNSAT)
+      if (result == YICES_STATUS_UNSAT)
       {
         num_scalls_unsat_core2_muses_reach++;
         time_unsat_core2_muses_reach += time_diff;
@@ -2864,7 +2864,7 @@ int y2_API::find_unsat_core(long timeout_value, InstL& hardQ, InstL& vel, InstLL
           AVR_LOG(17, 7, "\t\t\t" << print_term(t.first) << " <- " << print_terms(t.second) << endl);
         }
 
-        if (result == STATUS_SAT)
+        if (result == YICES_STATUS_SAT)
         {
           num_scalls_sat_core2_muses_reach++;
           time_sat_core2_muses_reach += time_diff;
@@ -3121,7 +3121,7 @@ int y2_API::get_unsat_core(long timeout_value, InstL& vel, InstL& core, int& num
   TIME_E(start_time, end_time, time_res);
   AVR_LOG(17, 4, "\t\t(query-check) " << query_res << endl);
 
-  if (query_res == STATUS_UNSAT)
+  if (query_res == YICES_STATUS_UNSAT)
   {
     numUnsat++;
     time_unsat_core_muses_reach += time_diff;
@@ -3156,7 +3156,7 @@ int y2_API::get_unsat_core(long timeout_value, InstL& vel, InstL& core, int& num
   }
   else
   {
-    assert(query_res == STATUS_SAT);
+    assert(query_res == YICES_STATUS_SAT);
     numSat++;
     time_sat_core_muses_reach += time_diff;
     if (time_diff > time_max_sat_core_muses_reach)
@@ -3409,10 +3409,10 @@ int32_t y2_API::s_push(void)
 	{
 		cout << yices_error_string() << endl;
 		y2_result status = yices_context_status(m_ctx);
-    if (status != STATUS_UNSAT) {
+    if (status != YICES_STATUS_UNSAT) {
       cout << "status: " << status << endl;
     }
-		assert(status == STATUS_UNSAT);
+		assert(status == YICES_STATUS_UNSAT);
 		print_asserts();
 		assert(0);
 	}
@@ -3499,7 +3499,7 @@ bool y2_API::s_check_model(bool allowDontCares)
 			for (auto& y: errors)
 				s_assert_constraint(y);
 			y2_result res = yices_check_context(m_ctx, m_param);
-			assert(res == STATUS_SAT);
+			assert(res == YICES_STATUS_SAT);
 
 			yices_free_model(m_model);
 			m_model = yices_get_model(m_ctx, true);
@@ -4022,9 +4022,9 @@ int y2_API::s_check(long timeout_value, bool getModel)
   if (allow_fallback) {
 #ifdef Y2_FORCE_NONINC
 		y2_result newRes = shift_to_noninc(timeout_value, 0, getModel);
-		if (newRes == STATUS_SAT)
+		if (newRes == YICES_STATUS_SAT)
 			return AVR_QSAT;
-		else if (newRes == STATUS_UNSAT)
+		else if (newRes == YICES_STATUS_UNSAT)
 			return AVR_QUSAT;
 		else
 			assert(0);
@@ -4062,7 +4062,7 @@ int y2_API::s_check(long timeout_value, bool getModel)
   collect_solv_statistic_query();
 #endif
 
-	if (res == STATUS_SAT)
+	if (res == YICES_STATUS_SAT)
 	{
 #ifdef DUMP_CONTEXT_SAT
     if (m_abstract)
@@ -4096,7 +4096,7 @@ int y2_API::s_check(long timeout_value, bool getModel)
 //		assert(0);
 		return AVR_QSAT;
 	}
-	else if (res == STATUS_UNSAT)
+	else if (res == YICES_STATUS_UNSAT)
 	{
 #ifdef DUMP_CONTEXT_UNSAT
     if (m_abstract)
@@ -4111,7 +4111,7 @@ int y2_API::s_check(long timeout_value, bool getModel)
 	}
 	else
 	{
-    assert(res != STATUS_ERROR);
+    assert(res != YICES_STATUS_ERROR);
 
     collect_stats_query(time_res, TIME_TO);
 
@@ -4121,9 +4121,9 @@ int y2_API::s_check(long timeout_value, bool getModel)
 //		assert(0);
 
     y2_result newRes = shift_to_noninc(timeout_value_orig, time_res, getModel);
-    if (newRes == STATUS_SAT)
+    if (newRes == YICES_STATUS_SAT)
       return AVR_QSAT;
-    else if (newRes == STATUS_UNSAT)
+    else if (newRes == YICES_STATUS_UNSAT)
       return AVR_QUSAT;
     else
       assert(0);
@@ -4137,10 +4137,10 @@ int y2_API::s_check_assume(long timeout_value, bool getModel)
 
 	int res = AVR_QTO;
 	switch (res_y) {
-	case STATUS_SAT:
+	case YICES_STATUS_SAT:
 		res = AVR_QSAT;
 		break;
-	case STATUS_UNSAT:
+	case YICES_STATUS_UNSAT:
 		res = AVR_QUSAT;
 		break;
 	default:
@@ -4192,7 +4192,7 @@ y2_result y2_API::s_check_inc(long timeout_value, bool getModel)
   collect_solv_statistic_query();
 #endif
 
-  if (res == STATUS_SAT)
+  if (res == YICES_STATUS_SAT)
   {
 #ifdef DUMP_CONTEXT_SAT
     if (m_abstract)
@@ -4218,7 +4218,7 @@ y2_result y2_API::s_check_inc(long timeout_value, bool getModel)
       assert(mres);
     }
   }
-  else if (res == STATUS_UNSAT)
+  else if (res == YICES_STATUS_UNSAT)
   {
 #ifdef DUMP_CONTEXT_UNSAT
     if (m_abstract)
@@ -4232,7 +4232,7 @@ y2_result y2_API::s_check_inc(long timeout_value, bool getModel)
   }
   else
   {
-    assert(res != STATUS_ERROR);
+    assert(res != YICES_STATUS_ERROR);
 
     collect_stats_query(time_res, TIME_TO);
 
@@ -4242,7 +4242,7 @@ y2_result y2_API::s_check_inc(long timeout_value, bool getModel)
 //    assert(0);
 
     y2_result newRes = shift_to_noninc(timeout_value_orig, time_res, getModel);
-    if (newRes != STATUS_SAT && newRes != STATUS_UNSAT)
+    if (newRes != YICES_STATUS_SAT && newRes != YICES_STATUS_UNSAT)
       assert(0);
     res = newRes;
   }
@@ -4272,7 +4272,7 @@ y2_result y2_API::s_check_oneshot_reset2(long timeout_value, bool getModel, bool
 	TIME_S(start_time);
 	y2_result res2 = s_check_oneshot(timeout_value, getModel, true, keepIte, false);
 	TIME_E(start_time, end_time, time_solve);
-	AVR_LOG(17, 0, "\t(result (after reset): " << ((res2 == STATUS_SAT) ? "sat" : (res2 == STATUS_UNSAT) ? "unsat" : "??")
+	AVR_LOG(17, 0, "\t(result (after reset): " << ((res2 == YICES_STATUS_SAT) ? "sat" : (res2 == YICES_STATUS_UNSAT) ? "unsat" : "??")
 			<< ", time: " << (time_assert + time_solve) << " usec (" << time_assert << " + " << time_solve << ")" << endl);
 
 	if (singleFirst)
@@ -4316,15 +4316,15 @@ y2_result y2_API::s_check_oneshot_reset(long timeout_value, bool getModel)
 			TIME_S(start_time);
 			res2 = tmpSolver.s_check_oneshot(Y2_RESET_TIMEOUT_TRIAL, false, false, true, false);
 			TIME_E(start_time, end_time, time_solve);
-			if (res2 == STATUS_SAT || res2 == STATUS_UNSAT)
+			if (res2 == YICES_STATUS_SAT || res2 == YICES_STATUS_UNSAT)
 				useKeepIte = true;
 
-			AVR_LOG(17, 0, "\t(result (model " << (getModel ? "required" : "not required") << "): " << ((res2 == STATUS_SAT) ? "sat" : (res2 == STATUS_UNSAT) ? "unsat" : "??")
+			AVR_LOG(17, 0, "\t(result (model " << (getModel ? "required" : "not required") << "): " << ((res2 == YICES_STATUS_SAT) ? "sat" : (res2 == YICES_STATUS_UNSAT) ? "unsat" : "??")
 					<< ", time: " << (time_assert + time_solve) << " usec (" << time_assert << " + " << time_solve << ")" << endl);
 		}
   }
 
-  if (res2 != STATUS_SAT && res2 != STATUS_UNSAT) {
+  if (res2 != YICES_STATUS_SAT && res2 != YICES_STATUS_UNSAT) {
   	s_reset_scope();
 
     {
@@ -4350,16 +4350,16 @@ y2_result y2_API::s_check_oneshot_reset(long timeout_value, bool getModel)
   		TIME_S(start_time);
   		res2 = tmpSolver.s_check_oneshot(Y2_RESET_TIMEOUT_TRIAL, false, false, false, false);
   		TIME_E(start_time, end_time, time_solve);
-		if (res2 == STATUS_SAT || res2 == STATUS_UNSAT)
+		if (res2 == YICES_STATUS_SAT || res2 == YICES_STATUS_UNSAT)
 			useKeepIte = false;
 
-  		AVR_LOG(17, 0, "\t(result (model " << (getModel ? "required" : "not required") << "): " << ((res2 == STATUS_SAT) ? "sat" : (res2 == STATUS_UNSAT) ? "unsat" : "??")
+  		AVR_LOG(17, 0, "\t(result (model " << (getModel ? "required" : "not required") << "): " << ((res2 == YICES_STATUS_SAT) ? "sat" : (res2 == YICES_STATUS_UNSAT) ? "unsat" : "??")
   				<< ", time: " << (time_assert + time_solve) << " usec (" << time_assert << " + " << time_solve << ")" << endl);
     }
   }
 
   // Phase 2
-  if (res2 != STATUS_SAT && res2 != STATUS_UNSAT) {
+  if (res2 != YICES_STATUS_SAT && res2 != YICES_STATUS_UNSAT) {
 		s_reset_scope();
 
 		{
@@ -4384,15 +4384,15 @@ y2_result y2_API::s_check_oneshot_reset(long timeout_value, bool getModel)
 			TIME_S(start_time);
 			res2 = tmpSolver.s_check_oneshot(timeout_value, false, false, true, false);
 			TIME_E(start_time, end_time, time_solve);
-			if (res2 == STATUS_SAT || res2 == STATUS_UNSAT)
+			if (res2 == YICES_STATUS_SAT || res2 == YICES_STATUS_UNSAT)
 				useKeepIte = true;
 
-			AVR_LOG(17, 0, "\t(result (model " << (getModel ? "required" : "not required") << "): " << ((res2 == STATUS_SAT) ? "sat" : (res2 == STATUS_UNSAT) ? "unsat" : "??")
+			AVR_LOG(17, 0, "\t(result (model " << (getModel ? "required" : "not required") << "): " << ((res2 == YICES_STATUS_SAT) ? "sat" : (res2 == YICES_STATUS_UNSAT) ? "unsat" : "??")
 					<< ", time: " << (time_assert + time_solve) << " usec (" << time_assert << " + " << time_solve << ")" << endl);
 		}
   }
 
-  if (res2 != STATUS_SAT && res2 != STATUS_UNSAT) {
+  if (res2 != YICES_STATUS_SAT && res2 != YICES_STATUS_UNSAT) {
   	s_reset_scope();
 
     {
@@ -4418,15 +4418,15 @@ y2_result y2_API::s_check_oneshot_reset(long timeout_value, bool getModel)
   		TIME_S(start_time);
   		res2 = tmpSolver.s_check_oneshot(timeout_value, false, false, false, false);
   		TIME_E(start_time, end_time, time_solve);
-		if (res2 == STATUS_SAT || res2 == STATUS_UNSAT)
+		if (res2 == YICES_STATUS_SAT || res2 == YICES_STATUS_UNSAT)
 			useKeepIte = false;
 
-  		AVR_LOG(17, 0, "\t(result (model " << (getModel ? "required" : "not required") << "): " << ((res2 == STATUS_SAT) ? "sat" : (res2 == STATUS_UNSAT) ? "unsat" : "??")
+  		AVR_LOG(17, 0, "\t(result (model " << (getModel ? "required" : "not required") << "): " << ((res2 == YICES_STATUS_SAT) ? "sat" : (res2 == YICES_STATUS_UNSAT) ? "unsat" : "??")
   				<< ", time: " << (time_assert + time_solve) << " usec (" << time_assert << " + " << time_solve << ")" << endl);
     }
   }
 
-  if (res2 != STATUS_SAT && res2 != STATUS_UNSAT) {
+  if (res2 != YICES_STATUS_SAT && res2 != YICES_STATUS_UNSAT) {
 
     {
 			long long time_assert = 0;
@@ -4446,7 +4446,7 @@ y2_result y2_API::s_check_oneshot_reset(long timeout_value, bool getModel)
 			TIME_S(start_time);
 			y2_result res2 = tmpSolver.s_check_oneshot(0, false, false, true, false);
 			TIME_E(start_time, end_time, time_solve);
-			AVR_LOG(17, 0, "\t(result --var-elim --keep-ite: " << ((res2 == STATUS_SAT) ? "sat" : (res2 == STATUS_UNSAT) ? "unsat" : "??")
+			AVR_LOG(17, 0, "\t(result --var-elim --keep-ite: " << ((res2 == YICES_STATUS_SAT) ? "sat" : (res2 == YICES_STATUS_UNSAT) ? "unsat" : "??")
 					<< ", time: " << (time_assert + time_solve) << " usec (" << time_assert << " + " << time_solve << ")" << endl);
     }
 
@@ -4468,7 +4468,7 @@ y2_result y2_API::s_check_oneshot_reset(long timeout_value, bool getModel)
 			TIME_S(start_time);
 			y2_result res2 = tmpSolver.s_check_oneshot(0, true, false, false, false);
 			TIME_E(start_time, end_time, time_solve);
-			AVR_LOG(17, 0, "\t(result:" << ((res2 == STATUS_SAT) ? "sat" : (res2 == STATUS_UNSAT) ? "unsat" : "??")
+			AVR_LOG(17, 0, "\t(result:" << ((res2 == YICES_STATUS_SAT) ? "sat" : (res2 == YICES_STATUS_UNSAT) ? "unsat" : "??")
 					<< ", time: " << (time_assert + time_solve) << " usec (" << time_assert << " + " << time_solve << ")" << endl);
     }
 
@@ -4482,7 +4482,7 @@ y2_result y2_API::s_check_oneshot_reset(long timeout_value, bool getModel)
   s_reset_solver();
 
   if (getModel) {
-  	if (res2 == STATUS_SAT)
+  	if (res2 == YICES_STATUS_SAT)
   		s_check_oneshot(timeout_value, getModel, false, useKeepIte, false);
   }
 
@@ -4556,7 +4556,7 @@ y2_result y2_API::s_check_oneshot(long timeout_value, bool getModel, bool tryVar
   Solver::time_tmp += time_res;
 //	collect_solv_statistic_query();
 
-	if (res == STATUS_SAT)
+	if (res == YICES_STATUS_SAT)
 	{
     collect_stats_query(time_res, ONESHOT_SAT);
 
@@ -4581,13 +4581,13 @@ y2_result y2_API::s_check_oneshot(long timeout_value, bool getModel, bool tryVar
 			}
 		}
 	}
-	else if (res == STATUS_UNSAT)
+	else if (res == YICES_STATUS_UNSAT)
 	{
     collect_stats_query(time_res, ONESHOT_UNSAT);
 	}
 	else
 	{
-    assert(res != STATUS_ERROR);
+    assert(res != YICES_STATUS_ERROR);
 
     collect_stats_query(time_res, TIME_TO);
 //    print_query(time_res, TIME_TO, "error");
@@ -4632,9 +4632,9 @@ y2_result y2_API::s_check_oneshot(long timeout_value, bool getModel, bool tryVar
 		yices_free_config(cfg);
 
 #ifndef Y2_FORCE_NONINC
-  AVR_LOG(17, 0, "\t(non-inc result: " << ((!tryVarElim && getModel)?"":"--var-elim ") << (keepIte?"--keep-ite ":"") << ((res == STATUS_SAT) ? "sat" : (res == STATUS_UNSAT) ? "unsat" : "??") << ", t: " << time_res << " usec)" << endl);
+  AVR_LOG(17, 0, "\t(non-inc result: " << ((!tryVarElim && getModel)?"":"--var-elim ") << (keepIte?"--keep-ite ":"") << ((res == YICES_STATUS_SAT) ? "sat" : (res == YICES_STATUS_UNSAT) ? "unsat" : "??") << ", t: " << time_res << " usec)" << endl);
 #endif
-  if ((!tryVarElim && getModel) && (res == STATUS_SAT))
+  if ((!tryVarElim && getModel) && (res == YICES_STATUS_SAT))
   	assert(m_model != NULL);
 	return res;
 }
@@ -4799,7 +4799,7 @@ y2_result y2_API::s_check_mus(long timeout_value, y2_expr_vec& assumptions, y2_e
   collect_solv_statistic_query();
 #endif
 
-  if (res == STATUS_SAT)
+  if (res == YICES_STATUS_SAT)
   {
 #ifdef DUMP_CONTEXT_SAT
     if (m_abstract)
@@ -4822,7 +4822,7 @@ y2_result y2_API::s_check_mus(long timeout_value, y2_expr_vec& assumptions, y2_e
 			assert(mres);
 		}
 	}
-	else if (res == STATUS_UNSAT)
+	else if (res == YICES_STATUS_UNSAT)
 	{
     collect_stats_query(time_res, MUS_UNSAT);
 #ifdef TRACE_SOLVER
@@ -4844,7 +4844,7 @@ y2_result y2_API::s_check_mus(long timeout_value, y2_expr_vec& assumptions, y2_e
 	}
 	else
 	{
-	  assert(res != STATUS_ERROR);
+	  assert(res != YICES_STATUS_ERROR);
 
     collect_stats_query(time_res, TIME_TO);
 
@@ -4854,7 +4854,7 @@ y2_result y2_API::s_check_mus(long timeout_value, y2_expr_vec& assumptions, y2_e
 //    assert(0);
 
     y2_result newRes = shift_to_noninc(timeout_value_orig, assumptions, unsatCore, time_res, getModel);
-    if (newRes != STATUS_SAT && newRes != STATUS_UNSAT)
+    if (newRes != YICES_STATUS_SAT && newRes != YICES_STATUS_UNSAT)
       assert(0);
     res = newRes;
 	}
@@ -4889,7 +4889,7 @@ y2_result y2_API::s_check_oneshot_mus_reset2(long timeout_value, y2_expr_vec& as
 	TIME_S(start_time);
 	y2_result res2 = s_check_oneshot_mus(timeout_value, assumptions, unsatCore, getModel, true, keepIte, false);
 	TIME_E(start_time, end_time, time_solve);
-	AVR_LOG(17, 0, "\t(result (after reset): " << ((res2 == STATUS_SAT) ? "sat" : (res2 == STATUS_UNSAT) ? "unsat" : "??")
+	AVR_LOG(17, 0, "\t(result (after reset): " << ((res2 == YICES_STATUS_SAT) ? "sat" : (res2 == YICES_STATUS_UNSAT) ? "unsat" : "??")
 			<< ", time: " << (time_assert + time_solve) << " usec (" << time_assert << " + " << time_solve << ")" << endl);
 
 	if (singleFirst)
@@ -4937,15 +4937,15 @@ y2_result y2_API::s_check_oneshot_mus_reset(long timeout_value, y2_expr_vec& ass
 			TIME_S(start_time);
 			res2 = tmpSolver.s_check_oneshot_mus(Y2_RESET_TIMEOUT_TRIAL, tmpSolver.get_assumptions(), unsatCore, false, false, true, false);
 			TIME_E(start_time, end_time, time_solve);
-			if (res2 == STATUS_SAT || res2 == STATUS_UNSAT)
+			if (res2 == YICES_STATUS_SAT || res2 == YICES_STATUS_UNSAT)
 				useKeepIte = true;
 
-			AVR_LOG(17, 0, "\t(result (model " << (getModel ? "required" : "not required") << "): " << ((res2 == STATUS_SAT) ? "sat" : (res2 == STATUS_UNSAT) ? "unsat" : "??")
+			AVR_LOG(17, 0, "\t(result (model " << (getModel ? "required" : "not required") << "): " << ((res2 == YICES_STATUS_SAT) ? "sat" : (res2 == YICES_STATUS_UNSAT) ? "unsat" : "??")
 					<< ", time: " << (time_assert + time_solve) << " usec (" << time_assert << " + " << time_solve << ")" << endl);
 		}
 	}
 
-  if (res2 != STATUS_SAT && res2 != STATUS_UNSAT) {
+  if (res2 != YICES_STATUS_SAT && res2 != YICES_STATUS_UNSAT) {
   	s_reset_scope();
 
     {
@@ -4975,16 +4975,16 @@ y2_result y2_API::s_check_oneshot_mus_reset(long timeout_value, y2_expr_vec& ass
   		TIME_S(start_time);
   		res2 = tmpSolver.s_check_oneshot_mus(Y2_RESET_TIMEOUT_TRIAL, tmpSolver.get_assumptions(), unsatCore, false, false, false, false);
   		TIME_E(start_time, end_time, time_solve);
-		if (res2 == STATUS_SAT || res2 == STATUS_UNSAT)
+		if (res2 == YICES_STATUS_SAT || res2 == YICES_STATUS_UNSAT)
 			useKeepIte = false;
 
-  		AVR_LOG(17, 0, "\t(result (model " << (getModel ? "required" : "not required") << "): " << ((res2 == STATUS_SAT) ? "sat" : (res2 == STATUS_UNSAT) ? "unsat" : "??")
+  		AVR_LOG(17, 0, "\t(result (model " << (getModel ? "required" : "not required") << "): " << ((res2 == YICES_STATUS_SAT) ? "sat" : (res2 == YICES_STATUS_UNSAT) ? "unsat" : "??")
   				<< ", time: " << (time_assert + time_solve) << " usec (" << time_assert << " + " << time_solve << ")" << endl);
     }
   }
 
 
-  if (res2 != STATUS_SAT && res2 != STATUS_UNSAT) {
+  if (res2 != YICES_STATUS_SAT && res2 != YICES_STATUS_UNSAT) {
 		s_reset_scope();
 
 		{
@@ -5013,15 +5013,15 @@ y2_result y2_API::s_check_oneshot_mus_reset(long timeout_value, y2_expr_vec& ass
 			TIME_S(start_time);
 			res2 = tmpSolver.s_check_oneshot_mus(timeout_value, tmpSolver.get_assumptions(), unsatCore, false, false, true, false);
 			TIME_E(start_time, end_time, time_solve);
-			if (res2 == STATUS_SAT || res2 == STATUS_UNSAT)
+			if (res2 == YICES_STATUS_SAT || res2 == YICES_STATUS_UNSAT)
 				useKeepIte = true;
 
-			AVR_LOG(17, 0, "\t(result (model " << (getModel ? "required" : "not required") << "): " << ((res2 == STATUS_SAT) ? "sat" : (res2 == STATUS_UNSAT) ? "unsat" : "??")
+			AVR_LOG(17, 0, "\t(result (model " << (getModel ? "required" : "not required") << "): " << ((res2 == YICES_STATUS_SAT) ? "sat" : (res2 == YICES_STATUS_UNSAT) ? "unsat" : "??")
 					<< ", time: " << (time_assert + time_solve) << " usec (" << time_assert << " + " << time_solve << ")" << endl);
 		}
 	}
 
-  if (res2 != STATUS_SAT && res2 != STATUS_UNSAT) {
+  if (res2 != YICES_STATUS_SAT && res2 != YICES_STATUS_UNSAT) {
   	s_reset_scope();
 
     {
@@ -5051,15 +5051,15 @@ y2_result y2_API::s_check_oneshot_mus_reset(long timeout_value, y2_expr_vec& ass
   		TIME_S(start_time);
   		res2 = tmpSolver.s_check_oneshot_mus(timeout_value, tmpSolver.get_assumptions(), unsatCore, false, false, false, false);
   		TIME_E(start_time, end_time, time_solve);
-		if (res2 == STATUS_SAT || res2 == STATUS_UNSAT)
+		if (res2 == YICES_STATUS_SAT || res2 == YICES_STATUS_UNSAT)
 			useKeepIte = true;
 
-  		AVR_LOG(17, 0, "\t(result (model " << (getModel ? "required" : "not required") << "): " << ((res2 == STATUS_SAT) ? "sat" : (res2 == STATUS_UNSAT) ? "unsat" : "??")
+  		AVR_LOG(17, 0, "\t(result (model " << (getModel ? "required" : "not required") << "): " << ((res2 == YICES_STATUS_SAT) ? "sat" : (res2 == YICES_STATUS_UNSAT) ? "unsat" : "??")
   				<< ", time: " << (time_assert + time_solve) << " usec (" << time_assert << " + " << time_solve << ")" << endl);
     }
   }
 
-  if (res2 != STATUS_SAT && res2 != STATUS_UNSAT) {
+  if (res2 != YICES_STATUS_SAT && res2 != YICES_STATUS_UNSAT) {
     {
 			long long time_assert = 0;
 			long long time_solve = 0;
@@ -5080,7 +5080,7 @@ y2_result y2_API::s_check_oneshot_mus_reset(long timeout_value, y2_expr_vec& ass
 			TIME_S(start_time);
 			y2_result res2 = tmpSolver.s_check_oneshot(0, false, false, true, false);
 			TIME_E(start_time, end_time, time_solve);
-			AVR_LOG(17, 0, "\t(result --var-elim --keep-ite: " << ((res2 == STATUS_SAT) ? "sat" : (res2 == STATUS_UNSAT) ? "unsat" : "??")
+			AVR_LOG(17, 0, "\t(result --var-elim --keep-ite: " << ((res2 == YICES_STATUS_SAT) ? "sat" : (res2 == YICES_STATUS_UNSAT) ? "unsat" : "??")
 					<< ", time: " << (time_assert + time_solve) << " usec (" << time_assert << " + " << time_solve << ")" << endl);
     }
 
@@ -5104,7 +5104,7 @@ y2_result y2_API::s_check_oneshot_mus_reset(long timeout_value, y2_expr_vec& ass
 			TIME_S(start_time);
 			y2_result res2 = tmpSolver.s_check_oneshot(0, true, false, false, false);
 			TIME_E(start_time, end_time, time_solve);
-			AVR_LOG(17, 0, "\t(result: " << ((res2 == STATUS_SAT) ? "sat" : (res2 == STATUS_UNSAT) ? "unsat" : "??")
+			AVR_LOG(17, 0, "\t(result: " << ((res2 == YICES_STATUS_SAT) ? "sat" : (res2 == YICES_STATUS_UNSAT) ? "unsat" : "??")
 					<< ", time: " << (time_assert + time_solve) << " usec (" << time_assert << " + " << time_solve << ")" << endl);
     }
 
@@ -5118,7 +5118,7 @@ y2_result y2_API::s_check_oneshot_mus_reset(long timeout_value, y2_expr_vec& ass
   s_reset_solver();
 
   if (getModel) {
-  	if (res2 == STATUS_SAT)
+  	if (res2 == YICES_STATUS_SAT)
   		s_check_oneshot_mus(timeout_value, get_assumptions(), unsatCore, getModel, false, useKeepIte, false);
   }
 
@@ -5203,7 +5203,7 @@ y2_result y2_API::s_check_oneshot_mus(long timeout_value, y2_expr_vec& assumptio
   Solver::time_tmp += time_res;
 //	collect_solv_statistic_query();
 
-	if (res == STATUS_SAT)
+	if (res == YICES_STATUS_SAT)
 	{
     collect_stats_query(time_res, MUS_SAT);
 
@@ -5228,7 +5228,7 @@ y2_result y2_API::s_check_oneshot_mus(long timeout_value, y2_expr_vec& assumptio
 			}
 		}
 	}
-	else if (res == STATUS_UNSAT)
+	else if (res == YICES_STATUS_UNSAT)
 	{
     collect_stats_query(time_res, MUS_UNSAT);
 #ifdef TRACE_SOLVER
@@ -5245,10 +5245,10 @@ y2_result y2_API::s_check_oneshot_mus(long timeout_value, y2_expr_vec& assumptio
 	}
 	else
 	{
-    if (res == STATUS_ERROR) {
+    if (res == YICES_STATUS_ERROR) {
     	yices_print_error(stdout);
     }
-    assert(res != STATUS_ERROR);
+    assert(res != YICES_STATUS_ERROR);
 
     collect_stats_query(time_res, TIME_TO);
 
@@ -5296,10 +5296,10 @@ y2_result y2_API::s_check_oneshot_mus(long timeout_value, y2_expr_vec& assumptio
 		yices_free_config(cfg);
 	yices_delete_term_vector(&core_vector);
 #ifndef Y2_FORCE_NONINC
-  AVR_LOG(17, 0, "\t(non-inc result: " << ((!tryVarElim && getModel)?"":"--var-elim ") << (keepIte?"--keep-ite ":"") << ((res == STATUS_SAT) ? "sat" : (res == STATUS_UNSAT) ? "unsat" : "??")
+  AVR_LOG(17, 0, "\t(non-inc result: " << ((!tryVarElim && getModel)?"":"--var-elim ") << (keepIte?"--keep-ite ":"") << ((res == YICES_STATUS_SAT) ? "sat" : (res == YICES_STATUS_UNSAT) ? "unsat" : "??")
   		<< ", t: " << time_res << " usec, core: " << assumptions.size() << " -> " << unsatCore.size() << ")" << endl);
 #endif
-  if ((!tryVarElim && getModel) && (res == STATUS_SAT))
+  if ((!tryVarElim && getModel) && (res == YICES_STATUS_SAT))
   	assert(m_model != NULL);
 	return res;
 }
