@@ -101,7 +101,18 @@ def setup():
 		os.makedirs(opts.out)
 	out_path = opts.out + "/pr_" + opts.name
 	if os.path.exists(out_path):
-		shutil.rmtree(out_path)
+		retries = 5
+		delay = 1
+		for attempt in range(retries):
+			try:
+				shutil.rmtree(out_path)
+				break
+			except OSError as e:
+				if attempt < retries:
+					time.sleep(delay)
+				else:
+					print(f"Failed to remove directory {out_path} after {retries} attempts.")
+					raise # Re-raise the exception if all retries fail
 	os.makedirs(out_path)
 	print(f"Out path: {out_path}")
 
