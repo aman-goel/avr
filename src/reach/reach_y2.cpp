@@ -6614,11 +6614,6 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 						break;
 						case OpInst::ArrayConst: {
 							if (m_mapper->fetch_op(e) == TheoryMapper::BV_OP) {
-								y2_type functt = create_bv_sort(make_pair(e->get_size(), e->get_sort()));
-								y2_expr funct = yices_new_uninterpreted_term(functt);
-								log = funct;
-								//					cout << "constarray: " << print_term(log) << " of type " << print_type(yices_type_of_term(log)) << endl;
-
 								SORT* d = e->get_sort_domain();
 								SORT* r = e->get_sort_range();
 								assert(d->type == bvtype);
@@ -6632,11 +6627,35 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 								string defstr = "0";
 								map < string, string > vMap;
 								e->get_sort().read_array_value(value, defstr, vMap);
-								
+
+// 								Inst* data = NumInst::create(defstr, size, 2, SORT());
+// 								y2_expr b = create_y2_number(NumInst::as(data));
+// 								y2_expr i = yices_new_variable(create_bv_sort(make_pair(d->sz, *d)));
+// 								log = yices_lambda(1, &i, b);
+// 								// cout << "constarray: " << print_term(log) << " of type " << print_type(yices_type_of_term(log)) << endl;
+// 								for (const auto& pair : vMap) {
+// 									Inst* address = NumInst::create(pair.first, width, 2, SORT());
+// 									Inst* data = NumInst::create(pair.second, size, 2, SORT());
+// 									y2_expr a = create_y2_number(NumInst::as(address));
+// 									y2_expr b = create_y2_number(NumInst::as(data));
+// #ifndef Y2_ARRAY_ALLOW_BOOL
+// 									if (yices_term_is_bool(a))
+// 										a = yices_ite(a, m_v1, m_v0);
+// 									if (yices_term_is_bool(b))
+// 										b = yices_ite(b, m_v1, m_v0);
+// #endif
+// 									log = yices_update1(log, a, b);
+// 								}
+// 								// cout << "updatearray: " << print_term(log) << endl;
+
+								y2_type functt = create_bv_sort(make_pair(e->get_size(), e->get_sort()));
+								y2_expr funct = yices_new_uninterpreted_term(functt);
+								log = funct;
+								// cout << "constarray: " << print_term(log) << " of type " << print_type(yices_type_of_term(log)) << endl;
 								long maxaddress = pow(2, width) - 1;
 								for (long i = 0; i <= maxaddress; i++) {
 									Inst* address = NumInst::create(maxaddress - i, width, SORT());
-									string address_str = NumInst::as(address)->get_mpz()->get_str(2);
+									string address_str = d->cast(NumInst::as(address)->get_mpz()->get_str(2));
 									string v = defstr;
 									auto it = vMap.find(address_str);
 									if (it != vMap.end()) {
@@ -6646,14 +6665,14 @@ void y2_API::inst2yices(Inst*e, bool bvAllConstraints)
 									y2_expr_ptr a = create_y2_number(NumInst::as(address));
 									y2_expr_ptr b = create_y2_number(NumInst::as(data));
 #ifndef Y2_ARRAY_ALLOW_BOOL
-						if (yices_term_is_bool(a))
-							a = yices_ite(a, m_v1, m_v0);
-						if (yices_term_is_bool(b))
-							b = yices_ite(b, m_v1, m_v0);
+									if (yices_term_is_bool(a))
+										a = yices_ite(a, m_v1, m_v0);
+									if (yices_term_is_bool(b))
+										b = yices_ite(b, m_v1, m_v0);
 #endif
 									log = yices_update1(log, a, b);
 								}
-								//					cout << "updatearray: " << print_term(log) << endl;
+								// cout << "updatearray: " << print_term(log) << endl;
 							} else if (m_mapper->fetch_op(e) == TheoryMapper::EUF_OP) {
 								SORT* d = e->get_sort_domain();
 								SORT* r = e->get_sort_range();
