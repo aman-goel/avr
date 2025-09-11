@@ -18,7 +18,7 @@ errFile="${outRoot}/${benchmarkName}.err"
 rm -rf ${outRoot}/pr_${benchmarkName}
 
 CMD="python3 ${avrPath}/avr_pr.py ${benchmarkFile} --witness-file ${witnessFile} --out ${outRoot} --name ${benchmarkName}"
-echo "Running `$CMD`"
+echo "Running '$CMD'"
 $CMD  > ${outFile} 2> ${errFile}
 if grep -q "proof race finished with answer unsafe" ${outFile}; then
   echo "sat"
