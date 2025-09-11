@@ -75,8 +75,8 @@ void CEX::print (ofstream& out, int length, InstL& propList) {
 
 		if (c.constant->get_size() != 1) {
 			mpz_class* val = c.constant->get_ival();
-			AVR_LOG(8, 1, "Value for " << *c.input << " with constant " << *c.constant << " is " << *val << endl);
 			if (val != INVALID_SMPZ) {
+				AVR_LOG(8, 1, "Value for " << *c.input << " with constant " << *c.constant << " is " << *val << endl);
 				if (c.isinput)
 					statev[idx].first[c.input] = *val;
 				else

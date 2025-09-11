@@ -1012,7 +1012,11 @@ void bt_API::get_value_arr(bool abstract, SORT& sort, bt_expr_ptr decl, string& 
 	for (int i = 0; i < size; i++) {
 		string addrstr = (indices)[i];
 		string valstr = (values)[i];
-		vMap[addrstr] = valstr;
+		if (addrstr == "*") {
+			defstr = valstr;
+		} else {
+			vMap[addrstr] = valstr;
+		}
 	}
 //	for (int i = 0; i < size; i++) {
 //		boolector_free_bv_assignment(g_ctx, (indices)[i]);
