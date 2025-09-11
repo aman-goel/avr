@@ -14,12 +14,11 @@ avr.py --bmc --abstract sa+heavy --backend bt
 avr.py --split --level 0
 avr.py --abstract sa16 --backend y2 --split
 avr.py --abstract sa8 --backend y2 --split --interpol 1
-avr.py --bmc --abstract sa --backend y2
-avr.py --abstract sa --backend y2
-avr.py --kind --abstract sa --backend bt --split
-avr.py --bmc --abstract sa+heavy --backend bt --split
-avr.py --abstract sa+uf+nopropagate --backend bt
-avr.py --abstract sa+heavy --backend bt --split
-avr.py --bmc --abstract sa16 --backend y2
-avr.py --abstract sa12 --level 4 --granularity 2 --forward 1 --interpol 1
-avr.py --level 0
+# avr.py --bmc --abstract sa --backend y2
+# avr.py --abstract sa --backend y2
+# avr.py --kind --abstract sa --backend bt --split
+# avr.py --bmc --abstract sa+heavy --backend bt --split
+# avr.py --abstract sa+heavy --backend bt --split
+# avr.py --bmc --abstract sa16 --backend y2
+# avr.py --abstract sa12 --level 4 --granularity 2 --forward 1 --interpol 1
+# avr.py --level 0
