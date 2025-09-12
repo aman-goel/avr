@@ -40,7 +40,7 @@ DEFAULT_WITNESS_FILE=f"{DEFAULT_OUT}/cex.witness"
 
 maxTimeSec = DEFAULT_TIMEOUT
 maxMemMB = DEFAULT_MEMOUT
-maxInitW = 25
+maxInitW = 16
 resultW = 0
 out_path = DEFAULT_OUT + "/" + DEFAULT_NAME
 witness_path = DEFAULT_OUT + "/cex.witness"
@@ -185,7 +185,7 @@ def run_command_all():
 def run_command(idx):
 	elapsed_time = time.time() - start_time
 	timeLimit = opts.timeout - elapsed_time
-	timeSuffix = " --timeout " + str(int(0.99*timeLimit))
+	timeSuffix = " --timeout " + str(int(0.999*timeLimit))
 
 	mem_usage = mem_usage_all()
 	memLimit = max(opts.memout - (1.5*mem_usage), 500)
@@ -233,7 +233,7 @@ def run_commands_new(maxW):
 		print (time_str(), "(total %d workers using %.0f MB)" % (numW, mem_usage_all()))
 	
 def kill_allowed(mem_usage):
-	if mem_usage >= (0.8*maxMemMB):
+	if mem_usage >= (0.75*maxMemMB):
 		return True
 	#print("kill not allowed since %f < %f" % (mem_usage, 0.98*maxMemMB))
 	return False
@@ -265,7 +265,7 @@ def kill_commands(maxW):
 		return
 	
 	if (numW <= 1):
-		return;
+		return
 	
 	numKill = 0
 	while (numKill < maxW):
