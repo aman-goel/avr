@@ -109,7 +109,6 @@ void CEX::print (ofstream& out, int length, InstL& propList) {
 
 //	out << "Length: " << length << "\n\n";
 	for (int i = 0; i <= length; i++) {
-		if (i == 0)
 		{
 			process_step(out, statev[i].second, i, false);
 //			out << "#" << i << "\n";
@@ -134,11 +133,18 @@ void CEX::process_step(ofstream& out, InstToMpzM& inMap, int idx, bool isinput) 
 
 	map < int, list < pair < string, string > > > idMap;
 	for (auto& m: inMap) {
+		if (!isinput && idx != 0) {
+			if (Inst::_s_inp.find(m.first) == Inst::_s_inp.end()) {
+				continue;
+			}
+		}
+
 		int id = get_id(m.first);
 		string val = m.second.get_str(2);
 		ostringstream tmp;
 		tmp << *(m.first);
 		string name = tmp.str();
+
 
 		if (m.first->get_sort_type() == arraytype) {
 			SORT* d = m.first->get_sort_domain();
